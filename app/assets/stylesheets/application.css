@@ -13,3 +13,105 @@
  *= require_tree .
  *= require_self
  */
+body {
+    margin: 0px;
+}
+
+.header {
+    text-align: center;
+    background: darkblue;
+    color: white;
+    font-size: 30px;
+    margin: 0px;
+}
+
+/* Header flex container */
+.kbin-container {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: nowrap;
+    height: 50px;
+}
+
+.left-nav {
+    display: flex;
+}
+
+/* left side navigation */
+.sr-nav {
+    outline: solid red;
+    flex-shrink: 0;
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+.sr-nav > img {
+    outline: solid pink;
+    width: 70px;
+    vertical-align: middle;
+}
+
+/* middle navigation */
+.head-nav {
+    outline: solid orange;
+    flex-basis: 500px;
+    flex-shrink: 0;
+    display: flex;
+    justify-content: space-between;
+    font-size: 15px;
+    align-items: center;
+}
+
+#hiddenMenu {
+    display: none;
+}
+
+/* change based on window size */
+@media (max-width:900px) {
+    .head-nav  {
+        display: none;
+        outline: solid yellow;
+    }
+
+    #hiddenMenu {
+        display: inline;
+        width: 15px;
+        color: white;
+    }
+}
+
+.head-nav > span, .menu > span {
+    flex: auto;
+    padding: 8px;
+}
+
+.head-nav > span:hover, .menu > span:hover {
+    border-bottom: white solid;
+}
+
+/* right side user menu */
+
+.menu {
+    border: solid green;
+    width: 300px;
+    flex-shrink: 0;
+    font-size: 15px;
+    align-items: center;
+    justify-content: space-evenly;
+    display: flex;
+}
+
+.menu > span > img {
+    width: 25px;
+    height: 25px;
+    vertical-align: middle;
+}
+
+.body {
+    margin: 40px;
+}
+
+.article {
+    margin-top: 40px;
+    outline: red solid;
+}
