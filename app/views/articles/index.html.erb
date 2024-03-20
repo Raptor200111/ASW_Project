@@ -1,3 +1,5 @@
+<link href='https://fonts.googleapis.com/css?family=Varela Round' rel='stylesheet'>
+
 <header class="header">
   <div class="kbin-container">
     <div class="left-nav">
@@ -13,10 +15,10 @@
       </div>
     </div>
     <div class="menu">
-      <span><img src="https://img.icons8.com/ios/50/FFFFFF/search--v1.png"></span>
-      <span><img src="https://img.icons8.com/ios/50/FFFFFF/add--v1.png"></span>
-      <span><img src="https://img.icons8.com/ios-filled/50/FFFFFF/menu-2.png"></span>
-      <span>username</span>
+      <span class="icon"><img src="https://img.icons8.com/ios/50/FFFFFF/search--v1.png"></span>
+      <span class="icon"><img src="https://img.icons8.com/ios/50/FFFFFF/add--v1.png"></span>
+      <span class="icon"><img src="https://img.icons8.com/ios-filled/50/FFFFFF/menu-2.png"></span>
+      <span><span>username</span></span>
     </div>
   </div>
 </header>
@@ -31,11 +33,18 @@
           <span>like up</span>
           <span>like down</span>
         </div>
-        <img src="https://sesupport.edumall.jp/hc/article_attachments/900009570963/noImage.jpg" width=150px>
+        <img src="https://sesupport.edumall.jp/hc/article_attachments/900009570963/noImage.jpg">
         <div class="articlePreview">
           <a href=<%= article_path(article) %>><%= article.title %></a>
           <br>
-          <%= article.body %>
+          <span><%= truncate(article.body, length: 250) %></span>
+          <br>
+          <span><strong>author</strong>, time ago to <strong>topic</strong></span>
+          <%# to make:
+          icon
+          X Comments
+          Boost
+          more %>
         </div>
       </div>
     <% end %>

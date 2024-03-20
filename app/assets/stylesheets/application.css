@@ -15,7 +15,9 @@
  */
 body {
     margin: 0px;
-    background-color: lightgray;
+    background-color: #ecf0f1;
+    font-family: 'Varela Round';
+    font-size: 12px;
 }
 
 .header {
@@ -24,6 +26,9 @@ body {
     color: white;
     font-size: 30px;
     margin: 0px;
+    display: block;
+    justify-content: right;
+    /* border: solid red; */
 }
 
 /* Header flex container */
@@ -31,7 +36,10 @@ body {
     display: flex;
     justify-content: space-between;
     flex-wrap: nowrap;
-    height: 50px;
+    height: 40px;
+    max-width: 1000px;
+    /* border: solid orange; */
+    margin: auto;
 }
 
 .left-nav {
@@ -55,11 +63,11 @@ body {
 /* middle navigation */
 .head-nav {
     /* outline: solid orange; */
-    flex-basis: 500px;
+    flex-basis: 250px;
     flex-shrink: 0;
     display: flex;
     justify-content: space-between;
-    font-size: 15px;
+    font-size: 11px;
     align-items: center;
 }
 
@@ -81,7 +89,7 @@ body {
     }
 }
 
-.head-nav > span, .menu > span {
+.head-nav > span {
     flex: auto;
     padding: 8px;
 }
@@ -93,25 +101,42 @@ body {
 /* right side user menu */
 
 .menu {
-    /* border: solid green; */
-    width: 300px;
-    flex-shrink: 0;
-    font-size: 15px;
+    /* border: solid yellow; */
+    width: 250px;
+    font-size: 12px;
     align-items: center;
-    justify-content: space-evenly;
     display: flex;
 }
 
-.menu > span > img {
-    width: 25px;
-    height: 25px;
-    vertical-align: middle;
+.menu > span {
+    /* border: solid red; */
+    width: 100px;
+    height: 100%;
+    position: relative;
+}
+
+.menu > .icon {
+    width: 50px;
+}
+
+.menu > span > img, .menu > span > span {
+    height: 15px;
+    /* border: solid blue; */
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    -ms-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
 }
 
 .body {
     margin: 20px;
+    max-width: 1000px;
+    margin: auto;
+    padding: 10px;
 }
 
+/* individual articles */
 .articles {
     background-color: white;
     display: flex;
@@ -119,18 +144,36 @@ body {
     margin-bottom: 10px;
     padding: 10px;
     gap: 10px;
+    justify-content: left;
 }
 
+/* thread likes count */
 .likes {
     display: flex;
     flex-direction: column;
-    justify-content: space-evenly;
+    flex-shrink: 0;
+    height: 100px;
+    /* outline: pink solid; */
 }
 
+.likes > span {
+    background-color: lightgray;
+    margin-bottom: 20px;
+}
+
+/* thread image */
+.articles > img {
+    width: 150px;
+    height: 100px;
+    object-fit: cover;
+    flex-shrink: 0;
+}
+
+/* Thread content */
 .articlePreview {
+    /* border: solid seagreen; */
     display: flex;
     flex-direction: column;
-    flex-grow: 1;
 }
 
 .articlePreview > a {
@@ -149,4 +192,9 @@ body {
 
 .articlePreview > a:active {
     color: #2f5677;
+}
+
+/* article body */
+.articlePreview > span {
+    font-size: 10px;
 }
