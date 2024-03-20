@@ -140,7 +140,7 @@ body {
     background-color: white;
     display: flex;
     /* outline: green solid; */
-    margin-bottom: 10px;
+    margin-top: 10px;
     padding: 10px;
     gap: 10px;
     justify-content: left;
@@ -175,21 +175,28 @@ body {
     flex-direction: column;
 }
 
-.articlePreview > a {
+.articlePreview > div > a {
     font-weight: bold;
     text-decoration: none;
     color: #41759c;
+    display: inline-block;
 }
 
-.articlePreview > a:hover {
+#link {
+    font-size: 10px;
+    color: gray;
+    font-weight: lighter;
+}
+
+.articlePreview > div > a:hover {
     color: #2f5677;
 }
 
-.articlePreview > a:visited {
+.articlePreview > div > a:visited {
     color: #808f98;
 }
 
-.articlePreview > a:active {
+.articlePreview > div > a:active {
     color: #2f5677;
 }
 
@@ -227,4 +234,8 @@ body {
 #activeFilter {
     color: #140145;
     border-bottom: #140145 solid;
+}
+
+#form {
+    margin: auto;
 }

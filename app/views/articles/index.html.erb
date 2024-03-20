@@ -52,7 +52,12 @@
         </div>
         <img src="https://sesupport.edumall.jp/hc/article_attachments/900009570963/noImage.jpg">
         <div class="articlePreview">
-          <a href=<%= article_path(article) %>><%= article.title %></a>
+          <div>
+            <a href=<%= article_path(article) %>><%= article.title %></a>
+            <% if not article.url.nil? %>
+              <a id="link" href=<%= article.url %>>(<%= article.url %>)</a>
+            <% end %>
+          </div>
           <br>
           <span><%= truncate(article.body, length: 250) %></span>
           <br>

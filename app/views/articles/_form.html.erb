@@ -1,4 +1,5 @@
 <%= form_with(model: article) do |form| %>
+
   <% if article.errors.any? %>
     <div style="color: red">
       <h2><%= pluralize(article.errors.count, "error") %> prohibited this article from being saved:</h2>
@@ -10,6 +11,12 @@
       </ul>
     </div>
   <% end %>
+  
+
+  <div>
+    <%= form.label :url, style: "display: block" %>
+    <%= form.text_field :url %>
+  </div>
 
   <div>
     <%= form.label :title, style: "display: block" %>
