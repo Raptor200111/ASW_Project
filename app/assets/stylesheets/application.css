@@ -28,7 +28,6 @@ body {
     margin: 0px;
     display: block;
     justify-content: right;
-    /* border: solid red; */
 }
 
 /* Header flex container */
@@ -38,7 +37,6 @@ body {
     flex-wrap: nowrap;
     height: 40px;
     max-width: 1000px;
-    /* border: solid orange; */
     margin: auto;
 }
 
@@ -133,7 +131,8 @@ body {
     margin: 20px;
     max-width: 1000px;
     margin: auto;
-    padding: 10px;
+    padding-left: 10px;
+    padding-right: 10px;
 }
 
 /* individual articles */
@@ -197,4 +196,35 @@ body {
 /* article body */
 .articlePreview > span {
     font-size: 10px;
+}
+
+.secHeader {
+    max-width: 1000px;
+    margin: auto;
+    padding-left: 10px;
+    padding-right: 10px;
+    display: flex;
+}
+
+.filter {
+    background-color: white;
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    height: 27px;
+}
+
+.filter > div > span {
+    padding: 10px;
+    color: grey;
+}
+
+.filter > div > span:hover {
+    color: #140145;
+    border-bottom: #140145 solid;
+}
+
+#activeFilter {
+    color: #140145;
+    border-bottom: #140145 solid;
 }
