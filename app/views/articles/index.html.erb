@@ -24,14 +24,20 @@
 <p style="color: green"><%= notice %></p>
 
 <div class="body">
-  <h1>Articles</h1>
-
-  <div id="articles">
+  <div>
     <% @articles.each do |article| %>
-      <%= render article %>
-      <p>
-        <%= link_to "Show this article", article %>
-      </p>
+      <div class="articles">
+        <div class="likes">
+          <span>like up</span>
+          <span>like down</span>
+        </div>
+        <img src="https://sesupport.edumall.jp/hc/article_attachments/900009570963/noImage.jpg" width=150px>
+        <div class="articlePreview">
+          <a href=<%= article_path(article) %>><%= article.title %></a>
+          <br>
+          <%= article.body %>
+        </div>
+      </div>
     <% end %>
   </div>
 
