@@ -15,14 +15,14 @@
  */
 body {
     margin: 0px;
-    background-color: #ecf0f1;
+    background-color: #212121;
     font-family: 'Varela Round';
     font-size: 12px;
 }
 
 .header {
     text-align: center;
-    background: #140145;
+    background: #3e3e3e;
     color: white;
     font-size: 30px;
     margin: 0px;
@@ -137,7 +137,9 @@ body {
 
 /* individual articles */
 .articles {
-    background-color: white;
+    background-color: #2f2f2f;
+    /*border-color: #393939;
+    border-width: 3px;*/
     display: flex;
     /* outline: green solid; */
     margin-top: 10px;
@@ -156,7 +158,8 @@ body {
 }
 
 .likes > span {
-    background-color: lightgray;
+    background-color: #212121;
+    color: #b0b4b4;
     margin-bottom: 20px;
 }
 
@@ -166,6 +169,7 @@ body {
     height: 100px;
     object-fit: cover;
     flex-shrink: 0;
+    color: white;
 }
 
 /* Thread content */
@@ -173,12 +177,13 @@ body {
     /* border: solid seagreen; */
     display: flex;
     flex-direction: column;
+    color: #c9cccc;
 }
 
 .articlePreview > div > a {
     font-weight: bold;
     text-decoration: none;
-    color: #41759c;
+    color: #8d9097;
     display: inline-block;
 }
 
@@ -189,15 +194,11 @@ body {
 }
 
 .articlePreview > div > a:hover {
-    color: #2f5677;
-}
-
-.articlePreview > div > a:visited {
-    color: #808f98;
+    color: white;
 }
 
 .articlePreview > div > a:active {
-    color: #2f5677;
+    color: red;
 }
 
 /* article body */
@@ -214,26 +215,29 @@ body {
 }
 
 .filter {
-    background-color: white;
+    background-color: #2f2f2f;
     display: flex;
     width: 100%;
     justify-content: space-between;
     height: 27px;
+    padding-top: 14px;
+    /*border-color: #393939;
+    border-width: 1px;*/
 }
 
 .filter > div > span {
     padding: 10px;
-    color: grey;
+    color: #c1cfdc;
 }
 
 .filter > div > span:hover {
-    color: #140145;
-    border-bottom: #140145 solid;
+    color: #e0e4ea;
+    border-bottom: #e0e4ea solid;
 }
 
 #activeFilter {
-    color: #140145;
-    border-bottom: #140145 solid;
+    color: #e0e4ea;
+    border-bottom: #e0e4ea solid;
 }
 
 #form {
