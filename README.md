@@ -2,8 +2,12 @@
 
 Students:
 
-* Surname_1, First_name_1
+* Dalda, Alvar
 
-* Surname_2, First_name_2
+* Martinez, Liliu
+
+* Lin, Huiwen
+
+* Fornaguera, Laura
 
 Your deployed webapp at Fly.io|Heroku|... (task #6): <https://*********.***.***/>
