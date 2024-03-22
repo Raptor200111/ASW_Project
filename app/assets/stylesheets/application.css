@@ -13,3 +13,233 @@
  *= require_tree .
  *= require_self
  */
+body {
+    margin: 0px;
+    background-color: #212121;
+    font-family: 'Varela Round';
+    font-size: 12px;
+}
+
+.header {
+    text-align: center;
+    background: #3e3e3e;
+    color: white;
+    font-size: 30px;
+    margin: 0px;
+    display: block;
+    justify-content: right;
+}
+
+/* Header flex container */
+.kbin-container {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: nowrap;
+    height: 40px;
+    max-width: 1000px;
+    margin: auto;
+}
+
+.left-nav {
+    display: flex;
+}
+
+/* left side navigation */
+.sr-nav {
+    /* outline: solid red; */
+    flex-shrink: 0;
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+.sr-nav > img {
+    /* outline: solid pink; */
+    width: 70px;
+    vertical-align: middle;
+}
+
+/* middle navigation */
+.head-nav {
+    /* outline: solid orange; */
+    flex-basis: 250px;
+    flex-shrink: 0;
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    align-items: center;
+}
+
+#hiddenMenu {
+    display: none;
+}
+
+/* change based on window size */
+@media (max-width:900px) {
+    .head-nav  {
+        display: none;
+        /* outline: solid yellow; */
+    }
+
+    #hiddenMenu {
+        display: inline;
+        width: 15px;
+        color: white;
+    }
+}
+
+.head-nav > span {
+    flex: auto;
+    padding: 8px;
+}
+
+.head-nav > span:hover, .menu > span:hover {
+    border-bottom: white solid;
+}
+
+/* right side user menu */
+
+.menu {
+    /* border: solid yellow; */
+    width: 250px;
+    font-size: 12px;
+    align-items: center;
+    display: flex;
+}
+
+.menu > span {
+    /* border: solid red; */
+    width: 100px;
+    height: 100%;
+    position: relative;
+}
+
+.menu > .icon {
+    width: 50px;
+}
+
+.menu > span > img, .menu > span > span {
+    height: 15px;
+    /* border: solid blue; */
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    -ms-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+}
+
+.body {
+    margin: 20px;
+    max-width: 1000px;
+    margin: auto;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+/* individual articles */
+.articles {
+    background-color: #2f2f2f;
+    /*border-color: #393939;
+    border-width: 3px;*/
+    display: flex;
+    /* outline: green solid; */
+    margin-top: 10px;
+    padding: 10px;
+    gap: 10px;
+    justify-content: left;
+}
+
+/* thread likes count */
+.likes {
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+    height: 100px;
+    /* outline: pink solid; */
+}
+
+.likes > span {
+    background-color: #212121;
+    color: #b0b4b4;
+    margin-bottom: 20px;
+}
+
+/* thread image */
+.articles > img {
+    width: 150px;
+    height: 100px;
+    object-fit: cover;
+    flex-shrink: 0;
+    color: white;
+}
+
+/* Thread content */
+.articlePreview {
+    /* border: solid seagreen; */
+    display: flex;
+    flex-direction: column;
+    color: #c9cccc;
+}
+
+.articlePreview > div > a {
+    font-weight: bold;
+    text-decoration: none;
+    color: #8d9097;
+    display: inline-block;
+}
+
+#link {
+    font-size: 10px;
+    color: gray;
+    font-weight: lighter;
+}
+
+.articlePreview > div > a:hover {
+    color: white;
+}
+
+.articlePreview > div > a:active {
+    color: red;
+}
+
+/* article body */
+.articlePreview > span {
+    font-size: 10px;
+}
+
+.secHeader {
+    max-width: 1000px;
+    margin: auto;
+    padding-left: 10px;
+    padding-right: 10px;
+    display: flex;
+}
+
+.filter {
+    background-color: #2f2f2f;
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    height: 27px;
+    padding-top: 14px;
+    /*border-color: #393939;
+    border-width: 1px;*/
+}
+
+.filter > div > span {
+    padding: 10px;
+    color: #c1cfdc;
+}
+
+.filter > div > span:hover {
+    color: #e0e4ea;
+    border-bottom: #e0e4ea solid;
+}
+
+#activeFilter {
+    color: #e0e4ea;
+    border-bottom: #e0e4ea solid;
+}
+
+#form {
+    margin: auto;
+}
