@@ -25,6 +25,11 @@ class ArticlesController < ApplicationController
 
     respond_to do |format|
       if @article.save
+        if session[:created_ids].nil?
+           session[:created_ids].push(@tweet.id)
+        else
+           session[:created_ids] = [@article.id]
+        end
         format.html { redirect_to article_url(@article), notice: "Article was successfully created." }
         format.json { render :show, status: :created, location: @article }
       else
@@ -49,13 +54,24 @@ class ArticlesController < ApplicationController
 
   # DELETE /articles/1 or /articles/1.json
   def destroy
-    @article.destroy
+    if session[:created_ids].nil? || !session[:created_ids].include?(@article.id)
+      respond_to do |format|
+        format.html { redirect_to root_path, notice: "You are not allowed to delete this article" }
+        format.json { head :forbidden }
+        end
 
-    respond_to do |format|
-      format.html { redirect_to articles_url, notice: "Article was successfully destroyed." }
-      format.json { head :no_content }
+    else
+      session[:created_ids].delete(@article.id)
+      @article.destroy
+
+     respond_to do |format|
+       format.html { redirect_to articles_url, notice: "Article was successfully destroyed." }
+       format.json { head :no_content }
+      end
     end
   end
+
+
 
   private
     # Use callbacks to share common setup or constraints between actions.
@@ -65,6 +81,6 @@ class ArticlesController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def article_params
-      params.require(:article).permit(:title, :body, :url)
+      params.require(:article).permit(:title, :body, :url, :author)
     end
 end
