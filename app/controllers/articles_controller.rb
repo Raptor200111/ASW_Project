@@ -26,7 +26,7 @@ class ArticlesController < ApplicationController
     respond_to do |format|
       if @article.save
         if session[:created_ids].nil?
-           session[:created_ids].push(@tweet.id)
+           session[:created_ids].push(@article.id)
         else
            session[:created_ids] = [@article.id]
         end
