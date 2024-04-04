@@ -1,5 +1,5 @@
 class ArticlesController < ApplicationController
-  before_action :set_article, only: %i[ show edit update destroy ]
+  before_action :set_article, only: %i[ show edit update destroy vote_up vote_down]
 
   # GET /articles or /articles.json
   def index
@@ -26,9 +26,9 @@ class ArticlesController < ApplicationController
     respond_to do |format|
       if @article.save
         if session[:created_ids].nil?
-           session[:created_ids].push(@article.id)
+           session[:created_ids]= [@article.id] #.push(@article.id)
         else
-           session[:created_ids] = [@article.id]
+           session[:created_ids].push(@article.id)
         end
         format.html { redirect_to article_url(@article), notice: "Article was successfully created." }
         format.json { render :show, status: :created, location: @article }
@@ -70,7 +70,37 @@ class ArticlesController < ApplicationController
       end
     end
   end
+  #vote_up /
+  def vote_up
+    @article.votes_up+=1
+    if @article.save
+        respond_to do |format|
+          format.html { redirect_to root_path, notice: "article was successfully VoteUp." }
+          format.json { head :no_content }
+        end
+    else
+        respond_to do |format|
+          format.html { redirect_to root_path notice: "NOT VoteUp" }
+          format.json { head :no_content }
+        end
+    end
+  end
 
+    #vote_down /
+  def vote_down
+    @article.votes_down+=1
+    if @article.save
+        respond_to do |format|
+          format.html { redirect_to root_path, notice: "article was successfully VoteDown." }
+          format.json { head :no_content }
+        end
+    else
+        respond_to do |format|
+          format.html { redirect_to root_path notice: "NOT VoteDown" }
+          format.json { head :no_content }
+        end
+    end
+  end
 
 
   private
