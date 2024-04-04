@@ -16,7 +16,14 @@
     </div>
     <div class="menu">
       <span class="icon"><img src="https://img.icons8.com/ios/50/FFFFFF/search--v1.png"></span>
-      <span class="icon"><img src="https://img.icons8.com/ios/50/FFFFFF/add--v1.png"></span>
+      <span class="dropdown">
+        <button class="dropbtn">+</button>
+        <div class="dropdown-content">
+          <%= link_to "Add Link", new_article_path %>
+          <%= link_to "Add Thread", new_article_path %>
+          <a href="#">Add Magazine</a>
+        </div>
+      </span>
       <span class="icon"><img src="https://img.icons8.com/ios-filled/50/FFFFFF/menu-2.png"></span>
       <span><span>username</span></span>
     </div>
