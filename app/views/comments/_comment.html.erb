@@ -1,17 +1,6 @@
-<div id="<%= dom_id comment %>">
-  <p>
-    <strong>Body:</strong>
+<%# persisted line to only show saved comments %>
+<% unless !comment.persisted? %>
+  <div class="articles">
     <%= comment.body %>
-  </p>
-
-  <p>
-    <strong>Article:</strong>
-    <%= comment.article_id %>
-  </p>
-
-  <p>
-    <strong>Parent:</strong>
-    <%= comment.parent_id %>
-  </p>
-
-</div>
+  </div>
+<% end %>

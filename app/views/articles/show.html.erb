@@ -57,17 +57,16 @@
 <div class="body">
   <div class="articles">
   <%= form_with(model: [@article, @article.comments.build]) do |f| %>
-      <div class="form-group">
-        <%= f.label 'New comment' %>
-        <%= f.text_area :body, class: 'form-control' %>
-      </div>
-      <%= f.submit 'Submit', class: 'btn btn-primary' %>
+      <%= f.label 'New comment' %>
+      <%= f.text_area :body %>
+      <%= f.submit 'Submit' %>
     <% end %>
   </div>
 </div>
 
 <div class="body">
-  <h2>Comments</h2>
+    <h2>Comments</h2>
+    <%= render @article.comments %>
 </div>
 
   <%= link_to "Edit this article", edit_article_path(@article) %> |
