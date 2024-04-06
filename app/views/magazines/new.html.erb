@@ -8,10 +8,10 @@
         <img src="https://kbin.social/kbin_logo.svg" alt="kbin logo">
       </div>
       <div class="head-nav">
-        <span id="activeFilter">Threads</span>
+        <span>Threads</span>
         <span>Microblog</span>
         <span>All content</span>
-        <span><%= link_to "Magazines", magazines_path %></span>
+        <span id="activeFilter">Magazines</span>
         </ul>
       </div>
     </div>
@@ -41,37 +41,11 @@
   </div>
 </div>
 
-<p style="color: green"><%= notice %></p>
-
 <div class="body">
-  <div>
-    <% @articles.each do |article| %>
-      <div class="articles">
-        <div class="likes">
-          <span>like up</span>
-          <span>like down</span>
-        </div>
-        <img src="https://sesupport.edumall.jp/hc/article_attachments/900009570963/noImage.jpg">
-        <div class="articlePreview">
-          <div>
-            <a href=<%= article_path(article) %>><%= article.title %></a>
-            <% if not article.url.nil? %>
-              <a id="link" href=<%= article.url %>>(<%= article.url %>)</a>
-            <% end %>
-          </div>
-          <br>
-          <span><%= truncate(article.body, length: 250) %></span>
-          <br>
-          <span><strong>author</strong>, time ago to <strong>topic</strong></span>
-          <%# to make:
-          icon
-          X Comments
-          Boost
-          more %>
-        </div>
-      </div>
-    <% end %>
+  <div class="magazine">
+    <span id="form"><%= render "form", magazine: @magazine %></span>
   </div>
-
-  <%= link_to "New article", new_article_path %>
+  <div>
+      <%= link_to "Back to magazines", magazines_path %>
+    </div>
 </div>

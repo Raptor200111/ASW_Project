@@ -8,10 +8,10 @@
         <img src="https://kbin.social/kbin_logo.svg" alt="kbin logo">
       </div>
       <div class="head-nav">
-        <span id="activeFilter">Threads</span>
+        <span><%= link_to "Threads", articles_path %></span>
         <span>Microblog</span>
         <span>All content</span>
-        <span><%= link_to "Magazines", magazines_path %></span>
+        <span id="activeFilter">Magazines</span>
         </ul>
       </div>
     </div>
@@ -28,8 +28,8 @@
   <div class="filter">
     <div>
       <span>top</span>
-      <span>hot</span>
-      <span id="activeFilter">newest</span>
+      <span id="activeFilter">hot</span>
+      <span>newest</span>
       <span>active</span>
       <span>commented</span>
     </div>
@@ -43,35 +43,27 @@
 
 <p style="color: green"><%= notice %></p>
 
-<div class="body">
-  <div>
-    <% @articles.each do |article| %>
-      <div class="articles">
-        <div class="likes">
-          <span>like up</span>
-          <span>like down</span>
-        </div>
-        <img src="https://sesupport.edumall.jp/hc/article_attachments/900009570963/noImage.jpg">
-        <div class="articlePreview">
-          <div>
-            <a href=<%= article_path(article) %>><%= article.title %></a>
-            <% if not article.url.nil? %>
-              <a id="link" href=<%= article.url %>>(<%= article.url %>)</a>
-            <% end %>
-          </div>
-          <br>
-          <span><%= truncate(article.body, length: 250) %></span>
-          <br>
-          <span><strong>author</strong>, time ago to <strong>topic</strong></span>
-          <%# to make:
-          icon
-          X Comments
-          Boost
-          more %>
-        </div>
-      </div>
-    <% end %>
-  </div>
+<div class="container">
+	<table>
+		<thead>
+      <tr>
+  			<th>Name</th>
+        <th>Threads</th>
+        <th>Comments</th>
+        <th>Subscriptions</th>
+		  </tr>
+    </thead>
+		<tbody>
+  		<% @magazines.each do |magazine| %>
+  			<tr>
+  				<th>magazine.name</th>
+  				<th>0</th>
+  				<th>0</th>
+  				<th>0</th>
+  			</tr>
+  		<% end %>
+		</tbody>
+	</table>
 
-  <%= link_to "New article", new_article_path %>
+	  <%= link_to "New magazine", new_magazine_path %>
 </div>
