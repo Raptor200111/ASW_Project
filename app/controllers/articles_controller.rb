@@ -3,7 +3,13 @@ class ArticlesController < ApplicationController
 
   # GET /articles or /articles.json
   def index
-    @articles = Article.all.order(created_at: :desc)
+    @active_filter = params[:filter] || 'newest'
+    case params[:filter]
+    when 'hot'
+      @articles = Article.all.order(votes_up: :desc)
+    else
+      @articles = Article.all.order(created_at: :desc)
+    end
   end
 
   # GET /articles/1 or /articles/1.json
@@ -13,6 +19,13 @@ class ArticlesController < ApplicationController
   # GET /articles/new
   def new
     @article = Article.new
+    @show_url_field = false
+  end
+
+  #GET /articles/new_link
+  def new_link
+    @article = Article.new
+    @show_url_field = true
   end
 
   # GET /articles/1/edit

@@ -9,10 +9,12 @@
     <%= article.body %>
   </p>
 
-  <p>
-    <strong>Url:</strong>
-    <%= article.url %>
-  </p>
+  <% if article.url.present? %>
+    <p>
+      <strong>Url:</strong>
+      <%= link_to "Link to url",article.url %>
+    </p>
+  <% end %>
   <p>
   <strong>Created at:</strong>
     <%= article.created_at.strftime("%A, %Y-%m-%d %H:%M")%>

@@ -12,11 +12,12 @@
     </div>
   <% end %>
 
-
-  <div>
-    <%= form.label :url, style: "display: block" %>
-    <%= form.text_field :url %>
-  </div>
+  <% if @show_url_field %>
+    <div>
+      <%= form.label :url, style: "display: block" %>
+      <%= form.text_field :url %>
+    </div>
+  <% end %>
 
   <div>
     <%= form.label :title, style: "display: block" %>
@@ -27,10 +28,7 @@
     <%= form.label :body, style: "display: block" %>
     <%= form.text_area :body %>
   </div>
-  <div class="field">
-    <%= form.label :author %>
-    <%= form.text_field :author %>
-  </div>
+
   <div>
     <%= form.submit %>
   </div>

@@ -33,11 +33,11 @@
 <div class="secHeader">
   <div class="filter">
     <div>
-      <span>top</span>
-      <span>hot</span>
-      <span id="activeFilter">newest</span>
-      <span>active</span>
-      <span>commented</span>
+      <%= link_to 'top', articles_path(filter: 'top'), class: (@active_filter == 'top' ? 'activeFilter' : 'filter-link') %>
+      <%= link_to 'hot', articles_path(filter: 'hot'), class: (@active_filter == 'hot' ? 'activeFilter' : 'filter-link') %>
+      <%= link_to 'newest', articles_path(filter: 'newest'), class: (@active_filter == 'newest' ? 'activeFilter' : 'filter-link') %>
+      <%= link_to 'active', articles_path(filter: 'active'), class: (@active_filter == 'active' ? 'activeFilter' : 'filter-link') %>
+      <%= link_to 'commented', articles_path(filter: 'commented'), class: (@active_filter == 'commented' ? 'activeFilter' : 'filter-link') %>
     </div>
     <div class="filterIcons">
       <span>menu</span>
@@ -46,6 +46,7 @@
     </div>
   </div>
 </div>
+
 
 <p style="color: green"><%= notice %></p>
 
@@ -89,4 +90,5 @@
   </div>
 
   <%= link_to "New article", new_article_path %>
+  <%= link_to "New link", new_link_articles_path %>
 </div>

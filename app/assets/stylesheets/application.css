@@ -277,19 +277,22 @@ body {
     border-width: 1px;*/
 }
 
-.filter > div > span {
+.filter-link {
     padding: 10px;
     color: #c1cfdc;
+    text-decoration: none;
 }
 
-.filter > div > span:hover {
+.filter-link:hover {
     color: #e0e4ea;
     border-bottom: #e0e4ea solid;
 }
 
-#activeFilter {
+.activeFilter {
+    padding: 10px;
     color: #e0e4ea;
     border-bottom: #e0e4ea solid;
+    text-decoration: none;
 }
 
 #form {
