@@ -3,12 +3,22 @@ class ArticlesController < ApplicationController
 
   # GET /articles or /articles.json
   def index
-    @active_filter = params[:filter] || 'newest'
-    case params[:filter]
+    @order = params[:order] || 'newest'
+    case params[:order]
     when 'hot'
       @articles = Article.all.order(votes_up: :desc)
     else
       @articles = Article.all.order(created_at: :desc)
+    end
+
+    @type = params[:type] || 'all'
+    case params[:type]
+    when 'thread'
+      @articles = Article.where(article_type: 'thread')
+    when 'link'
+      @articles = Article.where(article_type: 'link')
+    else
+      @articles = Article.all
     end
   end
 
@@ -19,13 +29,13 @@ class ArticlesController < ApplicationController
   # GET /articles/new
   def new
     @article = Article.new
-    @show_url_field = false
+    @isLink = false
   end
 
   #GET /articles/new_link
   def new_link
     @article = Article.new
-    @show_url_field = true
+    @isLink = true
   end
 
   # GET /articles/1/edit
@@ -124,6 +134,6 @@ class ArticlesController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def article_params
-      params.require(:article).permit(:title, :body, :url, :author)
+      params.require(:article).permit(:title, :body, :article_type, :url, :author)
     end
 end

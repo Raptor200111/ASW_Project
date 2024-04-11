@@ -12,11 +12,14 @@
     </div>
   <% end %>
 
-  <% if @show_url_field %>
+  <% if @isLink %>
     <div>
       <%= form.label :url, style: "display: block" %>
       <%= form.text_field :url %>
+      <%= form.hidden_field :article_type, value: 'link' %>
     </div>
+  <% else %>
+    <%= form.hidden_field :article_type, value: 'thread' %>
   <% end %>
 
   <div>

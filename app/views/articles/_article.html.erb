@@ -9,7 +9,7 @@
     <%= article.body %>
   </p>
 
-  <% if article.url.present? %>
+  <% if article.article_type == 'link' %>
     <p>
       <strong>Url:</strong>
       <%= link_to "Link to url",article.url %>
