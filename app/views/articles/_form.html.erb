@@ -11,16 +11,24 @@
       </ul>
     </div>
   <% end %>
-
-  <% if @isLink %>
-    <div>
-      <%= form.label :url, style: "display: block" %>
-      <%= form.text_field :url %>
-      <%= form.hidden_field :article_type, value: 'link' %>
-    </div>
-  <% else %>
-    <%= form.hidden_field :article_type, value: 'thread' %>
-  <% end %>
+<script>
+    console.log("befor IF COND show_url_field <%= show_url_field %>");
+  </script>
+<% if show_url_field %>
+  <div>
+    <%= form.label :url, style: "display: block" %>
+    <%= form.text_field :url %>
+    <%= form.hidden_field :article_type, value: 'link' %>
+  </div>
+    <script>
+    console.log("value of show_url_field in LIMK <%= show_url_field %>");
+  </script>
+<% else %>
+    <script>
+    console.log("value of show_url_field in ARTICLE <%= show_url_field %>");
+  </script>
+  <%= form.hidden_field :article_type, value: 'thread' %>
+<% end %>
 
   <div>
     <%= form.label :title, style: "display: block" %>

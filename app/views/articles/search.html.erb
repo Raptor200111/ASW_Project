@@ -1,0 +1,19 @@
+# app/views/articles/search.html.erb
+<%= form_tag(search_articles_path, method: "get") do %>
+  <%= text_field_tag :search_text, params[:search_text], placeholder: "Search articles..." %>
+  <%= submit_tag "Search articles", name: nil %>
+<% end %>
+
+<% if @articles.any? %>
+  <h2>Search Results</h2>
+  <ul>
+    <% @articles.each do |article| %>
+      <li>
+        <%= link_to article.title, article %>
+        <p><%= article.body %></p>
+      </li>
+    <% end %>
+  </ul>
+<% else %>
+  <p>No articles found</p>
+<% end %>

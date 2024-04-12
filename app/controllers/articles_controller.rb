@@ -3,8 +3,8 @@ class ArticlesController < ApplicationController
 
   # GET /articles or /articles.json
   def index
-    @order = params[:order] || 'newest'
-    case params[:order]
+    @order_filter = params[:order_filter] || 'newest'
+    case params[:order_filter]
     when 'hot'
       @articles = Article.all.order(votes_up: :desc)
     else
@@ -25,17 +25,22 @@ class ArticlesController < ApplicationController
   # GET /articles/1 or /articles/1.json
   def show
   end
+  def search
+    @search_text = params[:search_text]
+    @articles = Article.where("title LIKE ? OR body LIKE ?", "%#{@search_text}%", "%#{@search_text}%")
+  end
 
   # GET /articles/new
   def new
     @article = Article.new
-    @isLink = false
+    @show_url_field = false
   end
+
 
   #GET /articles/new_link
   def new_link
     @article = Article.new
-    @isLink = true
+    @show_url_field = true
   end
 
   # GET /articles/1/edit

@@ -15,11 +15,11 @@
       </div>
     </div>
     <div class="menu">
-      <span class="icon"><img src="https://img.icons8.com/ios/50/FFFFFF/search--v1.png"></span>
+      <span class="icon"><%= link_to image_tag("https://img.icons8.com/ios/50/FFFFFF/search--v1.png"),search_articles_path %></span>
       <span class="dropdown">
         <button class="dropbtn"><img src="https://img.icons8.com/ios-glyphs/30/add--v1.png" alt="add--v1"></button>
         <div class="dropdown-content">
-          <%= link_to "Add Link", new_article_path %>
+          <%= link_to "Add Link", new_link_articles_path %>
           <%= link_to "Add Thread", new_article_path %>
           <a href="#">Add Magazine</a>
         </div>
@@ -33,11 +33,11 @@
 <div class="secHeader">
   <div class="filter">
     <div>
-      <%= link_to 'top', articles_path(order: 'top'), class: (@order == 'top' ? 'activeFilter' : 'filter-link') %>
-      <%= link_to 'hot', articles_path(order: 'hot'), class: (@order == 'hot' ? 'activeFilter' : 'filter-link') %>
-      <%= link_to 'newest', articles_path(order: 'newest'), class: (@order == 'newest' ? 'activeFilter' : 'filter-link') %>
-      <%= link_to 'active', articles_path(order: 'active'), class: (@order == 'active' ? 'activeFilter' : 'filter-link') %>
-      <%= link_to 'commented', articles_path(order: 'commented'), class: (@order == 'commented' ? 'activeFilter' : 'filter-link') %>
+      <%= link_to 'top', articles_path(order_filter: 'top'), class: (@order_filter == 'top' ? 'activeFilter' : 'filter-link') %>
+      <%= link_to 'hot', articles_path(order_filter: 'hot'), class: (@order_filter == 'hot' ? 'activeFilter' : 'filter-link') %>
+      <%= link_to 'newest', articles_path(order: 'newest'), class: (@order_filter == 'newest' ? 'activeFilter' : 'filter-link') %>
+      <%= link_to 'active', articles_path(order_filter: 'active'), class: (@order_filter == 'active' ? 'activeFilter' : 'filter-link') %>
+      <%= link_to 'commented', articles_path(order_filter: 'commented'), class: (@order_filter == 'commented' ? 'activeFilter' : 'filter-link') %>
     </div>
     <div class="filterIcons">
       <span>menu</span>
