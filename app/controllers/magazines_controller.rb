@@ -65,6 +65,6 @@ class MagazinesController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def magazine_params
-      params.require(:magazine).permit(:name)
+      params.require(:magazine).permit(:name, :title, :url)
     end
 end

@@ -56,7 +56,7 @@
 		<tbody>
   		<% @magazines.each do |magazine| %>
   			<tr>
-  				<th>magazine.name</th>
+  				<th><%= link_to magazine.name, magazine_path(magazine) %></th>
   				<th>0</th>
   				<th>0</th>
   				<th>0</th>
