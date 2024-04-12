@@ -57,16 +57,21 @@
 <div class="body">
   <div class="articles">
   <%= form_with(model: [@article, @article.comments.build]) do |f| %>
-      <%= f.label 'New comment' %>
-      <%= f.text_area :body %>
-      <%= f.submit 'Submit' %>
-    <% end %>
+    <%= f.label 'New comment' %>
+    <%= f.text_area :body %>
+    <%= f.submit 'Submit' %>
+  <% end %>
   </div>
 </div>
 
 <div class="body">
     <h2>Comments</h2>
-    <%= render @article.comments.order(created_at: :desc) %>
+    <% @article.comments.order(created_at: :desc).each do |comment| %>
+      <% unless comment.parent_id %>
+        <%= render comment %>
+      <% end %>
+    <% end %>
+    <%#= render @article.comments.order(created_at: :desc) %>
 </div>
 
   <%= link_to "Edit this article", edit_article_path(@article) %> |
