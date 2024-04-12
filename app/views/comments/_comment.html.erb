@@ -3,12 +3,14 @@
   <div class="section">
     <%= comment.body %>
     <br>
+    comment.html.erb
     <%= link_to 'reply', new_article_comment_path(@article, parent_id: comment.id) %>
   </div>
   <% if comment.replies.any? %>
     <% comment.replies.each do |reply| %>
     <div class="section" id="reply">
       <%= render partial: 'comments/reply', locals: { reply: reply } %>
+      reply <%= link_to 'reply', new_article_comment_path(@article, parent_id: reply.id) %>
     </div>
     <% end %>
     <div id="reply-form-<%= comment.id %>"></div>
