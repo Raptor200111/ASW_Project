@@ -1,0 +1,76 @@
+<link href='https://fonts.googleapis.com/css?family=Varela Round' rel='stylesheet'>
+
+<header class="header">
+  <div class="kbin-container">
+    <div class="left-nav">
+      <div class="sr-nav">
+        <img id="hiddenMenu" src="https://i.pinimg.com/originals/26/9d/d1/269dd16fa1f5ff51accd09e7e1602267.png">
+        <img src="https://kbin.social/kbin_logo.svg" alt="kbin logo">
+      </div>
+      <div class="head-nav">
+        <span>Threads</span>
+        <span>Microblog</span>
+        <span>All content</span>
+        </ul>
+      </div>
+    </div>
+    <div class="menu">
+      <span class="icon"><img src="https://img.icons8.com/ios/50/FFFFFF/search--v1.png"></span>
+      <span class="icon"><img src="https://img.icons8.com/ios/50/FFFFFF/add--v1.png"></span>
+      <span class="icon"><img src="https://img.icons8.com/ios-filled/50/FFFFFF/menu-2.png"></span>
+      <span><span>username</span></span>
+    </div>
+  </div>
+</header>
+
+<div class="secHeader">
+  <div class="filter">
+    <div>
+      <span>top</span>
+      <span>hot</span>
+      <span id="activeFilter">newest</span>
+      <span>active</span>
+      <span>commented</span>
+    </div>
+    <div class="filterIcons">
+      <span>menu</span>
+      <span>time</span>
+      <span>filter</span>
+    </div>
+  </div>
+</div>
+
+<p style="color: green"><%= notice %></p>
+
+<div class="body">
+  <div>
+    <% @articles.each do |article| %>
+      <div class="articles">
+        <div class="likes">
+          <span>like up</span>
+          <span>like down</span>
+        </div>
+        <img src="https://sesupport.edumall.jp/hc/article_attachments/900009570963/noImage.jpg">
+        <div class="articlePreview">
+          <div>
+            <a href=<%= article_path(article) %>><%= article.title %></a>
+            <% if not article.url.nil? %>
+              <a id="link" href=<%= article.url %>>(<%= article.url %>)</a>
+            <% end %>
+          </div>
+          <br>
+          <span><%= truncate(article.body, length: 250) %></span>
+          <br>
+          <span><strong>author</strong>, time ago to <strong>topic</strong></span>
+          <%# to make:
+          icon
+          X Comments
+          Boost
+          more %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+
+  <%= link_to "New article", new_article_path %>
+</div>
