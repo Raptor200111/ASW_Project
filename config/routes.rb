@@ -6,6 +6,7 @@ Rails.application.routes.draw do
     end
     get 'new_link', on: :collection
     get 'search', on: :collection
+    resources :comments
   end
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
   root 'articles#index'

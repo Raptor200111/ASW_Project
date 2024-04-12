@@ -14,11 +14,12 @@
  *= require_self
  *= require font-awesome
  */
-body {
+ body {
     margin: 0px;
     background-color: #212121;
     font-family: 'Varela Round';
     font-size: 12px;
+    color: white;
 }
 
 .header {
@@ -188,6 +189,22 @@ body {
     padding: 10px;
     gap: 10px;
     justify-content: left;
+}
+
+/* Middle body section style */
+.section {
+    background-color: #2f2f2f;
+    margin-top: 10px;
+    padding: 10px;
+    gap: 10px;
+}
+
+#reply {
+    margin-left: 20px;
+}
+
+.section > a:link {
+    color: white;
 }
 
 /* thread likes count */
