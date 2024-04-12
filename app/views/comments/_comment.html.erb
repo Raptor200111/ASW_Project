@@ -6,7 +6,7 @@
     <%= link_to 'reply', new_article_comment_path(@article, parent_id: comment.id) %>
   </div>
   <% if comment.replies.any? %>
-    <% comment.replies.order(created_at: :desc).each do |reply| %>
+    <% comment.replies.each do |reply| %>
       <% unless !reply.persisted? %>
         <div class="section" id="reply">
           <%= render reply %>
