@@ -1,13 +1,38 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Waslab04</title>
+    <title>kbin.social - Explore the Fediverse</title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
 
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
   </head>
+
+  <link href='https://fonts.googleapis.com/css?family=Varela Round' rel='stylesheet'>
+  <script src="https://kit.fontawesome.com/dd79a58957.js" crossorigin="anonymous"></script>
+
+  <header class="header">
+    <div class="kbin-container">
+      <div class="left-nav">
+        <div class="logo-nav">
+          <i id="hiddenMenu" class="fa-solid fa-bars fa-2"></i>
+          <img src="https://kbin.social/kbin_logo.svg" alt="kbin logo">
+        </div>
+        <nav class="head-nav">
+          <a href="linkhere">Threads</a>
+          <a href="linkhere">Microblog</a>
+          <a href="linkhere">All content</a>
+        </nav>
+      </div>
+      <div class="menu">
+        <a class="icon" href="linkhere"><i class="fa-solid fa-magnifying-glass"></i></a>
+        <a class="icon" href="linkhere"><i class="fa-solid fa-plus"></i></a>
+        <a class="icon" href="linkhere"><i class="fa-solid fa-ellipsis-vertical"></i></a>
+        <a class="profile" href="linkhere">username</a>
+      </div>
+    </div>
+  </header>
 
   <body>
     <%= yield %>

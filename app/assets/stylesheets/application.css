@@ -13,25 +13,37 @@
  *= require_tree .
  *= require_self
  */
- body {
-    margin: 0px;
-    background-color: #212121;
-    font-family: 'Varela Round';
-    font-size: 12px;
-    color: white;
+:root {
+    --main-bg-color: #212121;
+    --sections-color: #2f2f2f;
+    --main-header-color: #3e3e3e;
+    --main-text-color: #cacece;
+    --light-text-color: #fbfbfa;
 }
+
+* {
+    color:var(--main-text-color);
+    font-size: 12px;
+    font-family: 'Varela Round';
+}
+
+body {
+    margin: 0px;
+    background-color: var(--main-bg-color);
+    color: var(--main-text-color);
+}
+
+/* Header flex container */
 
 .header {
     text-align: center;
-    background: #3e3e3e;
-    color: white;
+    background: var(--main-header-color);
     font-size: 30px;
     margin: 0px;
     display: block;
     justify-content: right;
 }
 
-/* Header flex container */
 .kbin-container {
     display: flex;
     justify-content: space-between;
@@ -41,27 +53,34 @@
     margin: auto;
 }
 
+/* logo navigation */
 .left-nav {
     display: flex;
+    align-items: center;
 }
 
-/* left side navigation */
-.sr-nav {
-    /* outline: solid red; */
+.logo-nav {
     flex-shrink: 0;
     margin-left: 10px;
     margin-right: 10px;
 }
 
-.sr-nav > img {
-    /* outline: solid pink; */
-    width: 70px;
+.logo-nav > * {
     vertical-align: middle;
 }
 
-/* middle navigation */
+.logo-nav > img {
+    height: 1.5rem;
+    margin-left: 10px;
+}
+
+#hiddenMenu {
+    display: none;
+}
+
+/* middle navigation (types) */
+
 .head-nav {
-    /* outline: solid orange; */
     flex-basis: 250px;
     flex-shrink: 0;
     display: flex;
@@ -70,12 +89,8 @@
     align-items: center;
 }
 
-#hiddenMenu {
-    display: none;
-}
-
 /* change based on window size */
-@media (max-width:900px) {
+@media (max-width:800px) {
     .head-nav  {
         display: none;
         /* outline: solid yellow; */
@@ -84,49 +99,45 @@
     #hiddenMenu {
         display: inline;
         width: 15px;
-        color: white;
     }
 }
 
-.head-nav > span {
+.head-nav > a {
     flex: auto;
     padding: 8px;
+    text-decoration: none;
+    color: var(--light-text-color);
 }
 
-.head-nav > span:hover, .menu > span:hover {
-    border-bottom: white solid;
+.head-nav > a:hover, .menu > a:hover {
+    border-bottom: var(--light-text-color) solid;
+    color: var(--main-text-color);
 }
 
 /* right side user menu */
 
 .menu {
-    /* border: solid yellow; */
     width: 250px;
-    font-size: 12px;
-    align-items: center;
+    flex-basis: 250px;
+    flex-shrink: 0;
     display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    align-items: center;
 }
 
-.menu > span {
-    /* border: solid red; */
-    width: 100px;
-    height: 100%;
-    position: relative;
+.menu > a {
+    flex: auto;
+    padding: 8px;
+    text-decoration: none;
+    color: var(--light-text-color);
 }
 
-.menu > .icon {
-    width: 50px;
+.menu > a > i, .logo-nav > i {
+    color: var(--light-text-color)
 }
 
-.menu > span > img, .menu > span > span {
-    height: 15px;
-    /* border: solid blue; */
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    -ms-transform: translate(-50%, -50%);
-    transform: translate(-50%, -50%);
-}
+/* body */
 
 .body {
     margin: 20px;
