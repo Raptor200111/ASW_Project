@@ -28,6 +28,7 @@
         </div>
         <img src="https://sesupport.edumall.jp/hc/article_attachments/900009570963/noImage.jpg">
         <div class="articlePreview">
+          <!-- cambiar esto por otra flexbox cuando esten los stats -->
           <div>
             <a href=<%= article_path(article) %>><%= article.title %></a>
             <% if not article.url.nil? %>
@@ -38,11 +39,7 @@
           <span><%= truncate(article.body, length: 250) %></span>
           <br>
           <span><strong>author</strong>, time ago to <strong>topic</strong></span>
-          <%# to make:
-          icon
-          X Comments
-          Boost
-          more %>
+          <span>img, comments, boost, more</span>
         </div>
       </article>
     </div>
@@ -50,5 +47,6 @@
 <% end %>
 
 
+  <!-- quitar esto y ponerlo en el icono ese de + -->
   <%= link_to "New article", new_article_path %>
 </div>
