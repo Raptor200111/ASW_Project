@@ -69,7 +69,7 @@ body {
     vertical-align: middle;
 }
 
-.logo-nav > img {
+.logo-nav > a > img {
     height: 1.5rem;
     margin-left: 10px;
 }
@@ -204,12 +204,20 @@ body {
     width: 100%;
 }
 
+input {
+    width: 100%;
+}
+
 /* Middle body section style */
 .section {
     background-color: #2f2f2f;
     margin-top: 10px;
     padding: 10px;
     gap: 10px;
+}
+
+.bodyContainer > div {
+    width: 100%;
 }
 
 #reply {
@@ -246,13 +254,12 @@ body {
 
 /* Thread content */
 .articlePreview {
-    /* border: solid seagreen; */
     display: flex;
     flex-direction: column;
     color: #c9cccc;
 }
 
-.articlePreview > div > a {
+.articlePreview > div > a, .title {
     font-weight: bold;
     text-decoration: none;
     color: #8d9097;
@@ -265,12 +272,8 @@ body {
     font-weight: lighter;
 }
 
-.articlePreview > div > a:hover {
-    color: white;
-}
-
-.articlePreview > div > a:active {
-    color: red;
+.articlePreview > div > a:hover, .articlePreview > div > a:active {
+    color: var(--light-text-color);
 }
 
 /* article body */
@@ -280,4 +283,13 @@ body {
 
 #form {
     margin: auto;
+}
+
+.commentForm {
+    width: 100%;
+}
+
+input {
+    font-weight: bold;
+    background-color: var(--main-bg-color);
 }

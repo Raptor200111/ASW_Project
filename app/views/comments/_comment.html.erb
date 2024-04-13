@@ -1,6 +1,10 @@
+<!-- comments view -->
+
 <%# persisted line to only show saved comments %>
 <% unless !comment.persisted? %>
   <div class="section">
+    <strong>author</strong>, x months ago
+    <br>
     <%= comment.body %>
     <br>
     <%= link_to 'reply', new_article_comment_path(comment.article, parent_id: comment.id) %>

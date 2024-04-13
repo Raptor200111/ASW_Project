@@ -1,52 +1,61 @@
+<!-- individual thread view -->
+
+<!-- esta p crea el espacio -->
 <p style="color: green"><%= notice %></p>
 
-<div class="body">
-  <div class="articles">
-    <div class="likes">
-      <span>like up</span>
-      <span>like down</span>
-    </div>
-    <div class="articlePreview">
-      <%= render @article %>
-    </div>
+<div class="bodyContainer">
+  <div class="webBody">
+    <article>
+      <div class="likes">
+        <span>like up</span>
+        <span>like down</span>
+      </div>
+      <div class="articlePreview">
+        <%= render @article %>
+      </div>
+    </article>
   </div>
 </div>
-
-<br>
 
 <div class="secHeader">
-  <div class="filter">
-    <div>
-      <span>top</span>
-      <span id="activeFilter">hot</span>
-      <span>oldest</span>
-      <span>newest</span>
-      <span>active</span>
-    </div>
+  <div class="webBody" id="filter">
+    <nav>
+      <a href="linkhere">top</a>
+      <a href="linkhere" id="activeFilter">hot</a>
+      <a href="linkhere">active</a>
+      <a href="linkhere">newest</a>
+      <a href="linkhere">oldest</a>
+    </nav>
     <div class="filterIcons">
-      <span>icon</span>
+      <a href="linkhere"><i class="fa-solid fa-layer-group"></i></i></a>
     </div>
   </div>
 </div>
 
-<div class="body">
-  <div class="articles">
-  <%= form_with(model: [@article, @article.comments.build]) do |f| %>
-    <%= f.label 'New comment' %>
-    <%= f.text_area :body %>
-    <%= f.submit 'Submit' %>
-  <% end %>
+<div class="bodyContainer">
+  <div class="webBody">
+    <%= form_with(model: [@article, @article.comments.build]) do |f| %>
+    <!-- no se como hacer que tenga un width fijo -->
+    <div class="commentForm">
+      <%= f.text_area :body %>
+      <br>
+      0/500
+    </div>
+    <div class="submit">
+      <%= f.submit 'Add Comment' %>
+    </div>
+    <% end %>
   </div>
 </div>
 
-<div class="body" id="comments">
-    <h2>Comments</h2>
-    <% @article.comments.order(created_at: :desc).each do |comment| %>
-      <% unless comment.parent_id %>
-        <%= render comment %>
+<div class="bodyContainer">
+  <div>
+      <% @article.comments.order(created_at: :desc).each do |comment| %>
+        <% unless comment.parent_id %>
+          <%= render comment %>
+        <% end %>
       <% end %>
-    <% end %>
-    <%#= render @article.comments.order(created_at: :desc) %>
+  </div>
 </div>
 
   <%= link_to "Edit this article", edit_article_path(@article) %> |
