@@ -15,7 +15,7 @@
  */
 :root {
     --main-bg-color: #212121;
-    --sections-color: #2f2f2f;
+    --sections-color: #2c2d2d;
     --main-header-color: #3e3e3e;
     --main-text-color: #cacece;
     --light-text-color: #fbfbfa;
@@ -122,7 +122,6 @@ body {
     flex-shrink: 0;
     display: flex;
     justify-content: space-between;
-    font-size: 11px;
     align-items: center;
 }
 
@@ -234,6 +233,8 @@ body {
     font-size: 10px;
 }
 
+/* threads filter */
+
 .secHeader {
     max-width: 1000px;
     margin: auto;
@@ -242,30 +243,29 @@ body {
     display: flex;
 }
 
-.filter {
-    background-color: #2f2f2f;
+.webBody {
+    background-color: var(--sections-color);
     display: flex;
     width: 100%;
     justify-content: space-between;
     height: 27px;
     padding-top: 14px;
-    /*border-color: #393939;
-    border-width: 1px;*/
+    outline: var(--main-header-color) solid 1px;
 }
 
-.filter > div > span {
+#filter > nav > a, .filterIcons > a {
     padding: 10px;
-    color: #c1cfdc;
+    text-decoration: none;
 }
 
-.filter > div > span:hover {
-    color: #e0e4ea;
-    border-bottom: #e0e4ea solid;
+#filter > nav > a:hover, .filterIcons > a:hover {
+    color: var(--light-text-color);
+    border-bottom: var(--light-text-color) solid;
 }
 
 #activeFilter {
-    color: #e0e4ea;
-    border-bottom: #e0e4ea solid;
+    color: var(--light-text-color);
+    border-bottom: var(--light-text-color) solid;
 }
 
 #form {
