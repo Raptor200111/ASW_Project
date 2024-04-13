@@ -15,12 +15,13 @@
   </div>
 </div>
 
+<!-- no se si la notice se tiene que quedar aqui -->
 <p style="color: green"><%= notice %></p>
 
-<div class="body">
-  <div>
-    <% @articles.each do |article| %>
-      <div class="articles">
+<% @articles.each do |article| %>
+  <div class="bodyContainer">
+    <div class="webBody">
+      <article>
         <div class="likes">
           <span>like up</span>
           <span>like down</span>
@@ -43,9 +44,11 @@
           Boost
           more %>
         </div>
-      </div>
-    <% end %>
+      </article>
+    </div>
   </div>
+<% end %>
+
 
   <%= link_to "New article", new_article_path %>
 </div>

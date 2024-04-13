@@ -135,27 +135,73 @@ body {
     color: var(--light-text-color)
 }
 
-/* body */
 
-.body {
-    margin: 20px;
+/* threads filter */
+
+.secHeader {
     max-width: 1000px;
     margin: auto;
     padding-left: 10px;
     padding-right: 10px;
+    display: flex;
+    height: 30px;
+    margin-bottom: 10px;
+}
+
+.webBody {
+    background-color: var(--sections-color);
+    display: flex;
+    width: 100%;
+    outline: var(--main-header-color) solid 1px;
+    vertical-align: middle;
+    justify-content: space-around;
+}
+
+.webBody > * {
+    margin-left: 10px;
+    margin-right: 10px;
+    align-self: center;
+}
+
+#filter {
+    justify-content: space-between;
+}
+
+#filter > nav > a, .filterIcons > a {
+    padding: 10px;
+    text-decoration: none;
+}
+
+#filter > nav > a:hover, .filterIcons > a:hover {
+    color: var(--light-text-color);
+    border-bottom: var(--light-text-color) solid;
+}
+
+#activeFilter {
+    color: var(--light-text-color);
+    border-bottom: var(--light-text-color) solid;
+}
+
+/* body */
+
+.bodyContainer {
+    max-width: 1000px;
+    margin: auto;
+    padding-left: 10px;
+    padding-right: 10px;
+    display: flex;
+    margin-bottom: 10px;
 }
 
 /* individual articles */
-.articles {
+.webBody > article {
     background-color: #2f2f2f;
-    /*border-color: #393939;
-    border-width: 3px;*/
     display: flex;
-    /* outline: green solid; */
     margin-top: 10px;
-    padding: 10px;
+    margin-bottom: 10px;
     gap: 10px;
     justify-content: left;
+    width: 100%;
 }
 
 /* Middle body section style */
@@ -190,7 +236,7 @@ body {
 }
 
 /* thread image */
-.articles > img {
+.webBody > article > img {
     width: 150px;
     height: 100px;
     object-fit: cover;
@@ -230,51 +276,6 @@ body {
 /* article body */
 .articlePreview > span {
     font-size: 10px;
-}
-
-/* threads filter */
-
-.secHeader {
-    max-width: 1000px;
-    margin: auto;
-    padding-left: 10px;
-    padding-right: 10px;
-    display: flex;
-}
-
-.webBody {
-    background-color: var(--sections-color);
-    display: flex;
-    width: 100%;
-    height: 30px;
-    outline: var(--main-header-color) solid 1px;
-    vertical-align: middle;
-    justify-content: space-around;
-}
-
-.webBody > * {
-    margin-left: 10px;
-    margin-right: 10px;
-    align-self: center;
-}
-
-#filter {
-    justify-content: space-between;
-}
-
-#filter > nav > a, .filterIcons > a {
-    padding: 10px;
-    text-decoration: none;
-}
-
-#filter > nav > a:hover, .filterIcons > a:hover {
-    color: var(--light-text-color);
-    border-bottom: var(--light-text-color) solid;
-}
-
-#activeFilter {
-    color: var(--light-text-color);
-    border-bottom: var(--light-text-color) solid;
 }
 
 #form {
