@@ -8,7 +8,7 @@
   <% if comment.replies.any? %>
     <% comment.replies.each do |reply| %>
       <% unless !reply.persisted? %>
-        <div class="section" id="reply">
+        <div id="reply">
           <%= render reply %>
         </div>
       <% end %>

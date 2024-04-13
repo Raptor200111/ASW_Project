@@ -64,7 +64,7 @@
   </div>
 </div>
 
-<div class="body">
+<div class="body" id="comments">
     <h2>Comments</h2>
     <% @article.comments.order(created_at: :desc).each do |comment| %>
       <% unless comment.parent_id %>
