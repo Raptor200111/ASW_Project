@@ -3,7 +3,9 @@
   <div class="section">
     <%= comment.body %>
     <br>
-    <%= link_to 'reply', new_article_comment_path(@article, parent_id: comment.id) %>
+    <%= link_to 'reply', new_article_comment_path(comment.article, parent_id: comment.id) %>
+    <%= link_to "Edit", edit_article_comment_path(comment.article, comment) %>
+    <%= button_to "Delete", [comment.article, comment], method: :delete %>
   </div>
   <% if comment.replies.any? %>
     <% comment.replies.each do |reply| %>
