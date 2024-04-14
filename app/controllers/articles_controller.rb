@@ -4,22 +4,27 @@ class ArticlesController < ApplicationController
   # GET /articles or /articles.json
   def index
     @order_filter = params[:order_filter] || 'newest'
-    case params[:order_filter]
-    when 'hot'
-      @articles = Article.all.order(votes_up: :desc)
-    else
-      @articles = Article.all.order(created_at: :desc)
-    end
-
     @type = params[:type] || 'all'
-    case params[:type]
-    when 'thread'
-      @articles = Article.where(article_type: 'thread')
-    when 'link'
-      @articles = Article.where(article_type: 'link')
-    else
-      @articles = Article.all
-    end
+
+    @articles = case @order_filter
+                when 'top'
+                  Article.order(votes_up: :desc)
+                when 'commented'
+                  Article.left_outer_joins(:comments)
+                         .group(:id)
+                         .order('COUNT(comments.id) DESC')
+                else
+                  Article.order(created_at: :desc)
+                end
+
+    @articles = case @type
+                when 'thread'
+                  @articles.where(article_type: 'thread')
+                when 'link'
+                  @articles.where(article_type: 'link')
+                else
+                  @articles
+                end
   end
 
   # GET /articles/1 or /articles/1.json
