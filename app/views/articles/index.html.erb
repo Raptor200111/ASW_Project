@@ -16,8 +16,15 @@
       </div>
     </div>
     <div class="menu">
-      <span class="icon"><img src="https://img.icons8.com/ios/50/FFFFFF/search--v1.png"></span>
-      <span class="icon"><img src="https://img.icons8.com/ios/50/FFFFFF/add--v1.png"></span>
+      <span class="icon"><%= link_to image_tag("https://img.icons8.com/ios/50/FFFFFF/search--v1.png"),search_articles_path %></span>
+      <span class="dropdown">
+        <button class="dropbtn"><img src="https://img.icons8.com/ios-glyphs/30/add--v1.png" alt="add--v1"></button>
+        <div class="dropdown-content">
+          <%= link_to "Add Link", new_link_articles_path %>
+          <%= link_to "Add Thread", new_article_path %>
+          <a href="#">Add Magazine</a>
+        </div>
+      </span>
       <span class="icon"><img src="https://img.icons8.com/ios-filled/50/FFFFFF/menu-2.png"></span>
       <span><span>username</span></span>
     </div>
@@ -27,19 +34,27 @@
 <div class="secHeader">
   <div class="filter">
     <div>
-      <span>top</span>
-      <span>hot</span>
-      <span id="activeFilter">newest</span>
-      <span>active</span>
-      <span>commented</span>
+      <%= link_to 'top', articles_path(order_filter: 'top'), class: (@order_filter == 'top' ? 'activeFilter' : 'filter-link') %>
+      <%= link_to 'hot', articles_path(order_filter: 'hot'), class: (@order_filter == 'hot' ? 'activeFilter' : 'filter-link') %>
+      <%= link_to 'newest', articles_path(order: 'newest'), class: (@order_filter == 'newest' ? 'activeFilter' : 'filter-link') %>
+      <%= link_to 'active', articles_path(order_filter: 'active'), class: (@order_filter == 'active' ? 'activeFilter' : 'filter-link') %>
+      <%= link_to 'commented', articles_path(order_filter: 'commented'), class: (@order_filter == 'commented' ? 'activeFilter' : 'filter-link') %>
     </div>
     <div class="filterIcons">
       <span>menu</span>
       <span>time</span>
-      <span>filter</span>
+      <span class="dropdown">
+        <button class="dropbtn"><img src="https://img.icons8.com/ios-filled/50/filter--v1.png" alt="filter--v1"/></button>
+        <div class="dropdown-content">
+          <%= link_to "All", articles_path %>
+          <%= link_to "Link", articles_path(type: 'link') %>
+          <%= link_to "Thread", articles_path(type: 'thread') %>
+        </div>
+      </span>
     </div>
   </div>
 </div>
+
 
 <p style="color: green"><%= notice %></p>
 
@@ -48,8 +63,17 @@
     <% @articles.each do |article| %>
       <div class="articles">
         <div class="likes">
-          <span>like up</span>
-          <span>like down</span>
+          <span>
+            <%= button_to vote_up_article_path(article), method: :put, class: "voteButton" do %>
+              <%= article.votes_up %><i class="fa-solid fa-arrow-up"></i>
+            <% end %>
+          </span>
+
+          <span>
+            <%= button_to vote_down_article_path(article), method: :put, class: "voteButton" do %>
+              <%= article.votes_down %><i class="fa-solid fa-arrow-down"></i>
+            <% end %>
+          </span>
         </div>
         <img src="https://sesupport.edumall.jp/hc/article_attachments/900009570963/noImage.jpg">
         <div class="articlePreview">
@@ -74,4 +98,5 @@
   </div>
 
   <%= link_to "New article", new_article_path %>
+  <%= link_to "New link", new_link_articles_path %>
 </div>

@@ -9,10 +9,25 @@
     <%= article.body %>
   </p>
 
+  <% if article.article_type == 'link' %>
+    <p>
+      <strong>Url:</strong>
+      <%= link_to "Link to url",article.url %>
+    </p>
+  <% end %>
   <p>
-    <strong>Url:</strong>
-    <%= article.url %>
+  <strong>Created at:</strong>
+    <%= article.created_at.strftime("%A, %Y-%m-%d %H:%M")%>
   </p>
 
+  <p>
+  <strong>Votes_Up:</strong>
+    <%= article.votes_up%>
+  </p>
+
+  <p>
+  <strong>Votes_Down:</strong>
+    <%= article.votes_down%>
+  </p>
 
 </div>
