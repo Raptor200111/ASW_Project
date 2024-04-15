@@ -1,5 +1,5 @@
 class ArticlesController < ApplicationController
-  before_action :set_article, only: %i[ show edit update destroy vote_up vote_down]
+  before_action :set_article, only: %i[ show edit update destroy vote_up vote_down toggle_boosted]
 
   # GET /articles or /articles.json
   def index
@@ -135,6 +135,22 @@ class ArticlesController < ApplicationController
     end
   end
 
+
+  def toggle_boosted
+    @article.toggle_boost!
+    if @article.save
+        respond_to do |format|
+          format.html { redirect_to root_path, notice: "Article boost status toggled successfully." }
+          format.json { head :no_content }
+        end
+    else
+        respond_to do |format|
+          error_messages = @article.errors.full_messages.join(", ")
+          format.html { redirect_to article_url(@article), notice: "NOT Boosted: #{error_messages}" }
+          format.json { head :no_content }
+        end
+    end
+  end
 
   private
     # Use callbacks to share common setup or constraints between actions.

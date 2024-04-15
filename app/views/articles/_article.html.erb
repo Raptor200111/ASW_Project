@@ -30,4 +30,10 @@
     <%= article.votes_down%>
   </p>
 
+  <strong>Boost</strong>
+     <%= button_to 'Boost', toggle_boosted_article_path(article), method: :put %>
+                  <script>
+                console.log("<%=  article.boosted %>");
+              </script>
+
 </div>

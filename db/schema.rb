@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_04_11_231052) do
+ActiveRecord::Schema[7.0].define(version: 2024_04_15_004711) do
   create_table "articles", force: :cascade do |t|
     t.string "title"
     t.text "body"
@@ -20,13 +20,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_04_11_231052) do
     t.datetime "updated_at", null: false
     t.integer "votes_up", default: 0
     t.integer "votes_down", default: 0
-  end
-
-  create_table "tweets", force: :cascade do |t|
-    t.string "author"
-    t.text "content"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.boolean "boosted", default: false
   end
 
   create_table "comments", force: :cascade do |t|

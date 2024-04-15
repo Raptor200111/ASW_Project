@@ -1,6 +1,6 @@
 class Article < ApplicationRecord
  #  belongs_to :user, class_name: 'User', optional: true
-  belongs_to :magazine
+  belongs_to :magazine, optional: true
   #has_many :comments, class_name: 'Comment', optional: true
   has_many :comments
   #belongs_to  :magazine, class_name: 'Magazine', optional: true
@@ -9,5 +9,8 @@ class Article < ApplicationRecord
   # Method to determine if URL is required based on article type
   def url_required?
     article_type == 'link'
+  end
+  def toggle_boost!
+    update(boosted: !boosted)
   end
 end

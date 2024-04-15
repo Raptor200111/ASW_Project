@@ -1,19 +1,36 @@
-# app/views/articles/search.html.erb
-<%= form_tag(search_articles_path, method: "get") do %>
-  <%= text_field_tag :search_text, params[:search_text], placeholder: "Search articles..." %>
-  <%= submit_tag "Search articles", name: nil %>
-<% end %>
-
-<% if @articles.any? %>
-  <h2>Search Results</h2>
-  <ul>
-    <% @articles.each do |article| %>
-      <li>
-        <%= link_to article.title, article %>
-        <p><%= article.body %></p>
-      </li>
-    <% end %>
-  </ul>
-<% else %>
-  <p>No articles found</p>
-<% end %>
+<%= stylesheet_link_tag 'searchThread', media: 'all' %>
+<body>
+<div id="middle" class = "page-search page-settings">
+  <div class="kbin-container">
+    <main id="main">
+      <div class="section--top">
+        <div class="container">
+          <%= form_tag(search_articles_path, method: "get", class: "form") do %>
+            <div class="flex">
+              <%= text_field_tag :search_text, params[:search_text], placeholder: "Search articles...", class: "input" %>
+              <%= button_tag type: "submit", class: "button btn__primary" do %>
+                <!--<i class="fas fa-search"></i> <!-- Assuming you're using Font Awesome for icons -->
+              <% end %>
+            </div>
+          <% end %>
+        </div>
+      </div>
+      <div class="options options--top"></div>
+      <div id="content" class="">
+        <% if @articles.any? %>
+          <ul>
+            <% @articles.each do |article| %>
+              <li>
+                <%= link_to article.title, article %>
+                <p><%= article.body %></p>
+              </li>
+            <% end %>
+          </ul>
+        <% else %>
+          <p>No articles found</p>
+        <% end %>
+      </div>
+    </main>
+  </div>
+</div>
+</body>

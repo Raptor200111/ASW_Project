@@ -85,6 +85,17 @@
           <span><%= truncate(article.body, length: 250) %></span>
           <br>
           <span><strong>author</strong>, time ago to <strong>topic</strong></span>
+          <span>
+            <% if article.boosted %>
+              <%= button_to toggle_boosted_article_path(article), method: :put, class: 'voteButton' do %>
+                Boosted(1)
+              <% end %>
+            <% else %>
+              <%= button_to toggle_boosted_article_path(article), method: :put, class: 'voteButton' do %>
+                Boost
+              <% end %>
+            <% end %>
+          </span>
           <%# to make:
           icon
           X Comments
