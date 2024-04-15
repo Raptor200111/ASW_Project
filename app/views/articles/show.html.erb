@@ -1,3 +1,4 @@
+<%= stylesheet_link_tag 'viewThread', media: 'all' %>
 
 <link href='https://fonts.googleapis.com/css?family=Varela Round' rel='stylesheet'>
 
@@ -25,56 +26,54 @@
 
 <p style="color: green"><%= notice %></p>
 
-<div class="body">
-  <div class="articles">
-    <div class="likes">
-      <span>like up</span>
-      <span>like down</span>
-    </div>
-    <div class="articlePreview">
-      <%= render @article %>
+
+  <div id="middle" class="page-entry-single">
+    <div class="kbin-container">
+      <main id="main">
+        <div id="content">
+          <%=render @article %>
+
+          <div class="secHeader">
+            <div class="filter">
+              <div>
+                <span>top</span>
+                <span id="activeFilter">hot</span>
+                <span>oldest</span>
+                <span>newest</span>
+                <span>active</span>
+              </div>
+              <div class="filterIcons">
+                <span>icon</span>
+              </div>
+            </div>
+          </div>
+          <!--
+          <div class="body">-->
+            <div class="articles">
+            <%= form_with(model: [@article, @article.comments.build]) do |f| %>
+              <%= f.label 'New comment' %>
+              <%= f.text_area :body %>
+              <%= f.submit 'Submit' %>
+            <% end %>
+            </div>
+          <!--</div>-->
+
+          <div  id="comments">
+              <h2>Comments</h2>
+              <% @article.comments.order(created_at: :desc).each do |comment| %>
+                <% unless comment.parent_id %>
+                  <%= render comment %>
+                <% end %>
+              <% end %>
+              <%#= render @article.comments.order(created_at: :desc) %>
+          </div>
+
+          <%= link_to "Edit this article", edit_article_path(@article) %> |
+          <%= link_to "Back to articles", articles_path %>
+
+          <%= button_to "Destroy this article", @article, method: :delete %>
+        </div>
+      </main>
     </div>
   </div>
-</div>
-
 <br>
-
-<div class="secHeader">
-  <div class="filter">
-    <div>
-      <span>top</span>
-      <span id="activeFilter">hot</span>
-      <span>oldest</span>
-      <span>newest</span>
-      <span>active</span>
-    </div>
-    <div class="filterIcons">
-      <span>icon</span>
-    </div>
-  </div>
-</div>
-
-<div class="body">
-  <div class="articles">
-  <%= form_with(model: [@article, @article.comments.build]) do |f| %>
-    <%= f.label 'New comment' %>
-    <%= f.text_area :body %>
-    <%= f.submit 'Submit' %>
-  <% end %>
-  </div>
-</div>
-
-<div class="body" id="comments">
-    <h2>Comments</h2>
-    <% @article.comments.order(created_at: :desc).each do |comment| %>
-      <% unless comment.parent_id %>
-        <%= render comment %>
-      <% end %>
-    <% end %>
-    <%#= render @article.comments.order(created_at: :desc) %>
-</div>
-
-  <%= link_to "Edit this article", edit_article_path(@article) %> |
-  <%= link_to "Back to articles", articles_path %>
-
-  <%= button_to "Destroy this article", @article, method: :delete %>

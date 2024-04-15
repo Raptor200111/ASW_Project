@@ -1,39 +1,39 @@
-<div id="<%= dom_id article %>" class="article">
-  <p>
-    <strong>Title:</strong>
-    <%= article.title %>
-  </p>
-
-  <p>
-    <strong>Body:</strong>
-    <%= article.body %>
-  </p>
-
-  <% if article.article_type == 'link' %>
-    <p>
-      <strong>Url:</strong>
-      <%= link_to "Link to url",article.url %>
-    </p>
-  <% end %>
-  <p>
-  <strong>Created at:</strong>
-    <%= article.created_at.strftime("%A, %Y-%m-%d %H:%M")%>
-  </p>
-
-  <p>
-  <strong>Votes_Up:</strong>
-    <%= article.votes_up%>
-  </p>
-
-  <p>
-  <strong>Votes_Down:</strong>
-    <%= article.votes_down%>
-  </p>
-
-  <strong>Boost</strong>
-     <%= button_to 'Boost', toggle_boosted_article_path(article), method: :put %>
-                  <script>
-                console.log("<%=  article.boosted %>");
-              </script>
-
-</div>
+<%= stylesheet_link_tag 'viewThread', media: 'all' %>
+<article id="<%= dom_id article %>" class="entry section subject entry--single section--top">
+  <header><h1><aN><%= article.title %></aN></h1></header>
+  <div class="entry__body">
+    <div class="content formatted" style="max-height: 25rem;">
+      <%= article.body %>
+    </div>
+    <div class="more">
+      <aN>Down</aN>
+    </div>
+  </div>
+  <aside class="meta entry__meta">
+    <aN class="user-inline">Author</aN>
+    <time class="timeago"><%= article.created_at%></time>
+  </aside>
+  <figure>
+    <div class="image-filler"></div>
+    <aN><img class="thumb-subject" src="https://sesupport.edumall.jp/hc/article_attachments/900009570963/noImage.jpg" alt></aN>
+  </figure>
+  <aside class="vote">
+    <div class="vote__thread">
+      <buttonVote>
+        <span><%= article.votes_up%></span>
+      </buttonVote>
+    </div>
+    <div class="vote__thread">
+      <buttonVote>
+        <span><%= article.votes_down%></span>
+      </buttonVote>
+    </div>
+  </aside>
+  <footer>
+    <menu>
+      <li><aN>comment</aN></li>
+      <li><aN>boost</aN></li>
+      <li><aN>more</aN></li>
+    </menu>
+  </footer>
+</article>

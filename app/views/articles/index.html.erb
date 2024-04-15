@@ -22,7 +22,7 @@
         <div class="dropdown-content">
           <%= link_to "Add Link", new_link_articles_path %>
           <%= link_to "Add Thread", new_article_path %>
-          <a href="#">Add Magazine</a>
+          <%= link_to "Add Magazin", new_magazine_path %>
         </div>
       </span>
       <span class="icon"><img src="https://img.icons8.com/ios-filled/50/FFFFFF/menu-2.png"></span>
@@ -34,9 +34,9 @@
 <div class="secHeader">
   <div class="filter">
     <div>
-      <%= link_to 'top', articles_path(order_filter: 'top'), class: (@order_filter == 'top' ? 'activeFilter' : 'filter-link') %>
-      <%= link_to 'newest', articles_path(order: 'newest'), class: (@order_filter == 'newest' ? 'activeFilter' : 'filter-link') %>
-      <%= link_to 'commented', articles_path(order_filter: 'commented'), class: (@order_filter == 'commented' ? 'activeFilter' : 'filter-link') %>
+      <%= link_to 'top', articles_path(type: params[:type],order_filter: 'top'), class: (@order_filter == 'top' ? 'activeFilter' : 'filter-link') %>
+      <%= link_to 'newest', articles_path(type: params[:type],order: 'newest'), class: (@order_filter == 'newest' ? 'activeFilter' : 'filter-link') %>
+      <%= link_to 'commented', articles_path(type: params[:type],order_filter: 'commented'), class: (@order_filter == 'commented' ? 'activeFilter' : 'filter-link') %>
     </div>
     <div class="filterIcons">
       <span>menu</span>
@@ -44,9 +44,9 @@
       <span class="dropdown">
         <button class="dropbtn"><img src="https://img.icons8.com/ios-filled/50/filter--v1.png" alt="filter--v1"/></button>
         <div class="dropdown-content">
-          <%= link_to "All", articles_path %>
-          <%= link_to "Link", articles_path(type: 'link') %>
-          <%= link_to "Thread", articles_path(type: 'thread') %>
+          <%= link_to "All", articles_path(type:'all', order_filter: params[:order_filter]) %>
+          <%= link_to "Link", articles_path(type: 'link', order_filter: params[:order_filter]) %>
+          <%= link_to "Thread", articles_path(type: 'thread', order_filter: params[:order_filter]) %>
         </div>
       </span>
     </div>
@@ -84,7 +84,11 @@
           <br>
           <span><%= truncate(article.body, length: 250) %></span>
           <br>
-          <span><strong>author</strong>, time ago to <strong>topic</strong></span>
+          <span>
+            <strong>Author:</strong>  <!--%= @article.author %> Assuming you have an author attribute in your Article model -->
+            Published: <%= time_ago_in_words(article.created_at) %>
+            <strong><%= link_to article.magazine.name, magazine_path(article.magazine) %></strong>
+          </span>
           <span>
             <% if article.boosted %>
               <%= button_to toggle_boosted_article_path(article), method: :put, class: 'voteButton' do %>

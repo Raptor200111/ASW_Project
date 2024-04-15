@@ -3,28 +3,32 @@ class ArticlesController < ApplicationController
 
   # GET /articles or /articles.json
   def index
+    # Retrieve filter and order parameters
     @order_filter = params[:order_filter] || 'newest'
-    @type = params[:type] || 'all'
+    @type = params[:type]
 
-    @articles = case @order_filter
-                when 'top'
-                  Article.order(votes_up: :desc)
-                when 'commented'
-                  Article.left_outer_joins(:comments)
-                         .group(:id)
-                         .order('COUNT(comments.id) DESC')
-                else
-                  Article.order(created_at: :desc)
-                end
+    # Set the default articles scope
+    @articles = Article.all
 
-    @articles = case @type
-                when 'thread'
-                  @articles.where(article_type: 'thread')
-                when 'link'
-                  @articles.where(article_type: 'link')
-                else
-                  @articles
-                end
+    # Apply ordering based on order_filter
+    case @order_filter
+    when 'top'
+      @articles = @articles.order(votes_up: :desc)
+    when 'commented'
+      @articles = @articles.left_outer_joins(:comments)
+                           .group(:id)
+                           .order('COUNT(comments.id) DESC')
+    else
+      @articles = @articles.order(created_at: :desc)
+    end
+
+    # Apply filtering based on type
+    case @type
+    when 'thread'
+      @articles = @articles.where(article_type: 'thread')
+    when 'link'
+      @articles = @articles.where(article_type: 'link')
+    end
   end
 
   # GET /articles/1 or /articles/1.json
@@ -66,6 +70,7 @@ class ArticlesController < ApplicationController
         format.html { redirect_to article_url(@article), notice: "Article was successfully created." }
         format.json { render :show, status: :created, location: @article }
       else
+        @show_url_field = @article.url_required?
         format.html { render :new, status: :unprocessable_entity }
         format.json { render json: @article.errors, status: :unprocessable_entity }
       end
@@ -160,6 +165,6 @@ class ArticlesController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def article_params
-      params.require(:article).permit(:title, :body, :article_type, :url, :author)
+      params.require(:article).permit(:title, :body, :article_type, :url, :author, :magazine_id)
     end
 end
