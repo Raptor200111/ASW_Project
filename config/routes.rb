@@ -11,7 +11,8 @@ Rails.application.routes.draw do
   end
   resources :magazines
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
-   #root 'magazines#index'
+  #root 'magazines#index'
 
   root 'articles#index'
+  root 'magazines#index'
 end
