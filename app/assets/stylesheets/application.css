@@ -311,6 +311,22 @@
     border-bottom: #e0e4ea solid;
 }
 
+.box {
+    background-color: #2f2f2f;
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    height: 27px;
+    padding-top: 14px;
+    /*border-color: #393939;
+    border-width: 1px;*/
+}
+
+.box > div > span {
+    padding: 10px;
+    color: #c1cfdc;
+}
+
 .activeFilter {
     padding: 10px;
     color: #e0e4ea;
