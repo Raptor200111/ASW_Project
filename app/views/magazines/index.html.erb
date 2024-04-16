@@ -8,9 +8,10 @@
         <img src="https://kbin.social/kbin_logo.svg" alt="kbin logo">
       </div>
       <div class="head-nav">
-        <span>Threads</span>
+        <span><%= link_to "Threads", articles_path %></span>
         <span>Microblog</span>
         <span>All content</span>
+        <span id="activeFilter">Magazines</span>
         </ul>
       </div>
     </div>
@@ -26,22 +27,43 @@
 <div class="secHeader">
   <div class="filter">
     <div>
-      Add new
-      <span id="activeFilter">link</span>
-      <span>thread</span>
-      <span>photo</span>
-      <span>post</span>
-      <span>magazine</span>
+      <span>top</span>
+      <span id="activeFilter">hot</span>
+      <span>newest</span>
+      <span>active</span>
+      <span>commented</span>
+    </div>
+    <div class="filterIcons">
+      <span>menu</span>
+      <span>time</span>
+      <span>filter</span>
     </div>
   </div>
 </div>
 
-<div class="body">
-  <div class="articles">
-    <span id="form"><%= render "form", article: @article , show_url_field: @show_url_field %></span>
+<p style="color: green"><%= notice %></p>
 
-  </div>
-  <div>
-      <%= link_to "Back to articles", articles_path %>
-    </div>
+<div class="container">
+	<table>
+		<thead>
+      <tr>
+  			<th>Name</th>
+        <th>Threads</th>
+        <th>Comments</th>
+        <th>Subscriptions</th>
+		  </tr>
+    </thead>
+		<tbody>
+  		<% @magazines.each do |magazine| %>
+  			<tr>
+  				<th><%= link_to magazine.name, magazine_path(magazine) %></th>
+  				<th>0</th>
+  				<th>0</th>
+  				<th>0</th>
+  			</tr>
+  		<% end %>
+		</tbody>
+	</table>
+
+	  <%= link_to "New magazine", new_magazine_path %>
 </div>

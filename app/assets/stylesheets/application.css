@@ -12,12 +12,14 @@
  *
  *= require_tree .
  *= require_self
+ *= require font-awesome
  */
-body {
+ body {
     margin: 0px;
     background-color: #212121;
     font-family: 'Varela Round';
     font-size: 12px;
+    color: white;
 }
 
 .header {
@@ -117,7 +119,7 @@ body {
     width: 50px;
 }
 
-.menu > span > img, .menu > span > span {
+.menu > span > img, .menu > span > span, .menu>span> button>img, .filterIcons>span>button>img{
     height: 15px;
     /* border: solid blue; */
     position: absolute;
@@ -126,6 +128,47 @@ body {
     -ms-transform: translate(-50%, -50%);
     transform: translate(-50%, -50%);
 }
+
+/* Dropdown Button */
+.dropbtn {
+  background-color:#3e3e3e;
+  color: white;
+  padding: 0px;
+  font-size: 30px;
+  border: none;
+   width: 50px;
+}
+
+/* The container <div> - needed to position the dropdown content */
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+/* Dropdown Content (Hidden by Default) */
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #2c2c2c;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+}
+
+/* Links inside the dropdown */
+.dropdown-content a {
+  color: #cacece;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+}
+
+/* Change color of dropdown links on hover */
+.dropdown-content a:hover {background-color: black; color: white;}
+
+/* Show the dropdown menu on hover */
+.dropdown:hover .dropdown-content {display: block;}
+
 
 .body {
     margin: 20px;
@@ -148,6 +191,22 @@ body {
     justify-content: left;
 }
 
+/* Middle body section style */
+.section {
+    background-color: #2f2f2f;
+    margin-top: 10px;
+    padding: 10px;
+    gap: 10px;
+}
+
+#reply {
+    margin-left: 20px;
+}
+
+.section > a:link {
+    color: white;
+}
+
 /* thread likes count */
 .likes {
     display: flex;
@@ -163,6 +222,17 @@ body {
     margin-bottom: 20px;
 }
 
+.voteButton {
+    background-color: black;
+    border: 0;
+    color:white;
+    cursor: pointer;
+    font-weight: 700;
+    height: 1.9rem;
+    margin: 0;
+    padding: 0;
+    width: 4rem;
+}
 /* thread image */
 .articles > img {
     width: 150px;
@@ -211,7 +281,7 @@ body {
     margin: auto;
     padding-left: 10px;
     padding-right: 10px;
-    display: flex;
+    display: grid;
 }
 
 .filter {
@@ -224,20 +294,72 @@ body {
     /*border-color: #393939;
     border-width: 1px;*/
 }
-
 .filter > div > span {
     padding: 10px;
     color: #c1cfdc;
 }
 
-.filter > div > span:hover {
+
+.filter-link {
+    padding: 10px;
+    color: #c1cfdc;
+    text-decoration: none;
+}
+
+.filter-link:hover {
     color: #e0e4ea;
     border-bottom: #e0e4ea solid;
+}
+
+.box {
+    background-color: #2f2f2f;
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    height: 27px;
+    padding-top: 14px;
+    /*border-color: #393939;
+    border-width: 1px;*/
+}
+
+.box > div > span {
+    padding: 10px;
+    color: #c1cfdc;
+}
+
+.activeFilter {
+    padding: 10px;
+.box {
+    background-color: #2f2f2f;
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    height: 27px;
+    padding-top: 14px;
+    /*border-color: #393939;
+    border-width: 1px;*/
+}
+
+.box > div > span {
+    padding: 10px;
+    color: #c1cfdc;
 }
 
 #activeFilter {
     color: #e0e4ea;
     border-bottom: #e0e4ea solid;
+    text-decoration: none;
+}
+.filterIcons {
+    align-items: center;
+    align-self: self-end;
+    display: grid;
+    grid-auto-columns: max-content;
+    grid-auto-flow: column;
+    justify-content: end;
+    list-style: none;
+    margin: 0;
+    padding: 0;
 }
 
 #form {

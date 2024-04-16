@@ -8,9 +8,10 @@
         <img src="https://kbin.social/kbin_logo.svg" alt="kbin logo">
       </div>
       <div class="head-nav">
-        <span>Threads</span>
+        <span><%= link_to "Threads", articles_path %></span>
         <span>Microblog</span>
         <span>All content</span>
+        <span id="activeFilter">Magazines</span>
         </ul>
       </div>
     </div>
@@ -24,24 +25,23 @@
 </header>
 
 <div class="secHeader">
-  <div class="filter">
     <div>
-      Add new
-      <span id="activeFilter">link</span>
-      <span>thread</span>
-      <span>photo</span>
-      <span>post</span>
-      <span>magazine</span>
+      <%= render @magazine %>
+    </div>
+</div>
+
+<div class="secHeader">
+  <div class="box">
+    <div>
+      <span>threads(0)</span>
+      <span>comments(0)</span>
+      <span>followers(0)</span>
+      <span>commented</span>
     </div>
   </div>
 </div>
 
-<div class="body">
-  <div class="articles">
-    <span id="form"><%= render "form", article: @article , show_url_field: @show_url_field %></span>
+<p style="color: green"><%= notice %></p>
 
-  </div>
-  <div>
-      <%= link_to "Back to articles", articles_path %>
-    </div>
+	  <%= link_to "Back to magazines", magazines_path %>
 </div>

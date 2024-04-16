@@ -1,18 +1,48 @@
-<div id="<%= dom_id article %>" class="article">
-  <p>
-    <strong>Title:</strong>
-    <%= article.title %>
-  </p>
-
-  <p>
-    <strong>Body:</strong>
-    <%= article.body %>
-  </p>
-
-  <p>
-    <strong>Url:</strong>
-    <%= article.url %>
-  </p>
-
-
-</div>
+<%= stylesheet_link_tag 'viewThread', media: 'all' %>
+<article id="<%= dom_id article %>" class="entry section subject entry--single section--top">
+  <header>
+    <h1>
+      <% if article.url_required? %>
+        <aN><%= link_to article.title, article.url %></aN>
+      <% else %>
+        <aN><%= article.title %></aN>
+      <% end %>
+    </h1>
+  </header>
+  <div class="entry__body">
+    <div class="content formatted" style="max-height: 25rem;">
+      <%= article.body %>
+    </div>
+    <div class="more">
+      <aN>Down</aN>
+    </div>
+  </div>
+  <aside class="meta entry__meta">
+    <aN class="user-inline">Author</aN>
+    <time class="timeago"><%= article.created_at%></time>
+    <aN class="magazine-in-line"><%= link_to article.magazine.name, magazine_path(article.magazine) %></aN>
+  </aside>
+  <figure>
+    <div class="image-filler"></div>
+    <aN><img class="thumb-subject" src="https://sesupport.edumall.jp/hc/article_attachments/900009570963/noImage.jpg" alt></aN>
+  </figure>
+  <aside class="vote">
+    <div class="vote__thread">
+      <buttonVote>
+        <span><%= article.votes_up%></span>
+      </buttonVote>
+    </div>
+    <div class="vote__thread">
+      <buttonVote>
+        <span><%= article.votes_down%></span>
+      </buttonVote>
+    </div>
+  </aside>
+  <footer>
+    <menu>
+      <li><aN><%= article.comments.count%> comments</aN></li>
+      <li><aN>boost</aN></li>
+      <li><aN>more</aN></li>
+    </menu>
+  </footer>
+</article>

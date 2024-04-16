@@ -11,6 +11,7 @@
         <span>Threads</span>
         <span>Microblog</span>
         <span>All content</span>
+        <span id="activeFilter">Magazines</span>
         </ul>
       </div>
     </div>
@@ -26,22 +27,25 @@
 <div class="secHeader">
   <div class="filter">
     <div>
-      Add new
-      <span id="activeFilter">link</span>
-      <span>thread</span>
-      <span>photo</span>
-      <span>post</span>
-      <span>magazine</span>
+      <span>top</span>
+      <span>hot</span>
+      <span id="activeFilter">newest</span>
+      <span>active</span>
+      <span>commented</span>
+    </div>
+    <div class="filterIcons">
+      <span>menu</span>
+      <span>time</span>
+      <span>filter</span>
     </div>
   </div>
 </div>
 
 <div class="body">
-  <div class="articles">
-    <span id="form"><%= render "form", article: @article , show_url_field: @show_url_field %></span>
-
+  <div class="magazine">
+    <span id="form"><%= render "form", magazine: @magazine %></span>
   </div>
   <div>
-      <%= link_to "Back to articles", articles_path %>
+      <%= link_to "Back to magazines", magazines_path %>
     </div>
 </div>

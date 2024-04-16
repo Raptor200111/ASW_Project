@@ -8,15 +8,23 @@
         <img src="https://kbin.social/kbin_logo.svg" alt="kbin logo">
       </div>
       <div class="head-nav">
-        <span>Threads</span>
+        <span id="activeFilter">Threads</span>
         <span>Microblog</span>
         <span>All content</span>
+        <span><%= link_to "Magazines", magazines_path %></span>
         </ul>
       </div>
     </div>
     <div class="menu">
-      <span class="icon"><img src="https://img.icons8.com/ios/50/FFFFFF/search--v1.png"></span>
-      <span class="icon"><img src="https://img.icons8.com/ios/50/FFFFFF/add--v1.png"></span>
+      <span class="icon"><%= link_to image_tag("https://img.icons8.com/ios/50/FFFFFF/search--v1.png"),search_articles_path %></span>
+      <span class="dropdown">
+        <button class="dropbtn"><img src="https://img.icons8.com/ios-glyphs/30/add--v1.png" alt="add--v1"></button>
+        <div class="dropdown-content">
+          <%= link_to "Add Link", new_link_articles_path %>
+          <%= link_to "Add Thread", new_article_path %>
+          <%= link_to "Add Magazin", new_magazine_path %>
+        </div>
+      </span>
       <span class="icon"><img src="https://img.icons8.com/ios-filled/50/FFFFFF/menu-2.png"></span>
       <!--
       <span class="icon">
@@ -40,19 +48,25 @@
 <div class="secHeader">
   <div class="filter">
     <div>
-      <span>top</span>
-      <span>hot</span>
-      <span id="activeFilter">newest</span>
-      <span>active</span>
-      <span>commented</span>
+      <%= link_to 'top', articles_path(type: params[:type],order_filter: 'top'), class: (@order_filter == 'top' ? 'activeFilter' : 'filter-link') %>
+      <%= link_to 'newest', articles_path(type: params[:type],order: 'newest'), class: (@order_filter == 'newest' ? 'activeFilter' : 'filter-link') %>
+      <%= link_to 'commented', articles_path(type: params[:type],order_filter: 'commented'), class: (@order_filter == 'commented' ? 'activeFilter' : 'filter-link') %>
     </div>
     <div class="filterIcons">
       <span>menu</span>
       <span>time</span>
-      <span>filter</span>
+      <span class="dropdown">
+        <button class="dropbtn"><img src="https://img.icons8.com/ios-filled/50/filter--v1.png" alt="filter--v1"/></button>
+        <div class="dropdown-content">
+          <%= link_to "All", articles_path(type:'all', order_filter: params[:order_filter]) %>
+          <%= link_to "Link", articles_path(type: 'link', order_filter: params[:order_filter]) %>
+          <%= link_to "Thread", articles_path(type: 'thread', order_filter: params[:order_filter]) %>
+        </div>
+      </span>
     </div>
   </div>
 </div>
+
 
 <p style="color: green"><%= notice %></p>
 
@@ -61,8 +75,17 @@
     <% @articles.each do |article| %>
       <div class="articles">
         <div class="likes">
-          <span>like up</span>
-          <span>like down</span>
+          <span>
+            <%= button_to vote_up_article_path(article), method: :put, class: "voteButton" do %>
+              <%= article.votes_up %><i class="fa-solid fa-arrow-up"></i>
+            <% end %>
+          </span>
+
+          <span>
+            <%= button_to vote_down_article_path(article), method: :put, class: "voteButton" do %>
+              <%= article.votes_down %><i class="fa-solid fa-arrow-down"></i>
+            <% end %>
+          </span>
         </div>
         <img src="https://sesupport.edumall.jp/hc/article_attachments/900009570963/noImage.jpg">
         <div class="articlePreview">
@@ -75,7 +98,22 @@
           <br>
           <span><%= truncate(article.body, length: 250) %></span>
           <br>
-          <span><strong>author</strong>, time ago to <strong>topic</strong></span>
+          <span>
+            <strong>Author:</strong>  <!--%= @article.author %> Assuming you have an author attribute in your Article model -->
+            Published: <%= time_ago_in_words(article.created_at) %>
+            <strong><%= link_to article.magazine.name, magazine_path(article.magazine) %></strong>
+          </span>
+          <span>
+            <% if article.boosted %>
+              <%= button_to toggle_boosted_article_path(article), method: :put, class: 'voteButton' do %>
+                Boosted(1)
+              <% end %>
+            <% else %>
+              <%= button_to toggle_boosted_article_path(article), method: :put, class: 'voteButton' do %>
+                Boost
+              <% end %>
+            <% end %>
+          </span>
           <%# to make:
           icon
           X Comments
@@ -87,4 +125,5 @@
   </div>
 
   <%= link_to "New article", new_article_path %>
+  <%= link_to "New link", new_link_articles_path %>
 </div>

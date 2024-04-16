@@ -1,0 +1,20 @@
+<%# persisted line to only show saved comments %>
+<% unless !comment.persisted? %>
+  <div class="section">
+    <%= comment.body %>
+    <br>
+    <%= link_to 'reply', new_article_comment_path(comment.article, parent_id: comment.id) %>
+    <%= link_to "Edit", edit_article_comment_path(comment.article, comment) %>
+    <%= button_to "Delete", [comment.article, comment], method: :delete %>
+  </div>
+  <% if comment.replies.any? %>
+    <% comment.replies.each do |reply| %>
+      <% unless !reply.persisted? %>
+        <div id="reply">
+          <%= render reply %>
+        </div>
+      <% end %>
+      <div id="reply-form-<%= comment.id %>"></div>
+    <% end %>
+  <% end %>
+<% end %>
