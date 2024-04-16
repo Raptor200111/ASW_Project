@@ -12,6 +12,7 @@
   <aside class="meta entry__meta">
     <aN class="user-inline">Author</aN>
     <time class="timeago"><%= article.created_at%></time>
+    <aN class="magazine-in-line"><%= link_to article.magazine.name, magazine_path(article.magazine) %></aN>
   </aside>
   <figure>
     <div class="image-filler"></div>
@@ -31,7 +32,7 @@
   </aside>
   <footer>
     <menu>
-      <li><aN>comment</aN></li>
+      <li><aN><%= article.comments.count%> comments</aN></li>
       <li><aN>boost</aN></li>
       <li><aN>more</aN></li>
     </menu>
