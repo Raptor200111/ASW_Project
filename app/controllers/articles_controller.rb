@@ -1,24 +1,33 @@
 class ArticlesController < ApplicationController
-  before_action :set_article, only: %i[ show edit update destroy vote_up vote_down]
+  before_action :set_article, only: %i[ show edit update destroy vote_up vote_down toggle_boosted]
 
   # GET /articles or /articles.json
   def index
+    # Retrieve filter and order parameters
     @order_filter = params[:order_filter] || 'newest'
-    case params[:order_filter]
-    when 'hot'
-      @articles = Article.all.order(votes_up: :desc)
+    @type = params[:type]
+
+    # Set the default articles scope
+    @articles = Article.all
+
+    # Apply ordering based on order_filter
+    case @order_filter
+    when 'top'
+      @articles = @articles.order(votes_up: :desc)
+    when 'commented'
+      @articles = @articles.left_outer_joins(:comments)
+                           .group(:id)
+                           .order('COUNT(comments.id) DESC')
     else
-      @articles = Article.all.order(created_at: :desc)
+      @articles = @articles.order(created_at: :desc)
     end
 
-    @type = params[:type] || 'all'
-    case params[:type]
+    # Apply filtering based on type
+    case @type
     when 'thread'
-      @articles = Article.where(article_type: 'thread')
+      @articles = @articles.where(article_type: 'thread')
     when 'link'
-      @articles = Article.where(article_type: 'link')
-    else
-      @articles = Article.all
+      @articles = @articles.where(article_type: 'link')
     end
   end
 
@@ -61,6 +70,7 @@ class ArticlesController < ApplicationController
         format.html { redirect_to article_url(@article), notice: "Article was successfully created." }
         format.json { render :show, status: :created, location: @article }
       else
+        @show_url_field = @article.url_required?
         format.html { render :new, status: :unprocessable_entity }
         format.json { render json: @article.errors, status: :unprocessable_entity }
       end
@@ -131,6 +141,22 @@ class ArticlesController < ApplicationController
   end
 
 
+  def toggle_boosted
+    @article.toggle_boost!
+    if @article.save
+        respond_to do |format|
+          format.html { redirect_to root_path, notice: "Article boost status toggled successfully." }
+          format.json { head :no_content }
+        end
+    else
+        respond_to do |format|
+          error_messages = @article.errors.full_messages.join(", ")
+          format.html { redirect_to article_url(@article), notice: "NOT Boosted: #{error_messages}" }
+          format.json { head :no_content }
+        end
+    end
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_article
@@ -139,6 +165,6 @@ class ArticlesController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def article_params
-      params.require(:article).permit(:title, :body, :article_type, :url, :author)
+      params.require(:article).permit(:title, :body, :article_type, :url, :author, :magazine_id)
     end
 end

@@ -3,6 +3,7 @@ Rails.application.routes.draw do
     member do
       put 'vote_up'
       put 'vote_down'
+      put 'toggle_boosted'
     end
     get 'new_link', on: :collection
     get 'search', on: :collection
@@ -10,6 +11,7 @@ Rails.application.routes.draw do
   end
   resources :magazines
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
+  #root 'magazines#index'
 
   root 'articles#index'
   root 'magazines#index'
