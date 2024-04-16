@@ -48,18 +48,22 @@
 		<thead>
       <tr>
   			<th>Name</th>
-        <th>Threads</th>
-        <th>Comments</th>
-        <th>Subscriptions</th>
+        <th><%=link_to "Threads", :sort => "threads"%></th>
+        <th><%=link_to "Comments", :sort => "comments"%></th>
+        <th><%=link_to "Subscriptions", :sort => "subs"%></th>
 		  </tr>
     </thead>
 		<tbody>
   		<% @magazines.each do |magazine| %>
   			<tr>
   				<th><%= link_to magazine.name, magazine_path(magazine) %></th>
-  				<th>0</th>
-  				<th>0</th>
-  				<th>0</th>
+  				<th><%= magazine.articles.size %></th>
+  				@comms = 0
+  				<%= @magazine.articles.each do |article| %>
+  				  @comms += article.comments.size
+  				<% end %>
+  				<th><%= @comms %></th>
+  				<th>0 <%= button_to "Subscribe", @magazine, method: :subscribe %></th>
   			</tr>
   		<% end %>
 		</tbody>

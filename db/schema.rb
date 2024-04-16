@@ -21,7 +21,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_04_15_204632) do
     t.integer "votes_up", default: 0
     t.integer "votes_down", default: 0
     t.boolean "boosted", default: false
-    t.integer "magazine_id"
+    t.integer "magazine_id", null: false
     t.index ["magazine_id"], name: "index_articles_on_magazine_id"
   end
 

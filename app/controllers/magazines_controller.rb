@@ -3,7 +3,12 @@ class MagazinesController < ApplicationController
 
   # GET /magazines or /magazines.json
   def index
-    @magazines = Magazine.all.order(created_at: :desc)
+    @magazines = Magazine.order(params[:sort])
+    if params[:sort] == "threads"
+      @magazines = Magazine.all.sort_by{|magazine| magazine.articles.size}
+    elsif params[:sort] == "avg_ranking"
+      @players = Player.all.sort_by{|player| player.avg_ranking}
+    end
   end
 
   # GET /magazines/1 or /magazines/1.json
@@ -55,6 +60,10 @@ class MagazinesController < ApplicationController
       format.html { redirect_to magazines_url, notice: "Magazine was successfully destroyed." }
       format.json { head :no_content }
     end
+  end
+
+  def subscribe
+
   end
 
   private

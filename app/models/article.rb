@@ -1,9 +1,8 @@
 class Article < ApplicationRecord
  #  belongs_to :user, class_name: 'User', optional: true
-  belongs_to :magazine
   #has_many :comments, class_name: 'Comment', optional: true
   has_many :comments
-  belongs_to :magazine
+  belongs_to :magazine, foreign_key: 'magazine_id'
   #belongs_to  :magazine, class_name: 'Magazine', optional: true
   validates :title, length: {minimum: 1, maximum: 255}
   validates :body, length: { minimum: 0 , maximum:35000 }

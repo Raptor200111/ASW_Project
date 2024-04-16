@@ -67,6 +67,10 @@ class ArticlesController < ApplicationController
         else
            session[:created_ids].push(@article.id)
         end
+
+        @magazine = Magazine.find(@article.magazine_id)
+        @magazine.articles << @article
+
         format.html { redirect_to article_url(@article), notice: "Article was successfully created." }
         format.json { render :show, status: :created, location: @article }
       else
