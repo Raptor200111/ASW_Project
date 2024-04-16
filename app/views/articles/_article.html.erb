@@ -1,6 +1,14 @@
 <%= stylesheet_link_tag 'viewThread', media: 'all' %>
 <article id="<%= dom_id article %>" class="entry section subject entry--single section--top">
-  <header><h1><aN><%= article.title %></aN></h1></header>
+  <header>
+    <h1>
+      <% if article.url_required? %>
+        <aN><%= link_to article.title, article.url %></aN>
+      <% else %>
+        <aN><%= article.title %></aN>
+      <% end %>
+    </h1>
+  </header>
   <div class="entry__body">
     <div class="content formatted" style="max-height: 25rem;">
       <%= article.body %>
