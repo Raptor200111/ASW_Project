@@ -26,7 +26,21 @@
         </div>
       </span>
       <span class="icon"><img src="https://img.icons8.com/ios-filled/50/FFFFFF/menu-2.png"></span>
-      <span><span>username</span></span>
+      <!--
+      <span class="icon">
+        <% if current_user %>
+          <%= button_to current_user.email, edit_user_registration_path, class:"loginButton" %>
+        <% else %>
+          <%= button_to "Log In", new_user_session_path, class:"loginButton" %>
+        <% end %>
+      </span>
+      -->
+      <% if current_user %>
+        <%= button_to current_user.email, edit_user_registration_path %>
+      <% else %>
+        <%= button_to "Log In", new_user_session_path %>
+      <% end %>
+
     </div>
   </div>
 </header>

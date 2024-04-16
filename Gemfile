@@ -14,6 +14,11 @@ gem "puma",            "5.6.4"
 gem "font-awesome-rails"
 gem "bootsnap",        "1.12.0", require: false
 
+gem "devise"
+gem "omniauth"
+gem "omniauth-google-oauth2"
+gem "omniauth-rails_csrf_protection"
+
 group :development, :test do
   gem "sqlite3", "1.4.2"
   gem "debug",   "1.5.0", platforms: %i[ mri mingw x64_mingw ]
