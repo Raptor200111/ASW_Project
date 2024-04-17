@@ -339,6 +339,8 @@
 
 .activeFilter {
     padding: 10px;
+}
+
 .box {
     background-color: #2f2f2f;
     display: flex;
@@ -384,4 +386,25 @@
     width: 50px;
     height: 40px;
     position: relative;
+}
+
+.articles > * {
+    width: 100%;
+    padding: 10px;
+}
+
+.commentBox {
+    color: white;
+    height: 50px;
+    width: 100%;
+    background-color: #212121;
+}
+
+.addCommentButton {
+    color: white;
+    width: 100px;
+    height: 30px;
+    font-size: 12px;
+    font-weight: 700;
+    background-color: #3e3e3e;
 }
