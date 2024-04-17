@@ -49,7 +49,7 @@
           </div>
           <!--
           <div class="body">-->
-            <div class="articles">
+            <div class="articles" id="commentDiv">
               <%= form_with(model: [@article, @article.comments.build]) do |f| %>
                 <%= f.text_area :body, class: "commentBox" %>
                 <%= f.submit 'Add comment', class: "addCommentButton" %>

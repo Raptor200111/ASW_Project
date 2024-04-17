@@ -15,15 +15,15 @@
         <br>
         <%= comment.body %>
         <br>
-        <%= link_to 'reply', new_article_comment_path(comment.article, parent_id: comment.id) %>
-        <%= link_to "Edit", edit_article_comment_path(comment.article, comment) %>
+        <%= button_tag "reply", :onclick => "hideReply(#{comment.id})" %>
+        <%= button_to "edit", edit_article_comment_path(comment.article, comment), method: :get %>
         <%= button_to "Delete", [comment.article, comment], method: :delete %>
       </div>
     </div>
   </div>
-  <div class="articles" id="replyForm">
+  <div class="articles replyForm" id="reply-button-<%= comment.id %>">
     <%= form_with(model: [comment.article, comment.replies.build]) do |form| %>
-    <div>
+    <div id="commentDiv">
       <%= form.label :body, style: "display: none" %>
       <%= form.text_area :body, class: "commentBox" %>
     </div>
@@ -53,3 +53,15 @@
     <% end %>
   <% end %>
 <% end %>
+
+<script>
+  function hideReply(commentId) {
+    var name = "reply-button-" + commentId;
+    var x = document.getElementById(name);
+    if (x.style.display === "block") {
+      x.style.display = "none";
+    } else {
+      x.style.display = "block";
+    }
+  }
+</script>

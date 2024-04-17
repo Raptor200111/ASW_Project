@@ -388,7 +388,7 @@
     position: relative;
 }
 
-.articles > * {
+#commentDiv > * {
     width: 100%;
     padding: 10px;
 }
@@ -409,6 +409,7 @@
     background-color: #3e3e3e;
 }
 
-#replyForm {
+.replyForm {
     margin: 0;
+    display: none;
 }
