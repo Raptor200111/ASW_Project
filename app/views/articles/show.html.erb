@@ -32,7 +32,7 @@
       <main id="main">
         <div id="content">
           <%=render @article %>
-          
+
           <div class="secHeader">
             <div class="filter">
               <div>
@@ -69,8 +69,7 @@
 
           <%= link_to "Edit this article", edit_article_path(@article) %> |
           <%= link_to "Back to articles", articles_path %>
-
-          <%= button_to "Destroy this article", @article, method: :delete %>
+          <%= button_to "Delete this article", @article, method: :delete %>
         </div>
       </main>
     </div>

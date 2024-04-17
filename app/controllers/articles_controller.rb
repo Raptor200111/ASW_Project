@@ -54,6 +54,17 @@ class ArticlesController < ApplicationController
 
   # GET /articles/1/edit
   def edit
+    @article = Article.find(params[:id])
+    @show_url_field = @article.url_required?
+
+    # Check if the current user is the creator of the article
+    if @article.user == current_user
+      # Allow editing
+      render :edit
+    else
+      # Redirect with a notice indicating they are not allowed to edit the article
+      redirect_to root_path, notice: "You are not allowed to edit this article."
+    end
   end
 
   # POST /articles or /articles.json
@@ -93,7 +104,7 @@ class ArticlesController < ApplicationController
 
   # DELETE /articles/1 or /articles/1.json
   def destroy
-    if session[:created_ids].nil? || !session[:created_ids].include?(@article.id)
+=begin    if session[:created_ids].nil? || !session[:created_ids].include?(@article.id)
       respond_to do |format|
         format.html { redirect_to root_path, notice: "You are not allowed to delete this article" }
         format.json { head :forbidden }
@@ -102,10 +113,25 @@ class ArticlesController < ApplicationController
     else
       session[:created_ids].delete(@article.id)
       @article.destroy
-
-     respond_to do |format|
+           respond_to do |format|
        format.html { redirect_to articles_url, notice: "Article was successfully destroyed." }
        format.json { head :no_content }
+      end
+    end
+=end
+    @article = Article.find(params[:id])
+
+    # Check if the current user is the creator of the article
+    if @article.user == current_user
+      @article.destroy
+      respond_to do |format|
+        format.html { redirect_to articles_url, notice: "Article was successfully destroyed." }
+        format.json { head :no_content }
+      end
+    else
+      respond_to do |format|
+        format.html { redirect_to root_path, notice: "You are not allowed to delete this article." }
+        format.json { head :forbidden }
       end
     end
   end

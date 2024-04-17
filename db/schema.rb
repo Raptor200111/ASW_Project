@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_04_16_152849) do
+ActiveRecord::Schema[7.0].define(version: 2024_04_17_112747) do
   create_table "articles", force: :cascade do |t|
     t.string "title"
     t.text "body"
@@ -18,10 +18,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_04_16_152849) do
     t.string "url"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-<<<<<<< HEAD
-=======
-
->>>>>>> Threads
+    t.string "author"
     t.integer "votes_up", default: 0
     t.integer "votes_down", default: 0
     t.boolean "boosted", default: false
@@ -37,19 +34,14 @@ ActiveRecord::Schema[7.0].define(version: 2024_04_16_152849) do
     t.integer "parent_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "votes_up"
+    t.integer "votes_down"
   end
 
   create_table "magazines", force: :cascade do |t|
     t.string "name"
     t.string "title"
     t.string "url"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
-  create_table "tweets", force: :cascade do |t|
-    t.string "author"
-    t.text "content"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
