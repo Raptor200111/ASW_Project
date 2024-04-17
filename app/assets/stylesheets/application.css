@@ -408,3 +408,7 @@
     font-weight: 700;
     background-color: #3e3e3e;
 }
+
+#replyForm {
+    margin: 0;
+}

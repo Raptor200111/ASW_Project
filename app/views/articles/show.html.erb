@@ -50,10 +50,10 @@
           <!--
           <div class="body">-->
             <div class="articles">
-            <%= form_with(model: [@article, @article.comments.build]) do |f| %>
-              <%= f.text_area :body, class: "commentBox" %>
-              <%= f.submit 'Add comment', class: "addCommentButton" %>
-            <% end %>
+              <%= form_with(model: [@article, @article.comments.build]) do |f| %>
+                <%= f.text_area :body, class: "commentBox" %>
+                <%= f.submit 'Add comment', class: "addCommentButton" %>
+              <% end %>
             </div>
           <!--</div>-->
 
