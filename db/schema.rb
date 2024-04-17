@@ -18,6 +18,10 @@ ActiveRecord::Schema[7.0].define(version: 2024_04_16_152849) do
     t.string "url"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+<<<<<<< HEAD
+=======
+
+>>>>>>> Threads
     t.integer "votes_up", default: 0
     t.integer "votes_down", default: 0
     t.boolean "boosted", default: false
