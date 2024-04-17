@@ -1,16 +1,26 @@
 <%# persisted line to only show saved comments %>
 <% unless !comment.persisted? %>
   <div class="section" id="comments">
-    <%= comment.votes_down %>
-    <%= comment.votes_up %>
-    author,
-    <%= time_ago_in_words(comment.created_at) %>
-    <br>
-    <%= comment.body %>
-    <br>
-    <%= link_to 'reply', new_article_comment_path(comment.article, parent_id: comment.id) %>
-    <%= link_to "Edit", edit_article_comment_path(comment.article, comment) %>
-    <%= button_to "Delete", [comment.article, comment], method: :delete %>
+    <div class="previewComments">
+      <div class="likes">
+        <%= button_to vote_up_article_comment_path(comment.article, comment), method: :put, class: "voteButton" do %>
+          <%= comment.votes_up %><i class="fa-solid fa-arrow-up"></i>
+        <% end %>
+        <%= button_to vote_down_article_comment_path(comment.article, comment), method: :put, class: "voteButton" do %>
+          <%= comment.votes_down %><i class="fa-solid fa-arrow-down"></i>
+        <% end %>
+      </div>
+      <div>
+        author,
+        <%= time_ago_in_words(comment.created_at) %>
+        <br>
+        <%= comment.body %>
+        <br>
+        <%= link_to 'reply', new_article_comment_path(comment.article, parent_id: comment.id) %>
+        <%= link_to "Edit", edit_article_comment_path(comment.article, comment) %>
+        <%= button_to "Delete", [comment.article, comment], method: :delete %>
+      </div>
+    </div>
   </div>
   <% if comment.replies.any? %>
     <% comment.replies.each do |reply| %>

@@ -1,5 +1,5 @@
 class CommentsController < ApplicationController
-  before_action :set_comment, only: %i[ show edit update destroy ]
+  before_action :set_comment, only: %i[ show edit update destroy vote_up vote_down ]
 
   # GET /comments or /comments.json
   def index
@@ -27,7 +27,7 @@ class CommentsController < ApplicationController
 
     @comment.votes_down = 0;
     @comment.votes_up = 0;
-    
+
     respond_to do |format|
       if @comment.save
         format.html { redirect_to @article, notice: "Comment was successfully created." }
@@ -66,6 +66,43 @@ class CommentsController < ApplicationController
     end
   end
 
+  #vote_up /
+  def vote_up
+    @article = Article.find(params[:article_id])
+    @comment = @article.comments.find(params[:id])
+
+    @comment.votes_up+=1
+    if @comment.save
+        respond_to do |format|
+          format.html { redirect_to @article, notice: "article was successfully VoteUp." }
+          format.json { head :no_content }
+        end
+    else
+        respond_to do |format|
+          format.html { redirect_to @article, notice: "NOT VoteUp" }
+          format.json { head :no_content }
+        end
+    end
+  end
+
+    #vote_down /
+  def vote_down
+    @article = Article.find(params[:article_id])
+    @comment = @article.comments.find(params[:id])
+
+    @comment.votes_down+=1
+    if @comment.save
+        respond_to do |format|
+          format.html { redirect_to @article, notice: "article was successfully VoteDown." }
+          format.json { head :no_content }
+        end
+    else
+        respond_to do |format|
+          format.html { redirect_to @article, notice: "NOT VoteDown" }
+          format.json { head :no_content }
+        end
+    end
+  end
 
   private
     # Use callbacks to share common setup or constraints between actions.

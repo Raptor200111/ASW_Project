@@ -203,6 +203,12 @@
     margin: 0;
 }
 
+.previewComments {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+}
+
 #reply {
     margin-left: 20px;
 }
