@@ -105,15 +105,18 @@
             <strong><%= link_to article.magazine.name, magazine_path(article.magazine) %></strong>
           </span>
           <span>
-            <% if article.boosted %>
-              <%= button_to toggle_boosted_article_path(article), method: :put, class: 'voteButton' do %>
-                Boosted(1)
-              <% end %>
-            <% else %>
-              <%= button_to toggle_boosted_article_path(article), method: :put, class: 'voteButton' do %>
-                Boost
-              <% end %>
+            <%= button_to boost_article_path(article), method: :put, class: 'voteButton' do %>
+              Boost
             <% end %>
+            <!--% if article.num_boost != 0%
+              %= button_to boost_article_path(article), method: :put, class: 'voteButton' do %
+                Boosted(%= article.num_boost %)
+              % end %
+            % else %
+              %= button_to boost_article_path(article), method: :put, class: 'voteButton' do %
+                Boost
+              % end %
+            % end % -->
           </span>
           <%# to make:
           icon

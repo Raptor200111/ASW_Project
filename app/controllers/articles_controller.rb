@@ -1,5 +1,5 @@
 class ArticlesController < ApplicationController
-  before_action :set_article, only: %i[ show edit update destroy vote_up vote_down toggle_boosted]
+  before_action :set_article, only: %i[ show edit update destroy vote_up vote_down boost]
 
   # GET /articles or /articles.json
   def index
@@ -168,8 +168,9 @@ class ArticlesController < ApplicationController
   end
 
 
-  def toggle_boosted
-    @article.toggle_boost!
+  def boost
+    @article.boosted = true
+    #@article.num_boost+=1
     if @article.save
         respond_to do |format|
           format.html { redirect_to root_path, notice: "Article boost status toggled successfully." }
