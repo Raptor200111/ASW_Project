@@ -11,8 +11,7 @@
         <% end %>
       </div>
       <div>
-        author,
-        <%= time_ago_in_words(comment.created_at) %>
+        author, <%= time_ago_in_words(comment.created_at) %> ago
         <br>
         <%= comment.body %>
         <br>
