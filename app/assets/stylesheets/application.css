@@ -199,6 +199,10 @@
     gap: 10px;
 }
 
+#comments {
+    margin: 0;
+}
+
 #reply {
     margin-left: 20px;
 }
