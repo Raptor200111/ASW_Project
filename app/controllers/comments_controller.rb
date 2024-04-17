@@ -25,6 +25,9 @@ class CommentsController < ApplicationController
     @article = Article.find(params[:article_id])
     @comment = @article.comments.new(comment_params)
 
+    @comment.votes_down = 0;
+    @comment.votes_up = 0;
+    
     respond_to do |format|
       if @comment.save
         format.html { redirect_to @article, notice: "Comment was successfully created." }

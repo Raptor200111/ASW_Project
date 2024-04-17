@@ -1,6 +1,8 @@
 <%# persisted line to only show saved comments %>
 <% unless !comment.persisted? %>
   <div class="section" id="comments">
+    <%= comment.votes_down %>
+    <%= comment.votes_up %>
     author,
     <%= time_ago_in_words(comment.created_at) %>
     <br>
