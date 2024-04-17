@@ -6,8 +6,8 @@ class MagazinesController < ApplicationController
     @magazines = Magazine.order(params[:sort])
     if params[:sort] == "threads"
       @magazines = Magazine.all.sort_by{|magazine| magazine.articles.size}
-    elsif params[:sort] == "avg_ranking"
-      @players = Player.all.sort_by{|player| player.avg_ranking}
+    elsif params[:sort] == "comments"
+      @magazines = Magazine.all.sort_by{|magazine| magazine.nComms}
     end
   end
 
@@ -77,3 +77,4 @@ class MagazinesController < ApplicationController
       params.require(:magazine).permit(:name, :title, :url)
     end
 end
+

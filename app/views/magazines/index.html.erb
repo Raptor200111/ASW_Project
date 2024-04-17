@@ -55,14 +55,14 @@
     </thead>
 		<tbody>
   		<% @magazines.each do |magazine| %>
+  		<% magazine.nComms = 0 %>
   			<tr>
   				<th><%= link_to magazine.name, magazine_path(magazine) %></th>
   				<th><%= magazine.articles.size %></th>
-  				@comms = 0
-  				<%= @magazine.articles.each do |article| %>
-  				  @comms += article.comments.size
-  				<% end %>
-  				<th><%= @comms %></th>
+    				<%= magazine.articles.each do |article| %>
+    				  magazine.nComms += article.comments.size
+    				<% end %>
+  				<th><%= magazine.nComms %></th>
   				<th>0 <%= button_to "Subscribe", @magazine, method: :subscribe %></th>
   			</tr>
   		<% end %>
