@@ -58,15 +58,16 @@ class ArticlesController < ApplicationController
 
   # POST /articles or /articles.json
   def create
-    @article = Article.new(article_params)
+    #@article = Article.new(article_params)
+    @article = current_user.articles.build(article_params)
 
     respond_to do |format|
       if @article.save
-        if session[:created_ids].nil?
-           session[:created_ids]= [@article.id] #.push(@article.id)
-        else
-           session[:created_ids].push(@article.id)
-        end
+#        if session[:created_ids].nil?
+#           session[:created_ids]= [@article.id] #.push(@article.id)
+#        else
+#           session[:created_ids].push(@article.id)
+#        end
         format.html { redirect_to article_url(@article), notice: "Article was successfully created." }
         format.json { render :show, status: :created, location: @article }
       else
