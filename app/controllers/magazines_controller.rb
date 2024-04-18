@@ -72,17 +72,17 @@ class MagazinesController < ApplicationController
       end
       return
     end
-    isSubs = current_user.magazines.find_by(magazine: @magazine)
+    isSubs = current_user.subscriptions.find_by(magazine: @magazine)
     begin
       if isSubs
         isSubs.destroy
-        current_user.magazines.delete(@magazine)
+        current_user.subs.delete(@magazine)
         respond_to do |format|
           format.html {redirect_to magazines_path, notice: 'Unsubscibed successfully!'}
           format.json {head :no_content }
         end
       else
-        current_user.magazines << @magazine
+        current_user.subs << @magazine
         respond_to do |format|
           format.html {redirect_to magazines_path, notice: 'Subscribed successfully!'}
           format.json {head :no_content }
