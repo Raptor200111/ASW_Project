@@ -1,19 +1,15 @@
-<link href='https://fonts.googleapis.com/css?family=Varela Round' rel='stylesheet'>
-
-<%= render "articles/header" %>
-
 <div class="secHeader">
-  <div class="filter">
-    <div>
+  <div class="webBody" id="filter">
+    <nav>
       <%= link_to 'top', articles_path(type: params[:type],order_filter: 'top'), class: (@order_filter == 'top' ? 'activeFilter' : 'filter-link') %>
-      <%= link_to 'newest', articles_path(type: params[:type],order: 'newest'), class: (@order_filter == 'newest' ? 'activeFilter' : 'filter-link') %>
+      <%= link_to 'newest', articles_path(type: params[:type],order: 'newest'), class: (@order_filter == 'newest' ? 'activeFilter' : 'filter-link')%>
       <%= link_to 'commented', articles_path(type: params[:type],order_filter: 'commented'), class: (@order_filter == 'commented' ? 'activeFilter' : 'filter-link') %>
-    </div>
+    </nav>
     <div class="filterIcons">
-      <span>menu</span>
-      <span>time</span>
+      <a href="linkhere"><i class="fa-solid fa-border-all"></i></a>
+      <a href="linkhere"><i class="fa-solid fa-clock"></i></i></a>
       <span class="dropdown">
-        <button class="dropbtn"><img src="https://img.icons8.com/ios-filled/50/filter--v1.png" alt="filter--v1"/></button>
+        <i class="fa-solid fa-filter"></i>
         <div class="dropdown-content">
           <%= link_to "All", articles_path(type:'all', order_filter: params[:order_filter]) %>
           <%= link_to "Link", articles_path(type: 'link', order_filter: params[:order_filter]) %>
@@ -24,30 +20,29 @@
   </div>
 </div>
 
-
 <p style="color: green"><%= notice %></p>
 
-<div class="body">
-  <div>
-    <% @articles.each do |article| %>
-      <div class="articles">
+<% @articles.each do |article| %>
+  <div class="bodyContainer">
+    <div class="webBody">
+      <article>
         <div class="likes">
-          <div class = "voteButton">
+          <span>
             <%= article.vote_articles.where(value: 'up').count %>
             <%= button_to vote_up_article_path(article), method: :post do %>
               <i class="fa-solid fa-arrow-up"></i>
             <% end %>
-          </div>
-
-          <div class = "voteButton">
+          </span>
+          <span>
             <%=  article.vote_articles.where(value: 'down').count %>
             <%= button_to vote_down_article_path(article), method: :post do %>
               <i class="fa-solid fa-arrow-down"></i>
             <% end %>
-          </div>
+          </span>
         </div>
         <img src="https://sesupport.edumall.jp/hc/article_attachments/900009570963/noImage.jpg">
         <div class="articlePreview">
+          <!-- cambiar esto por otra flexbox cuando esten los stats -->
           <div>
             <a href=<%= article_path(article) %>><%= article.title %></a>
             <% if not article.url.nil? %>
@@ -66,25 +61,12 @@
             <%= button_to boost_article_path(article), method: :post,remote: true, class: 'voteButton' do %>
               Boost(<%= article.boost_count %>)
             <% end %>
-            <!--% if article.num_boost != 0%
-              %= button_to boost_article_path(article), method: :put, class: 'voteButton' do %
-                Boosted(%= article.num_boost %)
-              % end %
-            % else %
-              %= button_to boost_article_path(article), method: :put, class: 'voteButton' do %
-                Boost
-              % end %
-            % end % -->
           </span>
-          <%# to make:
-          icon
-          X Comments
-          Boost
-          more %>
         </div>
-      </div>
-    <% end %>
+      </article>
+    </div>
   </div>
+<% end %>
 
   <%= link_to "New article", new_article_path %>
   <%= link_to "New link", new_link_articles_path %>
