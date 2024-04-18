@@ -17,8 +17,7 @@
       <div class="left-nav">
         <div class="logo-nav">
           <i id="hiddenMenu" class="fa-solid fa-bars fa-2"></i>
-          <!-- poner bien el link del link del logo -->
-          <a href="index"><img src="https://kbin.social/kbin_logo.svg" alt="kbin logo"></a>
+          <%= link_to image_tag("https://kbin.social/kbin_logo.svg"), articles_path %>
         </div>
         <nav class="head-nav">
           <%= link_to "Threads", articles_path %>
