@@ -30,6 +30,8 @@ class CommentsController < ApplicationController
   # POST /comments or /comments.json
   def create
     
+    @article = Article.find(params[:article_id])
+
     if current_user.nil?
       respond_to do |format|
         format.html {redirect_to @article, notice: "You need to log in to comment."}
@@ -38,7 +40,6 @@ class CommentsController < ApplicationController
       return
     end
 
-    @article = Article.find(params[:article_id])
     @comment = @article.comments.new(comment_params) do |c|
       c.user = current_user
     end
@@ -74,7 +75,6 @@ class CommentsController < ApplicationController
 
   # DELETE /comments/1 or /comments/1.json
   def destroy
-    
     @article = Article.find(params[:article_id])
     @comment = @article.comments.find(params[:id])
     if !current_user.nil? and @article.user == current_user
