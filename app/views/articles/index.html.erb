@@ -102,7 +102,7 @@
           <span>
             <strong>Author:</strong>  <!--%= @article.author %> Assuming you have an author attribute in your Article model -->
             Published: <%= time_ago_in_words(article.created_at) %>
-            <strong><%= link_to article.magazine.name, magazine_path(article.magazine) if article.magazine %></strong>
+            <strong><%= link_to article.magazine.name, magazine_path(article.magazine) %></strong>
           </span>
           <span>
             <% if article.boosted %>

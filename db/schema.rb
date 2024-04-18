@@ -23,7 +23,9 @@ ActiveRecord::Schema[7.0].define(version: 2024_04_17_112747) do
     t.integer "votes_down", default: 0
     t.boolean "boosted", default: false
     t.integer "magazine_id", null: false
+    t.integer "user_id", null: false
     t.index ["magazine_id"], name: "index_articles_on_magazine_id"
+    t.index ["user_id"], name: "index_articles_on_user_id"
   end
 
   create_table "comments", force: :cascade do |t|
@@ -61,4 +63,5 @@ ActiveRecord::Schema[7.0].define(version: 2024_04_17_112747) do
   end
 
   add_foreign_key "articles", "magazines"
+  add_foreign_key "articles", "users"
 end

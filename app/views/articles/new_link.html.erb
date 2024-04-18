@@ -41,7 +41,7 @@
   <script>
     console.log("new_link of show_url_field");
   </script>
-    <span id="form"><%= render "form", article: @article, show_url_field: @show_url_field %></span>
+    <span id="form"><%= render "form", article: @article, show_url_field: true, create_article: true %></span>
   </div>
   <div>
       <%= link_to "Back to articles", articles_path %>
