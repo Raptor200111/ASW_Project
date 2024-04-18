@@ -42,14 +42,14 @@ class ArticlesController < ApplicationController
   # GET /articles/new
   def new
     @article = Article.new
-    @show_url_field = false
+    #@show_url_field = false
   end
 
 
   #GET /articles/new_link
   def new_link
     @article = Article.new
-    @show_url_field = true
+    #@show_url_field = true
   end
 
   # GET /articles/1/edit

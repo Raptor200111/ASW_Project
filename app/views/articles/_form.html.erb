@@ -39,7 +39,13 @@
     <%= form.collection_select :magazine_id, Magazine.all, :id, :title %>
   </div>
 
-  <div>
-     <%= form.submit show_url_field ? "Create Link" : "Create Article" %>
-  </div>
+  <% if create_article %>
+    <div>
+       <%= form.submit show_url_field ? "Create Link" : "Create Article" %>
+    </div>
+  <% else %>
+    <div>
+       <%= form.submit show_url_field ? "Edit Link" : "Edit Article" %>
+    </div>
+  <%end%>
 <% end %>
