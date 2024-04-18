@@ -33,15 +33,68 @@
 <div class="secHeader">
   <div class="box">
     <div>
-      <span>threads(0)</span>
-      <span>comments(0)</span>
+      <span>threads(<%= @magazine.articles.size %>)</span>
+      <span>comments(<%= @magazine.nComms %>)</span>
       <span>followers(0)</span>
-      <span>commented</span>
     </div>
   </div>
 </div>
 
 <p style="color: green"><%= notice %></p>
+
+<div class="body">
+  <div>
+    <% @magazine.articles.each do |article| %>
+      <div class="articles">
+        <div class="likes">
+          <span>
+            <%= button_to vote_up_article_path(article), method: :put, class: "voteButton" do %>
+              <%= article.votes_up %><i class="fa-solid fa-arrow-up"></i>
+            <% end %>
+          </span>
+
+          <span>
+            <%= button_to vote_down_article_path(article), method: :put, class: "voteButton" do %>
+              <%= article.votes_down %><i class="fa-solid fa-arrow-down"></i>
+            <% end %>
+          </span>
+        </div>
+        <img src="https://sesupport.edumall.jp/hc/article_attachments/900009570963/noImage.jpg">
+        <div class="articlePreview">
+          <div>
+            <a href=<%= article_path(article) %>><%= article.title %></a>
+            <% if not article.url.nil? %>
+              <a id="link" href=<%= article.url %>>(<%= article.url %>)</a>
+            <% end %>
+          </div>
+          <br>
+          <span><%= truncate(article.body, length: 250) %></span>
+          <br>
+          <span>
+            <strong>Author:</strong>  <!--%= @article.author %> Assuming you have an author attribute in your Article model -->
+            Published: <%= time_ago_in_words(article.created_at) %>
+            <strong><%= link_to article.magazine.name, magazine_path(article.magazine) if article.magazine %></strong>
+          </span>
+          <span>
+            <% if article.boosted %>
+              <%= button_to toggle_boosted_article_path(article), method: :put, class: 'voteButton' do %>
+                Boosted(1)
+              <% end %>
+            <% else %>
+              <%= button_to toggle_boosted_article_path(article), method: :put, class: 'voteButton' do %>
+                Boost
+              <% end %>
+            <% end %>
+          </span>
+          <%# to make:
+          icon
+          X Comments
+          Boost
+          more %>
+        </div>
+      </div>
+    <% end %>
+  </div>
 
 	  <%= link_to "Back to magazines", magazines_path %>
 </div>

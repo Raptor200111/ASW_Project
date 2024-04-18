@@ -1,10 +1,9 @@
 class Article < ApplicationRecord
-
+ #  belongs_to :user, class_name: 'User', optional: true
+  belongs_to :magazine, foreign_key: 'magazine_id'
   #has_many :comments, class_name: 'Comment', optional: true
   has_many :comments
-  belongs_to :magazine
   belongs_to :user
-
   has_many :boosts
   has_many :boosters, through: :boosts, source: :user
   has_many :vote_articles

@@ -3,7 +3,14 @@ class MagazinesController < ApplicationController
 
   # GET /magazines or /magazines.json
   def index
-    @magazines = Magazine.all.order(created_at: :desc)
+    @magazines = Magazine.order(params[:sort])
+    if params[:sort] == "threads"
+      @magazines = Magazine.all.sort_by{|magazine| magazine.articles.size}
+    elsif params[:sort] == "comments"
+      @magazines = Magazine.all.sort_by{|magazine| magazine.nComms}
+    elsif params[:sort] == "subs"
+      @magazines = Magazine.all.sort_by{|magazine| magazine.users.size}
+    end
   end
 
   # GET /magazines/1 or /magazines/1.json
@@ -57,6 +64,10 @@ class MagazinesController < ApplicationController
     end
   end
 
+  def subscribe
+
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_magazine
@@ -68,3 +79,4 @@ class MagazinesController < ApplicationController
       params.require(:magazine).permit(:name, :title, :url)
     end
 end
+
