@@ -29,7 +29,7 @@ class CommentsController < ApplicationController
 
   # POST /comments or /comments.json
   def create
-    
+
     @article = Article.find(params[:article_id])
 
     if current_user.nil?
@@ -127,7 +127,6 @@ class CommentsController < ApplicationController
             flash[:notice] = "Unvoted successfully."
           end
         else
-          
           @vote = current_user.vote_comments.build(comment_id: @comment.id, value: value)
           if @vote.save
             flash[:notice] = "Voted successfully."
