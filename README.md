@@ -6,6 +6,6 @@
 * Fornaguera, Laura
 * Martinez, Liliu
 
-**Taiga: **https://tree.taiga.io/project/yonazucena-projecte-asw/timeline
+**Taiga:** https://tree.taiga.io/project/yonazucena-projecte-asw/timeline
 
 Your deployed webapp at Fly.io|Heroku|... (task #6): <https://*********.***.***/>
