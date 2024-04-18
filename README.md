@@ -8,4 +8,4 @@
 
 **Taiga:** https://tree.taiga.io/project/yonazucena-projecte-asw/timeline
 
-Your deployed webapp at Heroku (task #6): <https://enigmatic-stream-03470-f4efd03e54b7.herokuapp.com/>
+Your deployed webapp at Heroku (task #6): <https://delta-12-kbin-8d30caa623a4.herokuapp.com/>
