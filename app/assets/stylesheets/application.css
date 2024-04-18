@@ -177,7 +177,7 @@ body {
     border-bottom: var(--light-text-color) solid;
 }
 
-.activeFilter {
+.activeFilter, #activeFilter {
     color: var(--light-text-color);
     border-bottom: var(--light-text-color) solid;
 }
@@ -319,4 +319,43 @@ input {
 
 button {
     background-color: var(--main-bg-color);
+}
+
+#form {
+    margin: auto;
+}
+
+#commentDiv {
+    width: 100%;
+}
+
+#commentDiv > * {
+    width: 97%;
+    padding: 10px;
+}
+
+.commentBox {
+    color: white;
+    height: 50px;
+    width: 100%;
+    background-color: #212121;
+}
+
+.addCommentButton {
+    color: white;
+    width: 100px;
+    height: 30px;
+    font-size: 12px;
+    font-weight: 700;
+    background-color: #3e3e3e;
+}
+
+.replyForm {
+    margin: 0;
+    display: none;
+}
+
+.rowflex {
+    display: flex;
+    gap: 20px;
 }
