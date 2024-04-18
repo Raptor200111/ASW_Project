@@ -28,6 +28,13 @@ class MagazinesController < ApplicationController
 
   # POST /magazines or /magazines.json
   def create
+    if current_user.nil?
+      respond_to do |format|
+        format.html {redirect_to root_path, notice: 'You need to log in to subscribe.'}
+        format.json {head :no_content }
+      end
+      return
+    end
     @magazine = Magazine.new(magazine_params)
 
     respond_to do |format|
@@ -67,7 +74,7 @@ class MagazinesController < ApplicationController
   def subscribe
     if current_user.nil?
       respond_to do |format|
-        format.html {redirect_to root_path, notice: 'You need to log in to subscribe.'}
+        format.html {redirect_to magazines_path, notice: 'You need to log in to subscribe.'}
         format.json {head :no_content }
       end
       return

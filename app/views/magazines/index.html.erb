@@ -63,7 +63,7 @@
     				  magazine.nComms += article.comments.size
     				<% end %>
   				<th><%= magazine.nComms %></th>
-  				<th><%= magazine.subscribers.size %><%= button_to current_user.subscriptions.find_by(magazine: magazine) ? "Unsubscribe" : "Subscribe", subscribe_magazine_path(magazine), method: :put %></th>
+  				<th><%= magazine.subscribers.size %><%= button_to !current_user.nil? && current_user.subscriptions.find_by(magazine: magazine) ? "Unsubscribe" : "Subscribe", subscribe_magazine_path(magazine), method: :put %></th>
   			</tr>
   		<% end %>
 		</tbody>
