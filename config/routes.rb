@@ -22,7 +22,11 @@ Rails.application.routes.draw do
       end
     end
   end
-  resources :magazines
+  resources :magazines do
+    member do
+      put 'subscribe'
+    end
+  end
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
   root 'articles#index'

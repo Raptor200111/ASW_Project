@@ -1,0 +1,10 @@
+<div>
+  <% if @user.boosted_articles.empty? %>
+    <p>No boosts</p>
+  <%else%>
+    <% @user.boosted_articles.each do |article| %>
+      <%= render partial: "/articles/short_article", locals: {article: article} %>
+    <% end %>
+  <% end %>
+
+</div>
