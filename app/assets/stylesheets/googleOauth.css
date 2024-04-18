@@ -1,0 +1,16 @@
+.loginImage {
+    width: 200px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.loginPage {
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+}
+
+.loginPage > h2 {
+    margin-left: auto;
+    margin-right: auto;
+}

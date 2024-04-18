@@ -5,10 +5,12 @@ Rails.application.routes.draw do
     sessions: 'users/sessions',
     omniauth_callbacks: 'users/omniauth_callbacks'
   }
+  get '/u/:id', to: 'users#profile', as: 'user'
+
   resources :articles do
     member do
-      put 'vote_up'
-      put 'vote_down'
+      post 'vote_up'
+      post 'vote_down'
       put 'boost'
     end
     get 'new_link', on: :collection
