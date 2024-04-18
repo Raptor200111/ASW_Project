@@ -76,23 +76,19 @@
     <% @articles.each do |article| %>
       <div class="articles">
         <div class="likes">
-          <script>
-            console.log("votes up <%= article.vote_articles.where(value: 'up').count %>");
-            console.log("votes down <%= article.vote_articles.where(value: 'down').count %>");
-          </script>
-          <span>
+          <div class = "voteButton">
             <%= article.vote_articles.where(value: 'up').count %>
-            <%= button_to vote_up_article_path(article), method: :post, class: "voteButton" do %>
+            <%= button_to vote_up_article_path(article), method: :post do %>
               <i class="fa-solid fa-arrow-up"></i>
             <% end %>
-          </span>
+          </div>
 
-          <span>
+          <div class = "voteButton">
             <%=  article.vote_articles.where(value: 'down').count %>
-            <%= button_to vote_down_article_path(article), method: :post, class: "voteButton" do %>
+            <%= button_to vote_down_article_path(article), method: :post do %>
               <i class="fa-solid fa-arrow-down"></i>
             <% end %>
-          </span>
+          </div>
         </div>
         <img src="https://sesupport.edumall.jp/hc/article_attachments/900009570963/noImage.jpg">
         <div class="articlePreview">

@@ -279,7 +279,7 @@ img {
     unicode-bidi: isolate;
 }
 
-.vote buttonVote {
+.buttonVote {
     background-color:#1c1c1c;
     border: 0;
     color: #b6b6b6;
@@ -290,7 +290,10 @@ img {
     padding: 0;
     width: 4rem;
 }
-
+.buttonVote span {
+    font-size: .85rem;
+    font-weight: 400;
+}
 .entry footer {
     align-self: flex-end;
     grid-area: footer;
