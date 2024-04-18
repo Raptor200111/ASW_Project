@@ -6,6 +6,8 @@ class Article < ApplicationRecord
   belongs_to :user
   has_many :boosts
   has_many :boosters, through: :boosts, source: :user
+  has_many :vote_articles
+  has_many :voters, through: :vote_articles, source: :user
   #belongs_to  :magazine, class_name: 'Magazine', optional: true
   validates :title, length: {minimum: 1, maximum: 255}
   validates :body, length: { maximum:35000 }

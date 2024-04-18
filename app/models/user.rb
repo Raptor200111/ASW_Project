@@ -4,6 +4,9 @@ class User < ApplicationRecord
   # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
   has_many :boosts
   has_many :boosted_articles, through: :boosts, source: :article
+  has_many :vote_articles
+  has_many :voted_articles, through: :vote_articles, source: :article
+
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable,
          :omniauthable, omniauth_providers: [:google_oauth2]

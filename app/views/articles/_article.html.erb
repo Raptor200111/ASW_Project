@@ -28,14 +28,20 @@
   </figure>
   <aside class="vote">
     <div class="vote__thread">
-      <buttonVote>
-        <span><%= article.votes_up%></span>
-      </buttonVote>
+      <div>
+        <%= button_to vote_up_article_path(article), method: :post, class: "buttonVote" do %>
+          <span><%= article.vote_articles.where(value: 'up').count %></span>
+          <i class="fa-solid fa-arrow-up"></i>
+        <% end %>
+      </div>
     </div>
     <div class="vote__thread">
-      <buttonVote>
-        <span><%= article.votes_down%></span>
-      </buttonVote>
+      <div>
+        <%= button_to vote_down_article_path(article), method: :post, class: "buttonVote" do %>
+          <span><%= article.vote_articles.where(value: 'down').count %></span>
+          <i class="fa-solid fa-arrow-up"></i>
+        <% end %>
+      </div>
     </div>
   </aside>
   <footer>

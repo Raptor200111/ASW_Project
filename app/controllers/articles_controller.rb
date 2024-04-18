@@ -145,36 +145,14 @@ class ArticlesController < ApplicationController
       end
     end
   end
-  #vote_up /
+  #/articles/:id/vote_up
   def vote_up
-    @article.votes_up+=1
-    if @article.save
-        respond_to do |format|
-          format.html { redirect_to root_path, notice: "article was successfully VoteUp." }
-          format.json { head :no_content }
-        end
-    else
-        respond_to do |format|
-          format.html { redirect_to root_path notice: "NOT VoteUp" }
-          format.json { head :no_content }
-        end
-    end
+    vote('up')
   end
 
-    #vote_down /
+    #/articles/:id/vote_down
   def vote_down
-    @article.votes_down+=1
-    if @article.save
-        respond_to do |format|
-          format.html { redirect_to root_path, notice: "article was successfully VoteDown." }
-          format.json { head :no_content }
-        end
-    else
-        respond_to do |format|
-          format.html { redirect_to root_path notice: "NOT VoteDown" }
-          format.json { head :no_content }
-        end
-    end
+    vote('down')
   end
 
   def boost
@@ -190,13 +168,13 @@ class ArticlesController < ApplicationController
       if existing_boost
         existing_boost.destroy
         respond_to do |format|
-          format.html {redirect_to article_url(@article), notice: 'Boost removed successfully!'}
+          format.html {redirect_back(fallback_location: root_path, notice: 'Boost removed successfully!')}
           format.json {head :no_content }
         end
       else
         current_user.boosts.create!(article: @article)
         respond_to do |format|
-          format.html {redirect_to article_url(@article), notice: 'Article boosted successfully!'}
+          format.html {redirect_back(fallback_location: root_path, notice: 'Article boosted successfully!')}
           format.json {head :no_content }
         end
       end
@@ -218,4 +196,32 @@ class ArticlesController < ApplicationController
     def article_params
       params.require(:article).permit(:title, :body, :article_type, :url, :author, :magazine_id)
     end
+
+    def vote(value)
+      if !current_user.nil?
+        existing_vote = @article.vote_articles.find_by(user_id: current_user.id)
+        if existing_vote
+          if existing_vote.value != value
+            existing_vote.update(value: value)
+            flash[:notice] = "Vote changed"
+          else
+            existing_vote.destroy
+            flash[:notice] = "UnVoted successfully"
+          end
+        else
+          @vote = current_user.vote_articles.build(article_id: @article.id, value: value)
+          if @vote.save
+            flash[:success] = "Voted successfully"
+          else
+            current_user.vote_articles.destroy
+            flash[:success] = "Error Vote"
+          end
+        end
+      else
+        flash[:notice] = "You must be logged in to vote"
+      end
+
+      redirect_back(fallback_location: root_path)
+    end
+
 end
