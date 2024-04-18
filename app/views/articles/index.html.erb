@@ -36,7 +36,8 @@
       </span>
       -->
       <% if current_user %>
-        <%= button_to current_user.email, edit_user_registration_path %>
+        <%= button_to current_user.email, edit_user_registration_path, method: :get %>
+        <%= button_to "LogOut", destroy_user_session_path, data: {turbo: "false"}, method: :delete %>
       <% else %>
         <%= button_to "Log In", new_user_session_path %>
       <% end %>
@@ -101,18 +102,21 @@
           <span>
             <strong>Author:</strong>  <!--%= @article.author %> Assuming you have an author attribute in your Article model -->
             Published: <%= time_ago_in_words(article.created_at) %>
-            <strong><%= link_to article.magazine.name, magazine_path(article.magazine) if article.magazine %></strong>
+            <strong><%= link_to article.magazine.name, magazine_path(article.magazine) %></strong>
           </span>
           <span>
-            <% if article.boosted %>
-              <%= button_to toggle_boosted_article_path(article), method: :put, class: 'voteButton' do %>
-                Boosted(1)
-              <% end %>
-            <% else %>
-              <%= button_to toggle_boosted_article_path(article), method: :put, class: 'voteButton' do %>
-                Boost
-              <% end %>
+            <%= button_to boost_article_path(article), method: :put, class: 'voteButton' do %>
+              Boost(<%= article.boost_count %>)
             <% end %>
+            <!--% if article.num_boost != 0%
+              %= button_to boost_article_path(article), method: :put, class: 'voteButton' do %
+                Boosted(%= article.num_boost %)
+              % end %
+            % else %
+              %= button_to boost_article_path(article), method: :put, class: 'voteButton' do %
+                Boost
+              % end %
+            % end % -->
           </span>
           <%# to make:
           icon

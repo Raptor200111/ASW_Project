@@ -9,11 +9,16 @@ Rails.application.routes.draw do
     member do
       put 'vote_up'
       put 'vote_down'
-      put 'toggle_boosted'
+      put 'boost'
     end
     get 'new_link', on: :collection
     get 'search', on: :collection
-    resources :comments
+    resources :comments do
+      member do
+        put 'vote_up'
+        put 'vote_down'
+      end
+    end
   end
   resources :magazines
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html

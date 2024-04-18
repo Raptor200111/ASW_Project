@@ -1,5 +1,5 @@
 class ArticlesController < ApplicationController
-  before_action :set_article, only: %i[ show edit update destroy vote_up vote_down toggle_boosted]
+  before_action :set_article, only: %i[ show edit update destroy vote_up vote_down boost]
 
   # GET /articles or /articles.json
   def index
@@ -42,31 +42,49 @@ class ArticlesController < ApplicationController
   # GET /articles/new
   def new
     @article = Article.new
-    @show_url_field = false
+    #@show_url_field = false
   end
 
 
   #GET /articles/new_link
   def new_link
     @article = Article.new
-    @show_url_field = true
+    #@show_url_field = true
   end
 
   # GET /articles/1/edit
   def edit
+    @article = Article.find(params[:id])
+    @show_url_field = @article.url_required?
+
+    # Check if the current user is the creator of the article
+    if !current_user.nil? and @article.user == current_user
+      # Allow editing
+      render :edit
+    else
+      # Redirect with a notice indicating they are not allowed to edit the article
+      redirect_to root_path, notice: "You are not allowed to edit this article."
+    end
   end
 
   # POST /articles or /articles.json
   def create
-    @article = Article.new(article_params)
+    if current_user.nil?
+      respond_to do |format|
+        format.html {redirect_to root_path, notice: 'You need to log in to create article.'}
+        format.json {head :no_content }
+      end
+      return
+    end
+    @article = current_user.articles.build(article_params)
 
     respond_to do |format|
       if @article.save
-        if session[:created_ids].nil?
-           session[:created_ids]= [@article.id] #.push(@article.id)
-        else
-           session[:created_ids].push(@article.id)
-        end
+#        if session[:created_ids].nil?
+#           session[:created_ids]= [@article.id] #.push(@article.id)
+#        else
+#           session[:created_ids].push(@article.id)
+#        end
 
         @magazine = Magazine.find(@article.magazine_id)
         @magazine.articles << @article
@@ -96,7 +114,7 @@ class ArticlesController < ApplicationController
 
   # DELETE /articles/1 or /articles/1.json
   def destroy
-    if session[:created_ids].nil? || !session[:created_ids].include?(@article.id)
+=begin    if session[:created_ids].nil? || !session[:created_ids].include?(@article.id)
       respond_to do |format|
         format.html { redirect_to root_path, notice: "You are not allowed to delete this article" }
         format.json { head :forbidden }
@@ -105,10 +123,25 @@ class ArticlesController < ApplicationController
     else
       session[:created_ids].delete(@article.id)
       @article.destroy
-
-     respond_to do |format|
+           respond_to do |format|
        format.html { redirect_to articles_url, notice: "Article was successfully destroyed." }
        format.json { head :no_content }
+      end
+    end
+=end
+    @article = Article.find(params[:id])
+
+    # Check if the current user is the creator of the article
+    if !current_user.nil? and @article.user == current_user
+      @article.destroy
+      respond_to do |format|
+        format.html { redirect_to articles_url, notice: "Article was successfully destroyed." }
+        format.json { head :no_content }
+      end
+    else
+      respond_to do |format|
+        format.html { redirect_to root_path, notice: "You are not allowed to delete this article." }
+        format.json { head :forbidden }
       end
     end
   end
@@ -144,20 +177,34 @@ class ArticlesController < ApplicationController
     end
   end
 
-
-  def toggle_boosted
-    @article.toggle_boost!
-    if @article.save
+  def boost
+    if current_user.nil?
+      respond_to do |format|
+        format.html {redirect_to root_path, notice: 'You need to log in to boost.'}
+        format.json {head :no_content }
+      end
+      return
+    end
+    existing_boost = current_user.boosts.find_by(article: @article)
+    begin
+      if existing_boost
+        existing_boost.destroy
         respond_to do |format|
-          format.html { redirect_to root_path, notice: "Article boost status toggled successfully." }
-          format.json { head :no_content }
+          format.html {redirect_to article_url(@article), notice: 'Boost removed successfully!'}
+          format.json {head :no_content }
         end
-    else
+      else
+        current_user.boosts.create!(article: @article)
         respond_to do |format|
-          error_messages = @article.errors.full_messages.join(", ")
-          format.html { redirect_to article_url(@article), notice: "NOT Boosted: #{error_messages}" }
-          format.json { head :no_content }
+          format.html {redirect_to article_url(@article), notice: 'Article boosted successfully!'}
+          format.json {head :no_content }
         end
+      end
+    rescue ActiveRecord::RecordInvalid => e
+      respond_to do |format|
+        format.html {redirect_to root_path, alert: "Error: #{e.message}"}
+        format.json {head :no_content }
+      end
     end
   end
 
