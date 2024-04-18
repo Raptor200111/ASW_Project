@@ -19,7 +19,7 @@
 <div class="body">
   <div>
     <% @magazine.articles.each do |article| %>
-      <%= render partial: '/articles/short_article', local: {article: article} %>
+      <%= render partial: '/articles/short_article', locals: {article: article} %>
     <% end %>
   </div>
 
