@@ -110,21 +110,6 @@ class ArticlesController < ApplicationController
 
   # DELETE /articles/1 or /articles/1.json
   def destroy
-=begin    if session[:created_ids].nil? || !session[:created_ids].include?(@article.id)
-      respond_to do |format|
-        format.html { redirect_to root_path, notice: "You are not allowed to delete this article" }
-        format.json { head :forbidden }
-        end
-
-    else
-      session[:created_ids].delete(@article.id)
-      @article.destroy
-           respond_to do |format|
-       format.html { redirect_to articles_url, notice: "Article was successfully destroyed." }
-       format.json { head :no_content }
-      end
-    end
-=end
     @article = Article.find(params[:id])
 
     # Check if the current user is the creator of the article
@@ -165,19 +150,19 @@ class ArticlesController < ApplicationController
         existing_boost.destroy
         respond_to do |format|
           format.html {redirect_back(fallback_location: root_path, notice: 'Boost removed successfully!')}
-          format.json {head :no_content }
+          format.json {render :show, status: :ok, location: @article }
         end
       else
         current_user.boosts.create!(article: @article)
         respond_to do |format|
           format.html {redirect_back(fallback_location: root_path, notice: 'Article boosted successfully!')}
-          format.json {head :no_content }
+          format.json {render :show, status: :ok, location: @article }
         end
       end
     rescue ActiveRecord::RecordInvalid => e
       respond_to do |format|
         format.html {redirect_to root_path, alert: "Error: #{e.message}"}
-        format.json {head :no_content }
+        format.json { render json: @article.errors, status: :unprocessable_entity }
       end
     end
   end
