@@ -403,7 +403,7 @@ table {
 }
 
 .container th {
-    background-color: #DBDBDB;
+    background-color: var(--main-header-color);
 }
 
 .container td:first-child { color: #FB667A; }
@@ -432,4 +432,8 @@ table {
 @media (max-width: 800px) {
 .container td:nth-child(4),
 .container th:nth-child(4) { display: none; }
+}
+
+th, th > * {
+    color: var(--main-text-color);
 }
