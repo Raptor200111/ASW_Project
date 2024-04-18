@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_04_17_161506) do
+ActiveRecord::Schema[7.0].define(version: 2024_04_18_083215) do
   create_table "articles", force: :cascade do |t|
     t.string "title"
     t.text "body"
@@ -22,7 +22,18 @@ ActiveRecord::Schema[7.0].define(version: 2024_04_17_161506) do
     t.integer "votes_down", default: 0
     t.boolean "boosted", default: false
     t.integer "magazine_id", null: false
+    t.integer "user_id", null: false
     t.index ["magazine_id"], name: "index_articles_on_magazine_id"
+    t.index ["user_id"], name: "index_articles_on_user_id"
+  end
+
+  create_table "boosts", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.integer "article_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["article_id"], name: "index_boosts_on_article_id"
+    t.index ["user_id"], name: "index_boosts_on_user_id"
   end
 
   create_table "comments", force: :cascade do |t|
@@ -31,6 +42,8 @@ ActiveRecord::Schema[7.0].define(version: 2024_04_17_161506) do
     t.integer "parent_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "votes_up"
+    t.integer "votes_down"
   end
 
   create_table "magazines", force: :cascade do |t|
@@ -59,4 +72,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_04_17_161506) do
   end
 
   add_foreign_key "articles", "magazines"
+  add_foreign_key "articles", "users"
+  add_foreign_key "boosts", "articles"
+  add_foreign_key "boosts", "users"
 end

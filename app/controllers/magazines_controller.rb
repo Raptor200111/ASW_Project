@@ -8,6 +8,8 @@ class MagazinesController < ApplicationController
       @magazines = Magazine.all.sort_by{|magazine| magazine.articles.size}
     elsif params[:sort] == "comments"
       @magazines = Magazine.all.sort_by{|magazine| magazine.nComms}
+    elsif params[:sort] == "subs"
+      @magazines = Magazine.all.sort_by{|magazine| magazine.users.size}
     end
   end
 
