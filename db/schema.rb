@@ -95,6 +95,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_04_18_190610) do
   add_foreign_key "articles", "users"
   add_foreign_key "boosts", "articles"
   add_foreign_key "boosts", "users"
+  add_foreign_key "comments", "users"
   add_foreign_key "subscriptions", "magazines"
   add_foreign_key "subscriptions", "users"
   add_foreign_key "vote_articles", "articles"
