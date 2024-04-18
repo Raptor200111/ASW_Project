@@ -1,7 +1,6 @@
-<%# persisted line to only show saved comments %>
 <% unless !comment.persisted? %>
-  <div class="section" id="comments">
-    <div class="previewComments">
+  <div class="section">
+    <div class="rowflex">
       <div class="likes">
         <%= button_to vote_up_article_comment_path(comment.article, comment), method: :post, class: "voteButton" do %>
           <%= comment.vote_comments.where(value: 'up').count %><i class="fa-solid fa-arrow-up"></i>
@@ -11,7 +10,7 @@
         <% end %>
       </div>
       <div>
-        <%= link_to comment.user.email, user_path(comment.user) %>
+        <strong><%= link_to comment.user.email, user_path(comment.user) %></strong>
         , <%= time_ago_in_words(comment.created_at) %> ago
         <br>
         <%= comment.body %>
@@ -22,7 +21,7 @@
       </div>
     </div>
   </div>
-  <div class="articles replyForm" id="reply-button-<%= comment.id %>">
+  <div class="replyForm" id="reply-button-<%= comment.id %>">
     <%= form_with(model: [comment.article, comment.replies.build]) do |form| %>
     <div id="commentDiv">
       <%= form.label :body, style: "display: none" %>

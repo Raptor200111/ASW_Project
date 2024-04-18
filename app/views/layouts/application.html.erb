@@ -1,13 +1,54 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>kbin</title>
+    <title>kbin.social - Explore the Fediverse</title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
 
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
   </head>
+
+  <link rel="icon" href="https://styles.redditmedia.com/t5_8j1eld/styles/communityIcon_hy02vskkl14b1.png">
+  <link href='https://fonts.googleapis.com/css?family=Varela Round' rel='stylesheet'>
+  <script src="https://kit.fontawesome.com/dd79a58957.js" crossorigin="anonymous"></script>
+
+  <header class="header">
+    <div class="kbin-container">
+      <div class="left-nav">
+        <div class="logo-nav">
+          <i id="hiddenMenu" class="fa-solid fa-bars fa-2"></i>
+          <%= link_to image_tag("https://kbin.social/kbin_logo.svg"), articles_path %>
+        </div>
+        <nav class="head-nav">
+          <%= link_to "Threads", articles_path %>
+          <%= link_to "Magazines", magazines_path %>
+        </nav>
+      </div>
+      <div class="menu">
+        <%= link_to search_articles_path do %>
+          <i class="fa-solid fa-magnifying-glass"></i>
+        <% end %>
+        <span class="dropdown">
+          <i class="fa-solid fa-plus"></i>
+          <div class="dropdown-content">
+            <%= link_to "Add Link", new_link_articles_path %>
+            <%= link_to "Add Thread", new_article_path %>
+            <%= link_to "Add Magazin", new_magazine_path %>
+          </div>
+        </span>
+        <a class="icon" href="linkhere"><i class="fa-solid fa-ellipsis-vertical"></i></a>
+        <!--<a class="profile" href="linkhere">username</a>-->
+        <div>
+          <% if current_user %>
+            <%= link_to current_user.email, user_path(current_user) %>
+          <% else %>
+            <%= button_to "Log In", new_user_session_path %>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </header>
 
   <body>
     <%= yield %>

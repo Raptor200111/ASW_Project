@@ -71,7 +71,7 @@ class ArticlesController < ApplicationController
   def create
     if current_user.nil?
       respond_to do |format|
-        format.html {redirect_to root_path, notice: 'You need to log in to create article.'}
+        format.html {redirect_to new_user_session_path, notice: 'You need to log in to create article.'}
         format.json {head :no_content }
       end
       return
@@ -139,7 +139,7 @@ class ArticlesController < ApplicationController
   def boost
     if current_user.nil?
       respond_to do |format|
-        format.html {redirect_to root_path, notice: 'You need to log in to boost.'}
+        format.html {redirect_to new_user_session_path, notice: 'You need to log in to boost.'}
         format.json {head :no_content }
       end
       return
@@ -198,11 +198,12 @@ class ArticlesController < ApplicationController
             flash[:success] = "Error Vote"
           end
         end
-      else
-        flash[:notice] = "You must be logged in to vote"
       end
-
-      redirect_back(fallback_location: root_path)
+      if current_user.nil?
+        redirect_to new_user_session_path
+      else
+        redirect_back(fallback_location: root_path)
+      end
     end
 
 end
