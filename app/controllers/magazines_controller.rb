@@ -1,5 +1,5 @@
 class MagazinesController < ApplicationController
-  before_action :set_magazine, only: %i[ show edit update destroy ]
+  before_action :set_magazine, only: %i[ show edit update destroy subscribe ]
 
   # GET /magazines or /magazines.json
   def index
@@ -28,6 +28,13 @@ class MagazinesController < ApplicationController
 
   # POST /magazines or /magazines.json
   def create
+    if current_user.nil?
+      respond_to do |format|
+        format.html {redirect_to root_path, notice: 'You need to log in to subscribe.'}
+        format.json {head :no_content }
+      end
+      return
+    end
     @magazine = Magazine.new(magazine_params)
 
     respond_to do |format|
@@ -65,7 +72,30 @@ class MagazinesController < ApplicationController
   end
 
   def subscribe
-
+    if current_user.nil?
+      respond_to do |format|
+        format.html {redirect_to magazines_path, notice: 'You need to log in to subscribe.'}
+        format.json {head :no_content }
+      end
+      return
+    end
+    isSubs = current_user.subscriptions.find_by(magazine: @magazine)
+    begin
+      if isSubs
+        isSubs.destroy
+        current_user.subs.delete(@magazine)
+        respond_to do |format|
+          format.html {redirect_to magazines_path, notice: 'Unsubscibed successfully!'}
+          format.json {head :no_content }
+        end
+      else
+        current_user.subs << @magazine
+        respond_to do |format|
+          format.html {redirect_to magazines_path, notice: 'Subscribed successfully!'}
+          format.json {head :no_content }
+        end
+      end
+    end
   end
 
   private

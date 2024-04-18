@@ -7,4 +7,5 @@ class Comment < ApplicationRecord
 
     has_many :vote_comments
     has_many :voters, through: :vote_comments, source: :user
+
 end
