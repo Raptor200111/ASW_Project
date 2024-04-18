@@ -58,12 +58,12 @@
           <span><%= truncate(article.body, length: 250) %></span>
           <br>
           <span>
-            <strong>Author:</strong>  <!--%= @article.author %> Assuming you have an author attribute in your Article model -->
+            <strong><%= link_to article.user.email, user_path(article.user)%></strong>  <!--%= @article.author %> Assuming you have an author attribute in your Article model -->
             Published: <%= time_ago_in_words(article.created_at) %>
             <strong><%= link_to article.magazine.name, magazine_path(article.magazine) %></strong>
           </span>
           <span>
-            <%= button_to boost_article_path(article), method: :put,remote: true, class: 'voteButton' do %>
+            <%= button_to boost_article_path(article), method: :post,remote: true, class: 'voteButton' do %>
               Boost(<%= article.boost_count %>)
             <% end %>
             <!--% if article.num_boost != 0%

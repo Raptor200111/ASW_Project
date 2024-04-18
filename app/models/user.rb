@@ -8,11 +8,9 @@ class User < ApplicationRecord
   has_many :boosted_articles, through: :boosts, source: :article
   has_many :vote_articles
   has_many :voted_articles, through: :vote_articles, source: :article
-
   has_many :comments, dependent: :destroy
   has_many :vote_comments
   has_many :voted_comments, through: :vote_comments, source: :comment
-
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable,
          :omniauthable, omniauth_providers: [:google_oauth2]

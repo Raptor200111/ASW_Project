@@ -127,7 +127,6 @@ class CommentsController < ApplicationController
             flash[:notice] = "Unvoted successfully."
           end
         else
-
           @vote = current_user.vote_comments.build(comment_id: @comment.id, value: value)
           if @vote.save
             flash[:notice] = "Voted successfully."

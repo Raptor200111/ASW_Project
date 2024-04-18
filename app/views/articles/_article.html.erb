@@ -18,7 +18,7 @@
     </div>
   </div>
   <aside class="meta entry__meta">
-    <aN class="user-inline">Author</aN>
+    <aN class="user-inline"><%= link_to article.user.email, magazine_path(article.user) %>r</aN>
     <time class="timeago"><%= time_ago_in_words(article.created_at)%></time>
     <aN class="magazine-in-line"><%= link_to article.magazine.name, magazine_path(article.magazine) %></aN>
   </aside>
@@ -48,7 +48,7 @@
     <menu>
       <li><aN><%= article.comments.count%> comments</aN></li>
       <li><aN>
-        <%= link_to boost_article_path(article), method: :put, remote: true, class: "boost-link" do %>
+        <%= button_to boost_article_path(article), method: :post, class: "boost-link" do %>
           Boost(<%= article.boost_count %>)
         <% end %>
       </aN></li>

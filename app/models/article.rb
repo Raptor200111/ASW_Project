@@ -1,5 +1,5 @@
 class Article < ApplicationRecord
- #  belongs_to :user, class_name: 'User', optional: true
+
   belongs_to :magazine, foreign_key: 'magazine_id'
   #has_many :comments, class_name: 'Comment', optional: true
   has_many :comments
