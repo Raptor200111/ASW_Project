@@ -1,5 +1,9 @@
 <div>
-  <% @user.articles.each do |article| %>
-    <%= render partial: "/articles/short_article", locals: {article: article} %>
+  <% if @user.articles.empty? %>
+    <p>No threads</p>
+  <%else%>
+    <% @user.articles.each do |article| %>
+      <%= render partial: "/articles/short_article", locals: {article: article} %>
+    <% end %>
   <% end %>
 </div>

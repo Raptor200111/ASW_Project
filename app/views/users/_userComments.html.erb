@@ -1,0 +1,9 @@
+<div>
+  <% if @user.comments.empty? %>
+    <p>No comments</p>
+  <%else%>
+    <% @user.comments.each do |comment| %>
+      <%= render partial: "/comments/commentNoReply", locals: {comment: comment} %>
+    <% end %>
+  <% end %>
+</div>

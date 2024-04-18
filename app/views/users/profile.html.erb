@@ -1,3 +1,9 @@
+<% if not params[:parametro].present? %>
+  <script>
+    window.location.href = "<%= url_for(parametro: 'threads') %>";
+  </script>
+<% end  %>
+
 <%= render "/articles/header" %>
 
 <div id="profile">
@@ -16,19 +22,27 @@
   </div>
 
   <div id="profileObjects">
-  <%= link_to "Threads", articles_path(type: 'thread', user_id: @user.id, order_filter: params[:order_filter]) %>
-  <%= link_to "Comments", articles_path(type: 'comment', user_id: @user.id, order_filter: params[:order_filter]) %>
-  <% if current_user == @user %>
-    <%= link_to "Boosts", articles_path(type: 'boost', user_id: @user.id, order_filter: params[:order_filter]) %>
-  <% end %>
-</div>
-
-  <div class="profileRow">
-    text 3
+    <%= link_to "Threads", url_for(parametro: 'threads') %>
+    <%= link_to "Comments", url_for(parametro: 'comments') %>
+    <% if current_user == @user %>
+      <%= link_to "Boosts", url_for(parametro: 'boosts') %>
+    <% end %>
   </div>
 
   <div class="profileRow">
-    <%= render "/users/userArticles" %>
   </div>
 
+  <div class="profileRow">
+    <% if params[:parametro] == "threads" %>
+      <%= render "/users/userArticles" %>
+    <% end  %>
+
+    <% if params[:parametro] == "comments" %>
+      <%= render "/users/userComments" %>
+    <% end  %>
+
+    <% if params[:parametro] == "boosts" %>
+      <%= render "/users/userBoosts" %>
+    <% end  %>
+  </div>
 </div>
