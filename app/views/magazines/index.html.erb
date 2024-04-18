@@ -1,0 +1,52 @@
+<div class="secHeader">
+  <div class="webBody" id="filter">
+    <nav>
+      <a href="linkhere">newest</a>
+      <a href="linkhere" class="activeFilter">hot</a>
+      <a href="linkhere">active</a>
+      <a href="linkhere">abandoned</a>
+      <a href="linkhere">collections</a>
+    </nav>
+    <div class="filterIcons">
+      <span class="dropdown">
+        <i class="fa-solid fa-layer-group"></i>
+        <div class="dropdown-content">
+          <!-- estos links no van -->
+          <%= link_to "table view", articles_path(type:'all', order_filter: params[:order_filter]) %>
+          <%= link_to "card view", articles_path(type: 'link', order_filter: params[:order_filter]) %>
+        </div>
+      </span>
+    </div>
+  </div>
+</div>
+
+<p style="color: green"><%= notice %></p>
+
+<div class="container">
+	<table>
+		<thead>
+      <tr>
+  			<th>Name</th>
+        <th><%=link_to "Threads", :sort => "threads"%></th>
+        <th><%=link_to "Comments", :sort => "comments"%></th>
+        <th><%=link_to "Subscriptions", :sort => "subs"%></th>
+		  </tr>
+    </thead>
+		<tbody>
+  		<% @magazines.each do |magazine| %>
+  		<% magazine.nComms = 0 %>
+  			<tr>
+  				<th><%= link_to magazine.name, magazine_path(magazine) %></th>
+  				<th><%= magazine.articles.size %></th>
+    				<%= magazine.articles.each do |article| %>
+    				  magazine.nComms += article.comments.size
+    				<% end %>
+  				<th><%= magazine.nComms %></th>
+  				<th><%= magazine.subscribers.size %><%= button_to !current_user.nil? && current_user.subscriptions.find_by(magazine: magazine) ? "Unsubscribe" : "Subscribe", subscribe_magazine_path(magazine), method: :put %></th>
+  			</tr>
+  		<% end %>
+		</tbody>
+	</table>
+
+	  <%= link_to "New magazine", new_magazine_path %>
+</div>

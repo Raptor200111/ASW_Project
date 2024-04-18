@@ -1,0 +1,51 @@
+<%= form_with(model: article) do |form| %>
+
+  <% if article.errors.any? %>
+    <div style="color: red">
+      <h2><%= pluralize(article.errors.count, "error") %> prohibited this article from being saved:</h2>
+
+      <ul>
+        <% article.errors.each do |error| %>
+          <li><%= error.full_message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+      <script>
+        console.log("befor IF COND show_url_field <%= show_url_field %>");
+      </script>
+  <% if show_url_field %>
+    <div>
+      <%= form.label :url, style: "display: block" %>
+      <%= form.text_field :url %>
+      <%= form.hidden_field :article_type, value: 'link' %>
+    </div>
+  <% else %>
+    <%= form.hidden_field :article_type, value: 'thread' %>
+  <% end %>
+
+  <div>
+    <%= form.label :title, style: "display: block" %>
+    <%= form.text_field :title %>
+  </div>
+
+  <div>
+    <%= form.label :body, style: "display: block" %>
+    <%= form.text_area :body %>
+  </div>
+
+  <div>
+    <%= form.label :magazine_id, "Magazine" %>
+    <%= form.collection_select :magazine_id, Magazine.all, :id, :name %>
+  </div>
+
+  <% if create_article %>
+    <div>
+       <%= form.submit show_url_field ? "Create Link" : "Create Article" %>
+    </div>
+  <% else %>
+    <div>
+       <%= form.submit show_url_field ? "Edit Link" : "Edit Article" %>
+    </div>
+  <%end%>
+<% end %>

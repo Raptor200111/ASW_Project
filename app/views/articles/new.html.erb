@@ -1,0 +1,20 @@
+<div class="secHeader">
+  <div class="webBody" id="filter">
+    <nav>
+      <strong>Add new</strong>
+      <%= link_to "link", new_link_articles_path %>
+      <%= link_to "thread", new_article_path %>
+      <%= link_to "magazine", new_magazine_path %>
+    </nav>
+  </div>
+</div>
+
+<div class="body">
+  <div class="articles">
+    <span id="form"><%= render "form", article: @article , show_url_field: false,create_article: true %></span>
+
+  </div>
+  <div>
+      <%= link_to "Back to articles", articles_path %>
+    </div>
+</div>

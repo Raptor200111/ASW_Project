@@ -1,0 +1,67 @@
+<% unless !comment.persisted? %>
+  <div class="section">
+    <div class="rowflex">
+      <div class="likes">
+        <%= button_to vote_up_article_comment_path(comment.article, comment), method: :post, class: "voteButton" do %>
+          <%= comment.vote_comments.where(value: 'up').count %><i class="fa-solid fa-arrow-up"></i>
+        <% end %>
+        <%= button_to vote_down_article_comment_path(comment.article, comment), method: :post, class: "voteButton" do %>
+          <%= comment.vote_comments.where(value: 'down').count %><i class="fa-solid fa-arrow-down"></i>
+        <% end %>
+      </div>
+      <div>
+        <strong><%= link_to comment.user.email, user_path(comment.user) %></strong>
+        , <%= time_ago_in_words(comment.created_at) %> ago
+        <br>
+        <%= comment.body %>
+        <br>
+        <%= button_tag "reply", :onclick => "hideReply(#{comment.id})" %>
+        <%= button_to "edit", edit_article_comment_path(comment.article, comment), method: :get %>
+        <%= button_to "Delete", [comment.article, comment], method: :delete %>
+      </div>
+    </div>
+  </div>
+  <div class="replyForm" id="reply-button-<%= comment.id %>">
+    <%= form_with(model: [comment.article, comment.replies.build]) do |form| %>
+    <div id="commentDiv">
+      <%= form.label :body, style: "display: none" %>
+      <%= form.text_area :body, class: "commentBox" %>
+    </div>
+
+    <div>
+      <%= form.label :article_id, style: "display: none" %>
+      <%= form.number_field :article_id, style: "display: none" %>
+    </div>
+
+    <div>
+      <%= form.label :parent_id, style: "display: none" %>
+      <%= form.number_field :parent_id, style: "display: none" %>
+    </div>
+
+    <div>
+      <%= form.submit "Add comment", class: "addCommentButton" %>
+    </div>
+    <% end %>
+  </div>
+  <% if comment.replies.any? %>
+    <% comment.replies.each do |reply| %>
+      <% unless !reply.persisted? %>
+        <div id="reply">
+          <%= render reply %>
+        </div>
+      <% end %>
+    <% end %>
+  <% end %>
+<% end %>
+
+<script>
+  function hideReply(commentId) {
+    var name = "reply-button-" + commentId;
+    var x = document.getElementById(name);
+    if (x.style.display === "block") {
+      x.style.display = "none";
+    } else {
+      x.style.display = "block";
+    }
+  }
+</script>

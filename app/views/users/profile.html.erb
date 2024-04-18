@@ -1,0 +1,48 @@
+<% if not params[:parametro].present? %>
+  <script>
+    window.location.href = "<%= url_for(parametro: 'threads') %>";
+  </script>
+<% end  %>
+
+<%= render "/articles/header" %>
+
+<div id="profile">
+  <div class="profileRow" id="profileInfo">
+    <div>
+      <img src="<%= @user.avatar_url %>" id="profilePicture"></img>
+      <p><%= @user.full_name %></p>
+      <p><%= @user.email %> </p>
+    </div>
+    <div>
+      <% if current_user and @user == current_user %>
+        <%= button_to "Edit", edit_user_registration_path, method: :get %>
+        <%= button_to "LogOut", destroy_user_session_path, data: {turbo: "false"}, method: :delete %>
+      <% end %>
+    </div>
+  </div>
+
+  <div id="profileObjects">
+    <%= link_to "Threads", url_for(parametro: 'threads') %>
+    <%= link_to "Comments", url_for(parametro: 'comments') %>
+    <% if current_user == @user %>
+      <%= link_to "Boosts", url_for(parametro: 'boosts') %>
+    <% end %>
+  </div>
+
+  <div class="profileRow">
+  </div>
+
+  <div class="profileRow">
+    <% if params[:parametro] == "threads" %>
+      <%= render "/users/userArticles" %>
+    <% end  %>
+
+    <% if params[:parametro] == "comments" %>
+      <%= render "/users/userComments" %>
+    <% end  %>
+
+    <% if params[:parametro] == "boosts" %>
+      <%= render "/users/userBoosts" %>
+    <% end  %>
+  </div>
+</div>

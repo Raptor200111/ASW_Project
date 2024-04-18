@@ -13,3 +13,433 @@
  *= require_tree .
  *= require_self
  */
+
+ :root {
+    --main-bg-color: #212121;
+    --sections-color: #2c2d2d;
+    --main-header-color: #3e3e3e;
+    --main-text-color: #cacece;
+    --light-text-color: #fbfbfa;
+}
+
+* {
+    color:var(--main-text-color);
+    font-size: 12px;
+    font-family: 'Varela Round';
+}
+
+body {
+    margin: 0px;
+    background-color: var(--main-bg-color);
+    color: var(--main-text-color);
+}
+
+/* Header flex container */
+
+.header {
+    text-align: center;
+    background: var(--main-header-color);
+    font-size: 30px;
+    margin: 0px;
+    display: block;
+    justify-content: right;
+}
+
+.kbin-container {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: nowrap;
+    height: 40px;
+    max-width: 1000px;
+    margin: auto;
+}
+
+/* logo navigation */
+.left-nav {
+    display: flex;
+    align-items: center;
+}
+
+.logo-nav {
+    flex-shrink: 0;
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+.logo-nav > * {
+    vertical-align: middle;
+}
+
+.logo-nav > a > img {
+    height: 1.5rem;
+    margin-left: 10px;
+}
+
+#hiddenMenu {
+    display: none;
+}
+
+/* middle navigation (types) */
+
+.head-nav {
+    flex-basis: 250px;
+    flex-shrink: 0;
+    display: flex;
+    justify-content: space-between;
+    align-self: center;
+}
+
+/* change based on window size */
+@media (max-width:800px) {
+    .head-nav  {
+        display: none;
+        /* outline: solid yellow; */
+    }
+
+    #hiddenMenu {
+        display: inline;
+        width: 15px;
+    }
+}
+
+.head-nav > a {
+    flex: auto;
+    padding: 8px;
+    text-decoration: none;
+    color: var(--light-text-color);
+}
+
+.head-nav > a:hover, .menu > a:hover, .menu > span:hover {
+    border-bottom: var(--light-text-color) solid;
+    color: var(--main-text-color);
+}
+
+/* right side user menu */
+
+.menu {
+    width: 250px;
+    flex-basis: 250px;
+    flex-shrink: 0;
+    display: flex;
+    justify-content: space-between;
+    align-self: center;
+}
+
+.menu > a, .menu > span, .menu > div {
+    flex: auto;
+    padding: 8px;
+    text-decoration: none;
+    color: var(--light-text-color);
+}
+
+.menu > a > i, .logo-nav > i, .menu > span > i {
+    color: var(--light-text-color)
+}
+
+
+/* threads filter */
+
+.secHeader {
+    max-width: 1000px;
+    margin: auto;
+    padding-left: 10px;
+    padding-right: 10px;
+    display: flex;
+    height: 30px;
+    margin-bottom: 10px;
+}
+
+.webBody {
+    background-color: var(--sections-color);
+    display: flex;
+    width: 100%;
+    outline: var(--main-header-color) solid 1px;
+    vertical-align: middle;
+    justify-content: space-around;
+}
+
+.webBody > * {
+    margin-left: 10px;
+    margin-right: 10px;
+    align-self: center;
+}
+
+#filter {
+    justify-content: space-between;
+}
+
+#filter > nav > a, .filterIcons > a, .filterIcons > span {
+    padding: 10px;
+    text-decoration: none;
+}
+
+#filter > nav > a:hover, .filterIcons > a:hover {
+    color: var(--light-text-color);
+    border-bottom: var(--light-text-color) solid;
+}
+
+.activeFilter, #activeFilter {
+    color: var(--light-text-color);
+    border-bottom: var(--light-text-color) solid;
+}
+
+/* body */
+
+.bodyContainer {
+    max-width: 1000px;
+    margin: auto;
+    padding-left: 10px;
+    padding-right: 10px;
+    display: flex;
+    margin-bottom: 10px;
+}
+
+/* individual articles */
+.webBody > article {
+    background-color: #2f2f2f;
+    display: flex;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    gap: 10px;
+    justify-content: left;
+    width: 100%;
+}
+
+input {
+    width: 100%;
+}
+
+/* Middle body section style */
+.section {
+    background-color: #2f2f2f;
+    margin-top: 10px;
+    padding: 10px;
+    gap: 10px;
+}
+
+.bodyContainer > div {
+    width: 100%;
+}
+
+#reply {
+    margin-left: 20px;
+}
+
+.section > a:link {
+    color: white;
+}
+
+/* thread likes count */
+.likes {
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+    height: 100px;
+}
+
+.likes > span {
+    background-color: #212121;
+    color: #b0b4b4;
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: row;
+    gap: 5px;
+    padding: 10px;
+}
+
+/* thread image */
+.webBody > article > img {
+    width: 150px;
+    height: 100px;
+    object-fit: cover;
+    flex-shrink: 0;
+    color: white;
+}
+
+/* Thread content */
+.articlePreview {
+    display: flex;
+    flex-direction: column;
+    color: #c9cccc;
+}
+
+.articlePreview > div > a, .title {
+    font-weight: bold;
+    text-decoration: none;
+    color: #8d9097;
+    display: inline-block;
+}
+
+#link {
+    font-size: 10px;
+    color: gray;
+    font-weight: lighter;
+}
+
+.articlePreview > div > a:hover, .articlePreview > div > a:active {
+    color: var(--light-text-color);
+}
+
+/* article body */
+.articlePreview > span {
+    font-size: 10px;
+}
+
+#form {
+    margin: auto;
+}
+
+.commentForm {
+    width: 100%;
+}
+
+input {
+    font-weight: bold;
+    background-color: var(--main-bg-color);
+}
+
+/* Dropdown Content (Hidden by Default) */
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #2c2c2c;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+}
+
+  /* Links inside the dropdown */
+.dropdown-content a {
+    color: #cacece;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+}
+
+.dropdown:hover .dropdown-content {display: block;}
+
+button {
+    background-color: var(--main-bg-color);
+}
+
+#form {
+    margin: auto;
+}
+
+#commentDiv {
+    width: 100%;
+}
+
+#commentDiv > * {
+    width: 97%;
+    padding: 10px;
+}
+
+.commentBox {
+    color: white;
+    height: 50px;
+    width: 100%;
+    background-color: #212121;
+}
+
+.addCommentButton {
+    color: white;
+    width: 100px;
+    height: 30px;
+    font-size: 12px;
+    font-weight: 700;
+    background-color: #3e3e3e;
+}
+
+.replyForm {
+    margin: 0;
+    display: none;
+}
+
+.rowflex {
+    display: flex;
+    gap: 20px;
+}
+
+
+
+.pink { color: #FB667A; }
+.blue { color: #185875; }
+.yellow { color: #FFF842; }
+
+
+.container td {
+    font-weight: normal;
+    font-size: 1em;
+  -webkit-box-shadow: 0 2px 2px -2px #0E1119;
+     -moz-box-shadow: 0 2px 2px -2px #0E1119;
+          box-shadow: 0 2px 2px -2px #0E1119;
+}
+
+table {
+  background: #212121;
+  border-collapse: separate;
+  box-shadow: inset 0 1px 0 #fff;
+  font-size: 12px;
+  line-height: 24px;
+  margin: 30px auto;
+  text-align: left;
+  width: 800px;
+}
+
+.container td, .container th {
+    padding-bottom: 2%;
+    padding-top: 2%;
+  padding-left:2%;
+}
+
+/* Background-color of the odd rows */
+.container tr:nth-child(odd) {
+    background-color: #FFFFFF;
+}
+
+/* Background-color of the even rows */
+.container tr:nth-child(even) {
+    background-color: #EEEEEE;
+}
+
+.container th {
+    background-color: var(--main-header-color);
+}
+
+.container td:first-child { color: #FB667A; }
+
+.container tr:hover {
+   background-color: #464A52;
+-webkit-box-shadow: 0 6px 6px -6px #0E1119;
+     -moz-box-shadow: 0 6px 6px -6px #0E1119;
+          box-shadow: 0 6px 6px -6px #0E1119;
+}
+
+.container td:hover {
+  background-color: #FFF842;
+  color: #403E10;
+  font-weight: bold;
+
+  box-shadow: #7F7C21 -1px 1px, #7F7C21 -2px 2px, #7F7C21 -3px 3px, #7F7C21 -4px 4px, #7F7C21 -5px 5px, #7F7C21 -6px 6px;
+  transform: translate3d(6px, -6px, 0);
+
+  transition-delay: 0s;
+    transition-duration: 0.4s;
+    transition-property: all;
+  transition-timing-function: line;
+}
+
+@media (max-width: 800px) {
+.container td:nth-child(4),
+.container th:nth-child(4) { display: none; }
+}
+
+th, th > * {
+    color: var(--main-text-color);
+}
+
+#comments {
+    display: flex;
+    flex-direction: column;
+}

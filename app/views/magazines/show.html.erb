@@ -1,0 +1,27 @@
+<div class="secHeader">
+    <div>
+      <%= render @magazine %>
+    </div>
+</div>
+
+<div class="secHeader">
+  <div class="box">
+    <div>
+      <span>threads(<%= @magazine.articles.size %>)</span>
+      <span>comments(<%= @magazine.nComms %>)</span>
+      <span>followers(0)</span>
+    </div>
+  </div>
+</div>
+
+<p style="color: green"><%= notice %></p>
+
+<div class="body">
+  <div>
+    <% @magazine.articles.each do |article| %>
+      <%= render partial: 'short_article', local: {article: article} %>
+    <% end %>
+  </div>
+
+	  <%= link_to "Back to magazines", magazines_path %>
+</div>

@@ -1,0 +1,63 @@
+<%= stylesheet_link_tag 'viewThread', media: 'all' %>
+<div class="bodyContainer">
+  <article id="<%= dom_id article %>" class="entry section subject entry--single section--top webBody">
+    <header>
+      <h1>
+        <% if article.url_required? %>
+          <aN><%= link_to article.title, article.url %></aN>
+        <% else %>
+          <aN><%= article.title %></aN>
+        <% end %>
+      </h1>
+    </header>
+    <div class="entry__body">
+      <div class="content formatted" style="max-height: 25rem;">
+        <%= article.body %>
+      </div>
+    </div>
+    <aside class="meta entry__meta">
+      <aN class="user-inline"><%= link_to article.user.email, magazine_path(article.user) %></aN>
+      <time class="timeago"><%= time_ago_in_words(article.created_at)%></time>, to
+      <aN class="magazine-in-line"><%= link_to article.magazine.name, magazine_path(article.magazine) %></aN>
+    </aside>
+    <figure>
+      <div class="image-filler"></div>
+      <aN><img class="thumb-subject" src="https://sesupport.edumall.jp/hc/article_attachments/900009570963/noImage.jpg" alt></aN>
+    </figure>
+    <aside class="vote">
+      <div class="vote__thread">
+        <div>
+          <%= button_to vote_up_article_path(article), method: :post, class: "buttonVote" do %>
+            <span><%= article.vote_articles.where(value: 'up').count %></span>
+            <i class="fa-solid fa-arrow-up"></i>
+          <% end %>
+        </div>
+      </div>
+      <div class="vote__thread">
+        <div>
+          <%= button_to vote_down_article_path(article), method: :post, class: "buttonVote" do %>
+            <span><%= article.vote_articles.where(value: 'down').count %></span>
+            <i class="fa-solid fa-arrow-up"></i>
+          <% end %>
+        </div>
+      </div>
+    </aside>
+    <footer>
+      <menu>
+        <li><aN><%= article.comments.count%> comments</aN></li>
+        <li><aN>
+          <%= button_to boost_article_path(article), method: :post, class: "boost-link" do %>
+            Boost(<%= article.boost_count %>)
+          <% end %>
+        </aN></li>
+        <span class="dropdown">
+          <aN> more</aN>
+          <div class="dropdown-content">
+            <%= link_to "Edit this article", edit_article_path(@article) %>
+            <%= button_to "Delete this article", @article, method: :delete, class: "aN" %>
+          </div>
+        </span>
+      </menu>
+    </footer>
+  </article>
+</div>

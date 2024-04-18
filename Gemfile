@@ -11,7 +11,13 @@ gem "turbo-rails",     "1.1.1"
 gem "stimulus-rails",  "1.0.4"
 gem "jbuilder",        "2.11.5"
 gem "puma",            "5.6.4"
+gem "font-awesome-rails"
 gem "bootsnap",        "1.12.0", require: false
+
+gem "devise"
+gem "omniauth"
+gem "omniauth-google-oauth2"
+gem "omniauth-rails_csrf_protection"
 
 group :development, :test do
   gem "sqlite3", "1.4.2"
