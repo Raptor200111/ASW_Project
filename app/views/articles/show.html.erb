@@ -28,7 +28,7 @@
   </div>
 </div>
 
-<div class="bodyContainer">
+<div class="bodyContainer" id="comments">
   <% @article.comments.order(created_at: :desc).each do |comment| %>
     <% unless comment.parent_id %>
       <%= render comment %>
