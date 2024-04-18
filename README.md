@@ -1,9 +1,11 @@
-## Lab Session #04
+## Project: First delivery
 
-Students:
+**Students:**
+* Lin, Huiwen  
+* Dalda, Alvar
+* Fornaguera, Laura
+* Martinez, Liliu
 
-* Surname_1, First_name_1
-
-* Surname_2, First_name_2
+**Taiga: **https://tree.taiga.io/project/yonazucena-projecte-asw/timeline
 
 Your deployed webapp at Fly.io|Heroku|... (task #6): <https://*********.***.***/>
