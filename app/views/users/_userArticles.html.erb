@@ -1,0 +1,5 @@
+<div>
+  <% @user.articles.each do |article| %>
+    <%= render partial: "/articles/short_article", locals: {article: article} %>
+  <% end %>
+</div>

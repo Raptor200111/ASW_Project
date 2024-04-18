@@ -1,24 +1,34 @@
 <%= render "/articles/header" %>
 
-<div>
-  <div>
+<div id="profile">
+  <div class="profileRow" id="profileInfo">
     <div>
-      <img src="<%= @user.avatar_url %>"></img>
-      <br/>
-      <%= @user.full_name %>
-      <br/>
-      <%= @user.email %>
+      <img src="<%= @user.avatar_url %>" id="profilePicture"></img>
+      <p><%= @user.full_name %></p>
+      <p><%= @user.email %> </p>
     </div>
-    <div></div>
+    <div>
+      <% if current_user and @user == current_user %>
+        <%= button_to "Edit", edit_user_registration_path, method: :get %>
+        <%= button_to "LogOut", destroy_user_session_path, data: {turbo: "false"}, method: :delete %>
+      <% end %>
+    </div>
   </div>
-  <div></div>
-  <div></div>
-  <div></div>
+
+  <div id="profileObjects">
+  <%= link_to "Threads", articles_path(type: 'thread', user_id: @user.id, order_filter: params[:order_filter]) %>
+  <%= link_to "Comments", articles_path(type: 'comment', user_id: @user.id, order_filter: params[:order_filter]) %>
+  <% if current_user == @user %>
+    <%= link_to "Boosts", articles_path(type: 'boost', user_id: @user.id, order_filter: params[:order_filter]) %>
+  <% end %>
 </div>
 
-<h1><%= @user.full_name %></h1>
+  <div class="profileRow">
+    text 3
+  </div>
 
-<% if current_user and @user == current_user %>
-  <%= link_to "Edit", edit_user_registration_path %>
-  <%= button_to "LogOut", destroy_user_session_path, data: {turbo: "false"}, method: :delete %>
-<% end %>
+  <div class="profileRow">
+    <%= render "/users/userArticles" %>
+  </div>
+
+</div>
