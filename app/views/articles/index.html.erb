@@ -76,15 +76,21 @@
     <% @articles.each do |article| %>
       <div class="articles">
         <div class="likes">
+          <script>
+            console.log("votes up <%= article.vote_articles.where(value: 'up').count %>");
+            console.log("votes down <%= article.vote_articles.where(value: 'down').count %>");
+          </script>
           <span>
-            <%= button_to vote_up_article_path(article), method: :put, class: "voteButton" do %>
-              <%= article.votes_up %><i class="fa-solid fa-arrow-up"></i>
+            <%= article.vote_articles.where(value: 'up').count %>
+            <%= button_to vote_up_article_path(article), method: :post, class: "voteButton" do %>
+              <i class="fa-solid fa-arrow-up"></i>
             <% end %>
           </span>
 
           <span>
-            <%= button_to vote_down_article_path(article), method: :put, class: "voteButton" do %>
-              <%= article.votes_down %><i class="fa-solid fa-arrow-down"></i>
+            <%=  article.vote_articles.where(value: 'down').count %>
+            <%= button_to vote_down_article_path(article), method: :post, class: "voteButton" do %>
+              <i class="fa-solid fa-arrow-down"></i>
             <% end %>
           </span>
         </div>
@@ -105,7 +111,7 @@
             <strong><%= link_to article.magazine.name, magazine_path(article.magazine) %></strong>
           </span>
           <span>
-            <%= button_to boost_article_path(article), method: :put, class: 'voteButton' do %>
+            <%= button_to boost_article_path(article), method: :put,remote: true, class: 'voteButton' do %>
               Boost(<%= article.boost_count %>)
             <% end %>
             <!--% if article.num_boost != 0%

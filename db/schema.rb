@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_04_18_083215) do
+ActiveRecord::Schema[7.0].define(version: 2024_04_18_104344) do
   create_table "articles", force: :cascade do |t|
     t.string "title"
     t.text "body"
@@ -72,8 +72,20 @@ ActiveRecord::Schema[7.0].define(version: 2024_04_18_083215) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
+  create_table "vote_articles", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.integer "article_id", null: false
+    t.string "value"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["article_id"], name: "index_vote_articles_on_article_id"
+    t.index ["user_id"], name: "index_vote_articles_on_user_id"
+  end
+
   add_foreign_key "articles", "magazines"
   add_foreign_key "articles", "users"
   add_foreign_key "boosts", "articles"
   add_foreign_key "boosts", "users"
+  add_foreign_key "vote_articles", "articles"
+  add_foreign_key "vote_articles", "users"
 end

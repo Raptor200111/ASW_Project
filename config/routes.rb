@@ -7,8 +7,8 @@ Rails.application.routes.draw do
   }
   resources :articles do
     member do
-      put 'vote_up'
-      put 'vote_down'
+      post 'vote_up'
+      post 'vote_down'
       put 'boost'
     end
     get 'new_link', on: :collection
