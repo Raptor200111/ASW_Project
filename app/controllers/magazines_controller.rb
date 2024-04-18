@@ -5,11 +5,11 @@ class MagazinesController < ApplicationController
   def index
     @magazines = Magazine.order(params[:sort])
     if params[:sort] == "threads"
-      @magazines = Magazine.all.sort_by{|magazine| magazine.articles.size}
+      @magazines = Magazine.all.sort_by{|magazine| magazine.articles.size }.reverse
     elsif params[:sort] == "comments"
-      @magazines = Magazine.all.sort_by{|magazine| magazine.nComms}
+      @magazines = Magazine.all.sort_by{|magazine| magazine.nComms}.reverse
     elsif params[:sort] == "subs"
-      @magazines = Magazine.all.sort_by{|magazine| magazine.users.size}
+      @magazines = Magazine.all.sort_by{|magazine| magazine.subscribers.size}.reverse
     end
   end
 

@@ -11,7 +11,7 @@
   </header>
   <div class="content short-desc"><p><%= truncate(article.body, length: 325) %></p></div>
   <aside class="meta entry__meta">
-    <aN class="user-inline"><%= link_to article.user.email, magazine_path(article.user) %></aN>
+    <aN class="user-inline"><%= link_to article.user.email, user_path(article.user) %></aN>
     <time class="timeago"><%= time_ago_in_words(article.created_at)%></time>
     <aN class="magazine-in-line"><%= link_to article.magazine.name, magazine_path(article.magazine) %></aN>
   </aside>

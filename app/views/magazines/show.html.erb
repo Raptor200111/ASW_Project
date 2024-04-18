@@ -9,7 +9,7 @@
     <div>
       <span>threads(<%= @magazine.articles.size %>)</span>
       <span>comments(<%= @magazine.nComms %>)</span>
-      <span>followers(0)</span>
+      <span>followers(<%= @magazine.subscribers.size %>)</span>
     </div>
   </div>
 </div>
@@ -19,7 +19,7 @@
 <div class="body">
   <div>
     <% @magazine.articles.each do |article| %>
-      <%= render partial: 'short_article', local: {article: article} %>
+      <%= render partial: '/articles/short_article', locals: {article: article} %>
     <% end %>
   </div>
 
