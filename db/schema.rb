@@ -16,6 +16,8 @@ ActiveRecord::Schema[7.0].define(version: 2024_04_18_083215) do
     t.text "body"
     t.string "article_type"
     t.string "url"
+    t.string "article_type"
+    t.string "url"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "author"
@@ -54,6 +56,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_04_18_083215) do
     t.string "url"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "nComms", default: 0
   end
 
   create_table "users", force: :cascade do |t|

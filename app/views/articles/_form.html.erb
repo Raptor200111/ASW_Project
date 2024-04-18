@@ -36,7 +36,7 @@
 
   <div>
     <%= form.label :magazine_id, "Magazine" %>
-    <%= form.collection_select :magazine_id, Magazine.all, :id, :title %>
+    <%= form.collection_select :magazine_id, Magazine.all, :id, :name %>
   </div>
 
   <% if create_article %>
