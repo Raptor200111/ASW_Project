@@ -38,7 +38,14 @@
           </div>
         </span>
         <a class="icon" href="linkhere"><i class="fa-solid fa-ellipsis-vertical"></i></a>
-        <a class="profile" href="linkhere">username</a>
+        <!--<a class="profile" href="linkhere">username</a>-->
+        <div>
+          <% if current_user %>
+            <%= link_to current_user.email, user_path(current_user) %>
+          <% else %>
+            <%= button_to "Log In", new_user_session_path %>
+          <% end %>
+        </div>
       </div>
     </div>
   </header>

@@ -124,7 +124,7 @@ body {
     align-self: center;
 }
 
-.menu > a, .menu > span {
+.menu > a, .menu > span, .menu > div {
     flex: auto;
     padding: 8px;
     text-decoration: none;
