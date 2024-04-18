@@ -58,7 +58,7 @@
           <span><%= truncate(article.body, length: 250) %></span>
           <br>
           <span>
-            <strong>Author:</strong>  <!--%= @article.author %> Assuming you have an author attribute in your Article model -->
+            <strong><%= link_to article.user.email, user_path(article.user)%></strong>  <!--%= @article.author %> Assuming you have an author attribute in your Article model -->
             Published: <%= time_ago_in_words(article.created_at) %>
             <strong><%= link_to article.magazine.name, magazine_path(article.magazine) %></strong>
           </span>
