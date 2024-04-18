@@ -58,7 +58,7 @@ class ArticlesController < ApplicationController
     @show_url_field = @article.url_required?
 
     # Check if the current user is the creator of the article
-    if @article.user == current_user
+    if !current_user.nil? and @article.user == current_user
       # Allow editing
       render :edit
     else
@@ -69,7 +69,13 @@ class ArticlesController < ApplicationController
 
   # POST /articles or /articles.json
   def create
-    #@article = Article.new(article_params)
+    if current_user.nil?
+      respond_to do |format|
+        format.html {redirect_to root_path, notice: 'You need to log in to create article.'}
+        format.json {head :no_content }
+      end
+      return
+    end
     @article = current_user.articles.build(article_params)
 
     respond_to do |format|
@@ -122,7 +128,7 @@ class ArticlesController < ApplicationController
     @article = Article.find(params[:id])
 
     # Check if the current user is the creator of the article
-    if @article.user == current_user
+    if !current_user.nil? and @article.user == current_user
       @article.destroy
       respond_to do |format|
         format.html { redirect_to articles_url, notice: "Article was successfully destroyed." }
@@ -167,21 +173,34 @@ class ArticlesController < ApplicationController
     end
   end
 
-
   def boost
-    @article.boosted = true
-    #@article.num_boost+=1
-    if @article.save
+    if current_user.nil?
+      respond_to do |format|
+        format.html {redirect_to root_path, notice: 'You need to log in to boost.'}
+        format.json {head :no_content }
+      end
+      return
+    end
+    existing_boost = current_user.boosts.find_by(article: @article)
+    begin
+      if existing_boost
+        existing_boost.destroy
         respond_to do |format|
-          format.html { redirect_to root_path, notice: "Article boost status toggled successfully." }
-          format.json { head :no_content }
+          format.html {redirect_to article_url(@article), notice: 'Boost removed successfully!'}
+          format.json {head :no_content }
         end
-    else
+      else
+        current_user.boosts.create!(article: @article)
         respond_to do |format|
-          error_messages = @article.errors.full_messages.join(", ")
-          format.html { redirect_to article_url(@article), notice: "NOT Boosted: #{error_messages}" }
-          format.json { head :no_content }
+          format.html {redirect_to article_url(@article), notice: 'Article boosted successfully!'}
+          format.json {head :no_content }
         end
+      end
+    rescue ActiveRecord::RecordInvalid => e
+      respond_to do |format|
+        format.html {redirect_to root_path, alert: "Error: #{e.message}"}
+        format.json {head :no_content }
+      end
     end
   end
 

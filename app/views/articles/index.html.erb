@@ -106,7 +106,7 @@
           </span>
           <span>
             <%= button_to boost_article_path(article), method: :put, class: 'voteButton' do %>
-              Boost
+              Boost(<%= article.boost_count %>)
             <% end %>
             <!--% if article.num_boost != 0%
               %= button_to boost_article_path(article), method: :put, class: 'voteButton' do %

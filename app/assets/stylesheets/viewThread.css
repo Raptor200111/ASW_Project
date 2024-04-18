@@ -126,6 +126,18 @@ aN {
     text-decoration: none;
 }
 
+.boost-link {
+    color: #cdd5de;
+    text-decoration: none;
+    overflow-wrap: anywhere;
+}
+
+.boost-link:hover {
+  /* Styles for when hovering over the link */
+  color: white; /* Change color on hover */
+  text-decoration: none; /* Add underline on hover */
+}
+
 .entry--single .entry__body {
     margin: 0 10px 10px 10px;
     padding: 3px;
@@ -323,4 +335,13 @@ menu {
 }
 .js-container {
     margin-bottom: 0;
+}
+
+.entry .short-desc {
+    grid-area: shortDesc;
+}
+
+.entry .short-desc p {
+    font-size: .85rem;
+    margin: 0 10px 1rem 0;
 }
