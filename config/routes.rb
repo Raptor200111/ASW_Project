@@ -5,6 +5,8 @@ Rails.application.routes.draw do
     sessions: 'users/sessions',
     omniauth_callbacks: 'users/omniauth_callbacks'
   }
+  get '/u/:id', to: 'users#profile', as: 'user'
+
   resources :articles do
     member do
       post 'vote_up'
