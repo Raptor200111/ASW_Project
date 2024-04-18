@@ -17,8 +17,8 @@ Rails.application.routes.draw do
     get 'search', on: :collection
     resources :comments do
       member do
-        put 'vote_up'
-        put 'vote_down'
+        post 'vote_up'
+        post 'vote_down'
       end
     end
   end
