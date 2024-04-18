@@ -3,11 +3,11 @@
   <div class="section" id="comments">
     <div class="previewComments">
       <div class="likes">
-        <%= button_to vote_up_article_comment_path(comment.article, comment), method: :put, class: "voteButton" do %>
-          <%= comment.votes_up %><i class="fa-solid fa-arrow-up"></i>
+        <%= button_to vote_up_article_comment_path(comment.article, comment), method: :post, class: "voteButton" do %>
+          <%= comment.vote_comments.where(value: 'up').count %><i class="fa-solid fa-arrow-up"></i>
         <% end %>
-        <%= button_to vote_down_article_comment_path(comment.article, comment), method: :put, class: "voteButton" do %>
-          <%= comment.votes_down %><i class="fa-solid fa-arrow-down"></i>
+        <%= button_to vote_down_article_comment_path(comment.article, comment), method: :post, class: "voteButton" do %>
+          <%= comment.vote_comments.where(value: 'down').count %><i class="fa-solid fa-arrow-down"></i>
         <% end %>
       </div>
       <div>

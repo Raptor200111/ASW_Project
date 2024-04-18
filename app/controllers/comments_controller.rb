@@ -93,40 +93,12 @@ class CommentsController < ApplicationController
 
   #vote_up /
   def vote_up
-    @article = Article.find(params[:article_id])
-    @comment = @article.comments.find(params[:id])
-
-    @comment.votes_up+=1
-    if @comment.save
-        respond_to do |format|
-          format.html { redirect_to @article, notice: "article was successfully VoteUp." }
-          format.json { head :no_content }
-        end
-    else
-        respond_to do |format|
-          format.html { redirect_to @article, notice: "NOT VoteUp" }
-          format.json { head :no_content }
-        end
-    end
+    vote('up')
   end
 
     #vote_down /
   def vote_down
-    @article = Article.find(params[:article_id])
-    @comment = @article.comments.find(params[:id])
-
-    @comment.votes_down+=1
-    if @comment.save
-        respond_to do |format|
-          format.html { redirect_to @article, notice: "article was successfully VoteDown." }
-          format.json { head :no_content }
-        end
-    else
-        respond_to do |format|
-          format.html { redirect_to @article, notice: "NOT VoteDown" }
-          format.json { head :no_content }
-        end
-    end
+    vote('down')
   end
 
   private
@@ -138,5 +110,38 @@ class CommentsController < ApplicationController
     # Only allow a list of trusted parameters through.
     def comment_params
       params.require(:comment).permit(:body, :article_id, :parent_id)
+    end
+
+    def vote(value)
+      @article = Article.find(params[:article_id])
+      @comment = @article.comments.find(params[:id])
+
+      if !current_user.nil?
+        existing_vote = @comment.vote_comments.find_by(user_id: current_user.id)
+        if existing_vote
+          if existing_vote.value != value
+            existing_vote.update(value: value)
+            flash[:notice] = "Vote changed."
+          else
+            existing_vote.destroy
+            flash[:notice] = "Unvoted successfully."
+          end
+        else
+          
+          @vote = current_user.vote_comments.build(comment_id: @comment.id, value: value)
+          if @vote.save
+            flash[:notice] = "Voted successfully."
+          else
+            current_user.vote_comments.destroy
+            flash[:notice] = "Error voting"
+            flash[:notice] = @vote.errors.full_messages
+            flash[:notice] = @vote
+            flash[:notice] = value
+          end
+        end
+      else
+        flash[:notice] = "You must be logged in to vote"
+      end
+      redirect_back(fallback_location: @article)
     end
 end
