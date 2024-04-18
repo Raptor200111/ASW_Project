@@ -437,3 +437,8 @@ table {
 th, th > * {
     color: var(--main-text-color);
 }
+
+#comments {
+    display: flex;
+    flex-direction: column;
+}
