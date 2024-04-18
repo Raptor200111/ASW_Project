@@ -101,3 +101,4 @@ ActiveRecord::Schema[7.0].define(version: 2024_04_18_190610) do
   add_foreign_key "vote_articles", "articles"
   add_foreign_key "vote_articles", "users"
 end
+
