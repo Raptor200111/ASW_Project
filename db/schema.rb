@@ -16,8 +16,6 @@ ActiveRecord::Schema[7.0].define(version: 2024_04_18_104344) do
     t.text "body"
     t.string "article_type"
     t.string "url"
-    t.string "article_type"
-    t.string "url"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "author"
@@ -26,7 +24,6 @@ ActiveRecord::Schema[7.0].define(version: 2024_04_18_104344) do
     t.boolean "boosted", default: false
     t.integer "magazine_id", null: false
     t.integer "user_id", null: false
-    t.integer "num_boost", default: 0
     t.index ["magazine_id"], name: "index_articles_on_magazine_id"
     t.index ["user_id"], name: "index_articles_on_user_id"
   end
