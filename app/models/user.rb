@@ -6,6 +6,8 @@ class User < ApplicationRecord
   has_many :boosted_articles, through: :boosts, source: :article
   has_many :vote_articles
   has_many :voted_articles, through: :vote_articles, source: :article
+  
+  has_many :comments, dependent: :destroy
 
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable,

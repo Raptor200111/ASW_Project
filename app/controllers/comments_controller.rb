@@ -18,12 +18,30 @@ class CommentsController < ApplicationController
 
   # GET /comments/1/edit
   def edit
+    @article = Article.find(params[:article_id])
+    if !current_user.nil? and @comment.user == current_user
+      render :edit
+    else
+      # Redirect with a notice indicating they are not allowed to edit the article
+      redirect_to @article, notice: "You are not allowed to edit this comment."
+    end
   end
 
   # POST /comments or /comments.json
   def create
+    
+    if current_user.nil?
+      respond_to do |format|
+        format.html {redirect_to @article, notice: "You need to log in to comment."}
+        format.json {head :no_content}
+      end
+      return
+    end
+
     @article = Article.find(params[:article_id])
-    @comment = @article.comments.new(comment_params)
+    @comment = @article.comments.new(comment_params) do |c|
+      c.user = current_user
+    end
 
     @comment.votes_down = 0;
     @comment.votes_up = 0;
@@ -56,13 +74,20 @@ class CommentsController < ApplicationController
 
   # DELETE /comments/1 or /comments/1.json
   def destroy
+    
     @article = Article.find(params[:article_id])
     @comment = @article.comments.find(params[:id])
-    @comment.destroy
-
-    respond_to do |format|
-      format.html { redirect_to @article, notice: "Comment was successfully destroyed." }
-      format.json { head :no_content }
+    if !current_user.nil? and @article.user == current_user
+      @comment.destroy
+      respond_to do |format|
+        format.html { redirect_to @article, notice: "Comment was successfully destroyed." }
+        format.json { head :no_content }
+      end
+    else
+      respond_to do |format|
+        format.html { redirect_to @article, notice: "You are not allowed to delete this comment." }
+        format.json { head :forbidden }
+      end
     end
   end
 

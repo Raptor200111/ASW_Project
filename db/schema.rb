@@ -10,12 +10,10 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_04_18_104344) do
+ActiveRecord::Schema[7.0].define(version: 2024_04_18_173615) do
   create_table "articles", force: :cascade do |t|
     t.string "title"
     t.text "body"
-    t.string "article_type"
-    t.string "url"
     t.string "article_type"
     t.string "url"
     t.datetime "created_at", null: false
@@ -26,7 +24,6 @@ ActiveRecord::Schema[7.0].define(version: 2024_04_18_104344) do
     t.boolean "boosted", default: false
     t.integer "magazine_id", null: false
     t.integer "user_id", null: false
-    t.integer "num_boost", default: 0
     t.index ["magazine_id"], name: "index_articles_on_magazine_id"
     t.index ["user_id"], name: "index_articles_on_user_id"
   end
@@ -48,6 +45,8 @@ ActiveRecord::Schema[7.0].define(version: 2024_04_18_104344) do
     t.datetime "updated_at", null: false
     t.integer "votes_up"
     t.integer "votes_down"
+    t.integer "user_id", null: false
+    t.index ["user_id"], name: "index_comments_on_user_id"
   end
 
   create_table "magazines", force: :cascade do |t|
@@ -89,6 +88,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_04_18_104344) do
   add_foreign_key "articles", "users"
   add_foreign_key "boosts", "articles"
   add_foreign_key "boosts", "users"
+  add_foreign_key "comments", "users"
   add_foreign_key "vote_articles", "articles"
   add_foreign_key "vote_articles", "users"
 end
