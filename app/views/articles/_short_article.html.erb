@@ -21,15 +21,21 @@
   </figure>
   <aside class="vote">
     <div class="vote__thread">
-      <buttonVote>
-        <span><%= article.votes_up%></span>
-      </buttonVote>
-    </div>
-    <div class="vote__thread">
-      <buttonVote>
-        <span><%= article.votes_down%></span>
-      </buttonVote>
-    </div>
+        <div>
+          <%= button_to vote_up_article_path(article), method: :post, class: "buttonVote" do %>
+            <span><%= article.vote_articles.where(value: 'up').count %></span>
+            <i class="fa-solid fa-arrow-up"></i>
+          <% end %>
+        </div>
+      </div>
+      <div class="vote__thread">
+        <div>
+          <%= button_to vote_down_article_path(article), method: :post, class: "buttonVote" do %>
+            <span><%= article.vote_articles.where(value: 'down').count %></span>
+            <i class="fa-solid fa-arrow-up"></i>
+          <% end %>
+        </div>
+      </div>
   </aside>
   <footer>
     <menu>
@@ -39,7 +45,13 @@
           Boost(<%= article.boost_count %>)
         <% end %>
       </aN></li>
-      <li><aN>more</aN></li>
+      <span class="dropdown">
+          <aN> more</aN>
+          <div class="dropdown-content">
+            <%= link_to "Edit this article", edit_article_path(article) %>
+            <%= button_to "Delete this article", article, method: :delete, class: "aN" %>
+          </div>
+        </span>
     </menu>
   </footer>
 </article>
