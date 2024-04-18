@@ -11,7 +11,7 @@ Rails.application.routes.draw do
     member do
       post 'vote_up'
       post 'vote_down'
-      put 'boost'
+      post 'boost'
     end
     get 'new_link', on: :collection
     get 'search', on: :collection

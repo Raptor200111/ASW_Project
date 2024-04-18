@@ -76,15 +76,11 @@
             <strong><%= link_to article.magazine.name, magazine_path(article.magazine) if article.magazine %></strong>
           </span>
           <span>
-            <% if article.boosted %>
-              <%= button_to toggle_boosted_article_path(article), method: :put, class: 'voteButton' do %>
+            <!--% if article.boosted %-->
+              <%= button_to boost_article_path(article), method: :post, class: 'voteButton' do %>
                 Boosted(1)
               <% end %>
-            <% else %>
-              <%= button_to toggle_boosted_article_path(article), method: :put, class: 'voteButton' do %>
-                Boost
-              <% end %>
-            <% end %>
+
           </span>
           <%# to make:
           icon
