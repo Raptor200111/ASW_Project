@@ -2,9 +2,7 @@
   <div class="webBody" id="filter">
     <nav>
       <%= link_to 'top', articles_path(type: params[:type],order_filter: 'top'), class: (@order_filter == 'top' ? 'activeFilter' : 'filter-link') %>
-      <a href="linkhere">hot</a>
       <%= link_to 'newest', articles_path(type: params[:type],order: 'newest'), class: (@order_filter == 'newest' ? 'activeFilter' : 'filter-link')%>
-      <a href="linkhere">active</a>
       <%= link_to 'commented', articles_path(type: params[:type],order_filter: 'commented'), class: (@order_filter == 'commented' ? 'activeFilter' : 'filter-link') %>
     </nav>
     <div class="filterIcons">
