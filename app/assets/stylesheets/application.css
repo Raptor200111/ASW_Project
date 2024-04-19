@@ -13,6 +13,7 @@
  *= require_tree .
  *= require_self
  */
+
  :root {
     --main-bg-color: #212121;
     --sections-color: #2c2d2d;
