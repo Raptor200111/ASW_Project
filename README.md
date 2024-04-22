@@ -1,13 +1,11 @@
-## Lab Session #04
+## Project: First delivery
 
-Students:
-
+**Students:**
+* Lin, Huiwen
 * Dalda, Alvar
-
+* Fornaguera, Laura
 * Martinez, Liliu
 
-* Lin, Huiwen
+**Taiga:** https://tree.taiga.io/project/yonazucena-projecte-asw/timeline
 
-* Fornaguera, Laura
-
-Your deployed webapp at Fly.io|Heroku|... (task #6): <https://*********.***.***/>
+Your deployed webapp at Heroku (task #6): <https://delta-12-kbin-8d30caa623a4.herokuapp.com/>
