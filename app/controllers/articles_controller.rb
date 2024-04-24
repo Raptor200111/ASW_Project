@@ -34,6 +34,7 @@ class ArticlesController < ApplicationController
   # GET /articles/1 or /articles/1.json
   def show
   end
+
   def search
     @search_text = params[:search_text]
     @articles = Article.where("title LIKE ? OR body LIKE ?", "%#{@search_text}%", "%#{@search_text}%")
@@ -165,6 +166,19 @@ class ArticlesController < ApplicationController
         format.json { render json: @article.errors, status: :unprocessable_entity }
       end
     end
+  end
+
+  def commentOrder
+    @article = Article.find(params[:id])
+    case params[:commentOrder]
+    when 'top'
+      @commentOrder_filter = 'top'
+    when 'newest'
+      @commentOrder_filter = 'newest'
+    when 'oldest'
+      @commentOrder_filter = 'oldest'
+    end
+    render :show
   end
 
   private
