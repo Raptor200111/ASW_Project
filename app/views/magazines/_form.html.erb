@@ -23,6 +23,16 @@
   </div>
 
   <div>
+    <%= form.label :description, style: "display: block" %>
+    <%= form.text_field :description %>
+  </div>
+
+  <div>
+    <%= form.label :rules, style: "display: block" %>
+    <%= form.text_field :rules %>
+  </div>
+
+  <div>
     <%= form.submit %>
   </div>
 <% end %>
