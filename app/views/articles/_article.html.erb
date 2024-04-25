@@ -50,13 +50,15 @@
             Boost(<%= article.boost_count %>)
           <% end %>
         </aN></li>
-        <span class="dropdown">
-          <aN> more</aN>
-          <div class="dropdown-content">
-            <%= link_to "Edit this article", edit_article_path(@article) %>
-            <%= button_to "Delete this article", @article, method: :delete, class: "aN" %>
-          </div>
-        </span>
+        <% if !current_user.nil? && article.user == current_user %>
+          <span class="dropdown">
+            <a> more</a>
+            <div class="dropdown-content">
+              <%= link_to "Edit this article", edit_article_path(article) %>
+              <%= button_to "Delete this article", article, method: :delete, class: "aN" %>
+            </div>
+          </span>
+        <% end %>
       </menu>
     </footer>
   </article>

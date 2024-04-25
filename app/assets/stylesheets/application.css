@@ -463,3 +463,10 @@ th, th > * {
     display: flex;
     gap: 10px;
 }
+
+
+.articleFooter{
+    display: flex;
+    flex-direction: row;
+    gap:10px;
+}
