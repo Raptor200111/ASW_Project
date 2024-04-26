@@ -13,10 +13,10 @@ class ArticlesController < ApplicationController
     # Apply ordering based on order_filter
     case @order_filter
     when 'top'
-      @articles = @articles.left_joins(:vote_articles)
-                   .group('articles.id')
-                   .select('articles.*, COUNT(vote_articles.id) AS votes_count')
-                   .order('votes_count DESC')
+      @articles = @articles.select("articles.*, (SELECT COUNT(*) FROM vote_articles WHERE vote_articles.article_id = articles.id AND vote_articles.value = 'up')
+                    - (SELECT COUNT(*) FROM vote_articles WHERE vote_articles.article_id = articles.id AND vote_articles.value = 'down') AS vote_score")
+                    .order('vote_score DESC')
+
     when 'commented'
       @articles = @articles.left_outer_joins(:comments)
                            .group(:id)
@@ -79,6 +79,7 @@ class ArticlesController < ApplicationController
       end
       return
     end
+
     @article = current_user.articles.build(article_params)
 
     respond_to do |format|
