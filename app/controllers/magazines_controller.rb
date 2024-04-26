@@ -3,6 +3,15 @@ class MagazinesController < ApplicationController
 
   # GET /magazines or /magazines.json
   def index
+    @mag = Magazine.all
+    @mag.each do |magazine|
+      magazine.nComms=0
+    	magazine.articles.each do |article|
+    		magazine.nComms += article.comments.count
+    	end
+    	magazine.save
+    end
+
     @magazines = Magazine.order(params[:sort])
     if params[:sort] == "threads"
       @magazines = Magazine.all.sort_by{|magazine| magazine.articles.size }.reverse
@@ -15,6 +24,10 @@ class MagazinesController < ApplicationController
 
   # GET /magazines/1 or /magazines/1.json
   def show
+    @magazine.nComms=0
+  	@magazine.articles.each do |article|
+  		@magazine.nComms += article.comments.count
+  	end
   end
 
   # GET /magazines/new
