@@ -12,9 +12,15 @@ class Article < ApplicationRecord
   validates :title, length: {minimum: 1, maximum: 255}
   validates :body, length: { maximum:35000 }
   validates :url, presence: true, if: :url_required?
+  before_save :ensure_url_has_protocol, if: :url_required?
   # Method to determine if URL is required based on article type
   def url_required?
     article_type == 'link'
+  end
+  def ensure_url_has_protocol
+    unless url.blank?
+      self.url = "http://#{url}" unless url.match?(/\Ahttp(s)?:\/\//)
+    end
   end
   def boost_count
     boosts.count
