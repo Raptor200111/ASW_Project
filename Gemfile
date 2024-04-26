@@ -22,6 +22,7 @@ gem "omniauth-rails_csrf_protection"
 gem "image_processing", ">= 1.2"
 gem "aws-sdk-s3", require: false
 
+
 group :development, :test do
   gem "sqlite3", "1.4.2"
   gem "debug",   "1.5.0", platforms: %i[ mri mingw x64_mingw ]
