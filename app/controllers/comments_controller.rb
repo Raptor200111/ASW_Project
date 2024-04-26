@@ -141,6 +141,8 @@ class CommentsController < ApplicationController
       else
         flash[:notice] = "You must be logged in to vote"
       end
+      @comment.votes_up = @comment.vote_comments.where(value: 'up').count
+      @comment.save
       redirect_back(fallback_location: @article)
     end
 end

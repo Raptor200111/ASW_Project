@@ -2,6 +2,10 @@
 
 <%= render @article %>
 
+<% if @commentOrder_filter.nil?
+    @commentOrder_filter = 'top'
+    end %>
+
 <div class="secHeader">
   <div class="webBody" id="filter">
     <nav>

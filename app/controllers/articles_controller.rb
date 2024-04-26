@@ -13,7 +13,10 @@ class ArticlesController < ApplicationController
     # Apply ordering based on order_filter
     case @order_filter
     when 'top'
-      @articles = @articles.order(votes_up: :desc)
+      @articles = @articles.left_joins(:vote_articles)
+                   .group('articles.id')
+                   .select('articles.*, COUNT(vote_articles.id) AS votes_count')
+                   .order('votes_count DESC')
     when 'commented'
       @articles = @articles.left_outer_joins(:comments)
                            .group(:id)
@@ -78,7 +81,6 @@ class ArticlesController < ApplicationController
       return
     end
     @article = current_user.articles.build(article_params)
-
     respond_to do |format|
       if @article.save
 #        if session[:created_ids].nil?
@@ -170,6 +172,7 @@ class ArticlesController < ApplicationController
 
   def commentOrder
     @article = Article.find(params[:id])
+    @commentOrder_filter = params[:commentOrder]
     case params[:commentOrder]
     when 'top'
       @commentOrder_filter = 'top'
