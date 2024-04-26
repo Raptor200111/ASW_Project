@@ -1,5 +1,4 @@
 Rails.application.routes.draw do
-
   devise_for :users, controllers: {
     registrations: 'users/registrations',
     sessions: 'users/sessions',
@@ -22,6 +21,7 @@ Rails.application.routes.draw do
       end
     end
   end
+
   resources :magazines do
     member do
       put 'subscribe'
@@ -29,6 +29,8 @@ Rails.application.routes.draw do
   end
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
+  get 'commentOrder', to: 'articles#commentOrder'
+  
   root 'articles#index'
   #root 'magazines#index'
 end
