@@ -41,6 +41,7 @@ Rails.application.routes.draw do
   resources :magazines do
     member do
       post 'subscribe'
+      delete 'unsubscibe'
     end
   end
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html

@@ -41,13 +41,13 @@ class MagazinesController < ApplicationController
 
   # POST /magazines or /magazines.json
   def create
-    if current_user.nil?
-      respond_to do |format|
-        format.html {redirect_to root_path, notice: 'You need to log in to subscribe.'}
-        format.json {head :no_content }
-      end
-      return
-    end
+    # if current_user.nil?
+      # respond_to do |format|
+        # format.html {redirect_to root_path, notice: 'You need to log in to subscribe.'}
+        # format.json {head :no_content }
+      # end
+      # return
+    # end
     @magazine = Magazine.new(magazine_params)
 
     respond_to do |format|
@@ -115,7 +115,15 @@ class MagazinesController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_magazine
-      @magazine = Magazine.find(params[:id])
+      puts "abans de l'exist"
+      if (!Magazine.exists?(params[:id]))
+        puts "hola"
+        respond_to do |format|
+          format.json { render(json: {"error": "Magazine with this id does not exist"}, status: 404)}
+        end
+      else
+        @magazine = Magazine.find(params[:id])
+      end
     end
 
     # Only allow a list of trusted parameters through.
