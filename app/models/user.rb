@@ -1,7 +1,9 @@
 class User < ApplicationRecord
+
   has_one_attached :avatar do |attachable|
     attachable.variant :thumb, resize_to_limit: [100, 100]
   end
+
   has_many :articles, dependent: :destroy
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
@@ -14,10 +16,10 @@ class User < ApplicationRecord
   has_many :comments, dependent: :destroy
   has_many :vote_comments
   has_many :voted_comments, through: :vote_comments, source: :comment
+
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable,
          :omniauthable, omniauth_providers: [:google_oauth2]
-
 
   def self.from_omniauth(auth)
     where(provider: auth.provider, uid: auth.uid).first_or_create do |user|
@@ -25,7 +27,22 @@ class User < ApplicationRecord
       user.password = Devise.friendly_token[0, 20]
       user.full_name = auth.info.name
       user.avatar_url = auth.info.image
-      user.avatar = auth.info.image
+      #user.avatar = nil
+      user.avatar.url = auth.info.image
     end
+  end
+
+  def get_avatar(size=100)
+    if self.avatar.attached?
+      self.avatar.variant(resize: "#{size}×#{size}!")
+    else
+      image_tag self.avatar_url, size: size
+    end
+  end
+
+  private
+
+  def user_params
+    params.require(:user).permit(:avatar)
   end
 end
