@@ -2,17 +2,15 @@ openapi: 3.0.2
 info:
   version: 1.0.0
   title: KBIN
-  description: "This is the Open API documentation for the REST API of our beloved application **KBIN** deployed at <https://174.129.53.222:8080>."
+  description: "This is the Open API documentation for the REST API of our beloved application **KBIN** deployed at <https://3.90.39.111:8080>."
 servers:
-  - url: 'https://174.129.53.222:8080/'
+  - url: 'https://3.90.39.111:8080/'
 paths:
   /magazines:
     post:
       tags:
         - Magazines
       summary: Adds a new magazine
-      security:
-      - ApiKeyAuth: []
       operationId: addMagazine
       requestBody:
         description: Provide a name and a title for the magazine. Description and rules are optional
@@ -53,6 +51,15 @@ paths:
               examples:
                 errorExample:
                   $ref: '#/components/examples/error400'
+        401:
+          description: 'Error: Unauthorized'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error401'
     get:
       tags:
       - Magazines
@@ -88,6 +95,85 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Magazine'
+        404:
+          description: 'Error: Not Found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error404'
+  /magazines/{magazineId}/subscribe:
+    post:
+      tags:
+      - Magazines
+      summary: If not subscribe, subscribe to the magazine.
+      security:
+      - ApiKeyAuth: []
+      operationId: subscirbe
+      parameters:
+      - name: magazineId
+        in: path
+        description: ID of Magazine to subscribe
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        200:
+            description: successful operation
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Magazine'
+        401:
+          description: 'Error: Unauthorized'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error401'
+        404:
+          description: 'Error: Not Found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error404'
+    delete:
+      tags:
+      - Magazines
+      summary: If subscribe, unsubscribe.
+      security:
+      - ApiKeyAuth: []
+      operationId: unsubscribe
+      parameters:
+      - name: magazineId
+        in: path
+        description: Id of Magazine to unsubscribe
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        204:
+          description: No content
+          content:
+            application/json: {}
+        401:
+          description: 'Error: Unauthorized'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error401'
         404:
           description: 'Error: Not Found'
           content:
