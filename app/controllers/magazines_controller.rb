@@ -84,6 +84,7 @@ class MagazinesController < ApplicationController
     end
   end
 
+  # POST /magazines/1/subscriptors
   def subscribe
     if current_user.nil?
       respond_to do |format|
