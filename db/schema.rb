@@ -108,7 +108,10 @@ ActiveRecord::Schema[7.0].define(version: 2024_05_16_140901) do
     t.datetime "remember_created_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+<<<<<<< HEAD
     t.string "description"
+=======
+>>>>>>> a49dc9c (intent generacio api key en els users)
     t.string "api_key"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
