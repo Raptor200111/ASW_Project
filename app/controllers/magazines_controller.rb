@@ -1,5 +1,5 @@
 class MagazinesController < ApplicationController
-  before_action :set_magazine, only: %i[ show edit update destroy subscribe ]
+  before_action :set_magazine, only: %i[ show edit update destroy subscribe unsubscribe]
 
   # GET /magazines or /magazines.json
   def index
@@ -41,13 +41,12 @@ class MagazinesController < ApplicationController
 
   # POST /magazines or /magazines.json
   def create
-    # if current_user.nil?
-      # respond_to do |format|
-        # format.html {redirect_to root_path, notice: 'You need to log in to subscribe.'}
-        # format.json {head :no_content }
-      # end
-      # return
-    # end
+    if current_user.nil?
+      respond_to do |format|
+        format.json { render(json: {"error": "Not logged in"}, status: 401)}
+      end
+      return
+    end
     @magazine = Magazine.new(magazine_params)
 
     respond_to do |format|
@@ -84,12 +83,35 @@ class MagazinesController < ApplicationController
     end
   end
 
-  # POST /magazines/1/subscriptors
+  # POST /magazines/1/subscribe
   def subscribe
     if current_user.nil?
       respond_to do |format|
-        format.html {redirect_to magazines_path, notice: 'You need to log in to subscribe.'}
-        format.json {head :no_content }
+        format.json { render(json: {"error": "Not logged in"}, status: 401)}
+      end
+      return
+    end
+    isSubs = current_user.subscriptions.find_by(magazine: @magazine)
+    begin
+      if isSubs
+        respond_to do |format|
+          format.json { render(json: {"error": "Already subscribed"}, status: 204)}
+        end
+      else
+        current_user.subs << @magazine
+        respond_to do |format|
+          format.html {redirect_to magazines_path, notice: 'Subscribed successfully!'}
+          format.json {head :no_content }
+        end
+      end
+    end
+  end
+
+  # POST /magazines/1/unsubcribe
+  def unsubscribe
+    if current_user.nil?
+      respond_to do |format|
+        format.json { render(json: {"error": "Not logged in"}, status: 401)}
       end
       return
     end
@@ -103,10 +125,8 @@ class MagazinesController < ApplicationController
           format.json {head :no_content }
         end
       else
-        current_user.subs << @magazine
         respond_to do |format|
-          format.html {redirect_to magazines_path, notice: 'Subscribed successfully!'}
-          format.json {head :no_content }
+          format.json { render(json: {"error": "Already unsubscribed"}, status: 204)}
         end
       end
     end
@@ -115,9 +135,7 @@ class MagazinesController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_magazine
-      puts "abans de l'exist"
       if (!Magazine.exists?(params[:id]))
-        puts "hola"
         respond_to do |format|
           format.json { render(json: {"error": "Magazine with this id does not exist"}, status: 404)}
         end
