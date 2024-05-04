@@ -42,10 +42,17 @@ class MagazinesController < ApplicationController
   # POST /magazines or /magazines.json
   def create
     if request.headers['Accept'].present?
-      if !User.exists?(token: request.Authorization['API key'])
+      if !request.headers['Authorization'].present?
+        respond_to do |format|
+          format.json { render(json: {"error": "Missing api key"}, status: 400)}
+        end
+        return
+      end
+      if !User.exists?(api_key: request.headers['key'])
         respond_to do |format|
           format.json { render(json: {"error": "Not logged in"}, status: 401)}
         end
+        return
       else
         @magazine = Magazine.new(request.body)
         respond_to do |format|
@@ -105,13 +112,20 @@ class MagazinesController < ApplicationController
   def subscribe
     # comportament http
     if request.headers['Accept'].present?
-      if !User.exists?(api_key: request.Authorization['API key'])
+      if !request.headers['Authorization'].present?
+        respond_to do |format|
+          format.json { render(json: {"error": "Missing api key"}, status: 400)}
+        end
+        return
+      end
+      if !User.exists?(api_key: request.headers['Authorization'])
         respond_to do |format|
           format.json { render(json: {"error": "Not logged in"}, status: 401)}
         end
+        return
       else
-        @user = User.find(api_key: request.Authorization['API key'])
-        isSubs = @user.find_by(magazine: @magazine)
+        @user = User.find(api_key: request.headers['Authorization'])
+        isSubs = @user.subscriptions.find_by(magazine: @magazine)
         begin
         if isSubs
           respond_to do |format|
@@ -156,13 +170,20 @@ class MagazinesController < ApplicationController
   # POST /magazines/1/unsubcribe
   def unsubscribe
     if request.headers['Accept'].present?
-      if !User.exists?(token: request.Authorization['API key'])
+      if !request.headers['Authorization'].present?
+        respond_to do |format|
+          format.json { render(json: {"error": "Missing api key"}, status: 400)}
+        end
+        return
+      end
+      if !User.exists?(api_key: request.headers['Authorization'])
         respond_to do |format|
           format.json { render(json: {"error": "Not logged in"}, status: 401)}
         end
+        return
       else
-        @user = User.find(token: request.Authorization['API key'])
-        isSubs = @user.find_by(magazine: @magazine)
+        @user = User.find(api_key: request.headers['Authorization'])
+        isSubs = @user.subscriptions.find_by(magazine: @magazine)
         begin
         if isSubs
           isSubs.destroy
