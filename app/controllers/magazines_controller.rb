@@ -41,21 +41,39 @@ class MagazinesController < ApplicationController
 
   # POST /magazines or /magazines.json
   def create
-    if current_user.nil?
-      respond_to do |format|
-        format.json { render(json: {"error": "Not logged in"}, status: 401)}
-      end
-      return
-    end
-    @magazine = Magazine.new(magazine_params)
-
-    respond_to do |format|
-      if @magazine.save
-        format.html { redirect_to magazine_url(@magazine), notice: "Magazine was successfully created." }
-        format.json { render :show, status: :created, location: @magazine }
+    if request.headers['Accept'].present?
+      if !User.exists?(token: request.Authorization['API key'])
+        respond_to do |format|
+          format.json { render(json: {"error": "Not logged in"}, status: 401)}
+        end
       else
-        format.html { render :new, status: :unprocessable_entity }
-        format.json { render json: @magazine.errors, status: :unprocessable_entity }
+        @magazine = Magazine.new(request.body)
+        respond_to do |format|
+          if @magazine.save
+            format.json { render :show, status: :created, location: @magazine }
+          else
+            format.json { render(json: {"error": "Missing parameter in body"}, status: 400)}
+          end
+        end
+      end
+    else
+      if current_user.nil?
+        respond_to do |format|
+          format.html {redirect_to magazines_path, notice: 'You need to log in to subscribe.'}
+          format.json {head :no_content }
+        end
+        return
+      end
+      @magazine = Magazine.new(magazine_params)
+
+      respond_to do |format|
+        if @magazine.save
+          format.html { redirect_to magazine_url(@magazine), notice: "Magazine was successfully created." }
+          format.json { render :show, status: :created, location: @magazine }
+        else
+          format.html { render :new, status: :unprocessable_entity }
+          format.json { render json: @magazine.errors, status: :unprocessable_entity }
+        end
       end
     end
   end
@@ -85,23 +103,51 @@ class MagazinesController < ApplicationController
 
   # POST /magazines/1/subscribe
   def subscribe
-    if current_user.nil?
-      respond_to do |format|
-        format.json { render(json: {"error": "Not logged in"}, status: 401)}
-      end
-      return
-    end
-    isSubs = current_user.subscriptions.find_by(magazine: @magazine)
-    begin
-      if isSubs
+    # comportament http
+    if request.headers['Accept'].present?
+      if !User.exists?(api_key: request.Authorization['API key'])
         respond_to do |format|
-          format.json { render(json: {"error": "Already subscribed"}, status: 204)}
+          format.json { render(json: {"error": "Not logged in"}, status: 401)}
         end
       else
-        current_user.subs << @magazine
+        @user = User.find(api_key: request.Authorization['API key'])
+        isSubs = @user.find_by(magazine: @magazine)
+        begin
+        if isSubs
+          respond_to do |format|
+            format.json { render(json: {"error": "Already subscribed"}, status: 204)}
+          end
+        else
+          @user.subs << @magazine
+          respond_to do |format|
+            format.html {redirect_to magazines_path, notice: 'Subscribed successfully!'}
+            format.json {head :no_content }
+          end
+        end
+        end
+      end
+    else
+    # comportament web
+      if current_user.nil?
         respond_to do |format|
-          format.html {redirect_to magazines_path, notice: 'Subscribed successfully!'}
+          format.html {redirect_to magazines_path, notice: 'You need to log in to subscribe.'}
           format.json {head :no_content }
+        end
+        return
+      end
+      isSubs = current_user.subscriptions.find_by(magazine: @magazine)
+      begin
+        if isSubs
+          respond_to do |format|
+            format.html {redirect_to magazines_path, notice: 'Already subscribed!'}
+            format.json {head :no_content }
+          end
+        else
+          current_user.subs << @magazine
+          respond_to do |format|
+            format.html {redirect_to magazines_path, notice: 'Subscribed successfully!'}
+            format.json {head :no_content }
+          end
         end
       end
     end
@@ -109,24 +155,51 @@ class MagazinesController < ApplicationController
 
   # POST /magazines/1/unsubcribe
   def unsubscribe
-    if current_user.nil?
-      respond_to do |format|
-        format.json { render(json: {"error": "Not logged in"}, status: 401)}
-      end
-      return
-    end
-    isSubs = current_user.subscriptions.find_by(magazine: @magazine)
-    begin
-      if isSubs
-        isSubs.destroy
-        current_user.subs.delete(@magazine)
+    if request.headers['Accept'].present?
+      if !User.exists?(token: request.Authorization['API key'])
         respond_to do |format|
-          format.html {redirect_to magazines_path, notice: 'Unsubscibed successfully!'}
-          format.json {head :no_content }
+          format.json { render(json: {"error": "Not logged in"}, status: 401)}
         end
       else
+        @user = User.find(token: request.Authorization['API key'])
+        isSubs = @user.find_by(magazine: @magazine)
+        begin
+        if isSubs
+          isSubs.destroy
+          @user.subs.delete(@magazine)
+          respond_to do |format|
+            format.html {redirect_to magazines_path, notice: 'Unsubscibed successfully!'}
+            format.json {head :no_content }
+          end
+        else
+          respond_to do |format|
+            format.json { render(json: {"error": "Already unsubscribed"}, status: 204)}
+          end
+        end
+        end
+      end
+    else
+      if current_user.nil?
         respond_to do |format|
-          format.json { render(json: {"error": "Already unsubscribed"}, status: 204)}
+          format.html {redirect_to magazines_path, notice: 'You need to log in to subscribe.'}
+          format.json {head :no_content }
+        end
+        return
+      end
+      isSubs = current_user.subscriptions.find_by(magazine: @magazine)
+      begin
+        if isSubs
+          isSubs.destroy
+          current_user.subs.delete(@magazine)
+          respond_to do |format|
+            format.html {redirect_to magazines_path, notice: 'Unsubscibed successfully!'}
+            format.json {head :no_content }
+          end
+        else
+          respond_to do |format|
+            format.html {redirect_to magazines_path, notice: 'Already unsubscribed!'}
+            format.json {head :no_content }
+          end
         end
       end
     end
@@ -135,7 +208,7 @@ class MagazinesController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_magazine
-      if (!Magazine.exists?(params[:id]))
+      if !Magazine.exists?(params[:id])
         respond_to do |format|
           format.json { render(json: {"error": "Magazine with this id does not exist"}, status: 404)}
         end
