@@ -3,11 +3,14 @@ class CommentsController < ApplicationController
 
   # GET /comments or /comments.json
   def index
-    @comments = Comment.all
+    @article = Article.find(params[:article_id])
+    @comments = @article.comments
+    render :json => @comments
   end
 
   # GET /comments/1 or /comments/1.json
   def show
+    render :json => @comment
   end
 
   # GET /comments/new
@@ -33,10 +36,7 @@ class CommentsController < ApplicationController
     @article = Article.find(params[:article_id])
 
     if current_user.nil?
-      respond_to do |format|
-        format.html {redirect_to @article, notice: "You need to log in to comment."}
-        format.json {head :no_content}
-      end
+      redirect_to @article, notice: "You need to log in to comment."
       return
     end
 
@@ -49,8 +49,8 @@ class CommentsController < ApplicationController
 
     respond_to do |format|
       if @comment.save
+        format.json { render json: @comment }
         format.html { redirect_to @article, notice: "Comment was successfully created." }
-        format.json { render :show, status: :created, location: @comment }
       else
         format.html { render :new, status: :unprocessable_entity }
         format.json { render json: @comment.errors, status: :unprocessable_entity }
