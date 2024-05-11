@@ -5,6 +5,17 @@ class CommentsController < ApplicationController
   def index
     @article = Article.find(params[:article_id])
     @comments = @article.comments
+
+    order = params[:order]
+    case order
+    when 'oldest'
+      @comments = @comments.order(created_at: :asc)
+    when 'newest'
+      @comments = @comments.order(created_at: :desc)
+    else
+      @comments = @comments.order(votes_up: :desc)
+    end
+
     render :json => @comments
   end
 
