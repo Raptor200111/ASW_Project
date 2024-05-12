@@ -13,6 +13,7 @@
  *= require_tree .
  *= require_self
  */
+
  :root {
     --main-bg-color: #212121;
     --sections-color: #2c2d2d;
@@ -462,11 +463,4 @@ th, th > * {
 .magazine{
     display: flex;
     gap: 10px;
-}
-
-
-.articleFooter{
-    display: flex;
-    flex-direction: row;
-    gap:10px;
 }

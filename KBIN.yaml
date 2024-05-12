@@ -1,0 +1,244 @@
+openapi: 3.0.2
+info:
+  version: 1.0.0
+  title: KBIN
+  description: "This is the Open API documentation for the REST API of our beloved application **KBIN** deployed at <https://3.90.39.111:8080>."
+servers:
+  - url: 'https://3.90.39.111:8080/'
+paths:
+  /magazines:
+    post:
+      tags:
+        - Magazines
+      summary: Adds a new magazine
+      operationId: addMagazine
+      requestBody:
+        description: Provide a name and a title for the magazine. Description and rules are optional
+        content:
+          application/json:
+            schema:
+              required:
+              - name
+              - title
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: 'Hola'
+                title:
+                  type: string
+                  example: 'Hola bon dia'
+                description:
+                  type: string
+                  example: ''
+                rules:
+                  type: string
+                  example: ''
+        required: true
+      responses:
+        201:
+          description: Tweet created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Magazine'
+        400:
+          description: 'Error: Bad Request'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error400'
+        401:
+          description: 'Error: Unauthorized'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error401'
+    get:
+      tags:
+      - Magazines
+      summary: Retrieves all the magazines
+      operationId: getAllMagazines
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Magazine'
+  /magazines/{magazineId}:
+    get:
+      tags:
+      - Magazines
+      summary: Finds a Magazine by its ID
+      operationId: getMagazineById
+      parameters:
+      - name: magazineId
+        in: path
+        description: ID of Tweet to return
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Magazine'
+        404:
+          description: 'Error: Not Found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error404'
+  /magazines/{magazineId}/subscribe:
+    post:
+      tags:
+      - Magazines
+      summary: If not subscribe, subscribe to the magazine.
+      security:
+      - ApiKeyAuth: []
+      operationId: subscirbe
+      parameters:
+      - name: magazineId
+        in: path
+        description: ID of Magazine to subscribe
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        200:
+            description: successful operation
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Magazine'
+        401:
+          description: 'Error: Unauthorized'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error401'
+        404:
+          description: 'Error: Not Found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error404'
+  /magazines/{magazineId}/unsubscribe:
+    delete:
+      tags:
+      - Magazines
+      summary: If subscribe, unsubscribe.
+      security:
+      - ApiKeyAuth: []
+      operationId: unsubscribe
+      parameters:
+      - name: magazineId
+        in: path
+        description: Id of Magazine to unsubscribe
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        204:
+          description: No content
+          content:
+            application/json: {}
+        401:
+          description: 'Error: Unauthorized'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error401'
+        404:
+          description: 'Error: Not Found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error404'
+components:
+  schemas:
+    Magazine:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 2
+        name:
+          type: string
+          example: hola
+        title:
+          type: string
+          example: hola
+        url:
+          type: string
+          example:
+        nComms:
+          type: integer
+          example: 9
+        description:
+          type: string
+          example:
+        rules:
+          type: string
+          example:
+        createdAt:
+          type: string
+          example:
+        updatedAt:
+          type: string
+          example:
+    ErrorResult:
+      type: object
+      properties:
+        message:
+          type: string
+          example: 'Content is too long (maximum is 280 characters)'
+      required:
+        - message
+  examples:
+    error400:
+      value:
+        message: "Content is too long (maximum is 280 characters)"
+    error401:
+      value:
+        message: "You provided no token"
+    error403:
+      value:
+        message: "You provided an invalid token"
+    error404:
+      value:
+        message: "There is no tweet with 'id'=8"
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      name: Authorization
+      in: header

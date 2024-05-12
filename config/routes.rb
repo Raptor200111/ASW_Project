@@ -26,14 +26,18 @@ Rails.application.routes.draw do
       end
     end
   end
+
   resources :magazines do
     member do
-      put 'subscribe'
+      post 'subscribe'
+      delete 'unsubscibe'
     end
   end
 
   resources :vote_articles
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
+
+  get 'commentOrder', to: 'articles#commentOrder'
 
   root 'articles#index'
   #root 'magazines#index'

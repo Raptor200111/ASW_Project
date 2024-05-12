@@ -3,6 +3,7 @@
     <p>No comments</p>
   <%else%>
     <% @user.comments.each do |comment| %>
+      <%= link_to 'Article', article_path(comment.article) %>
       <%= render partial: "/comments/commentNoReply", locals: {comment: comment} %>
     <% end %>
   <% end %>

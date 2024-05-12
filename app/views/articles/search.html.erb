@@ -1,5 +1,8 @@
 <%= stylesheet_link_tag 'searchThread', media: 'all' %>
+<body>
 <div id="middle" class = "page-search page-settings">
+  <div class="kbin-containerL">
+    <main id="main">
       <div class="section--top">
         <div class="container">
           <%= form_tag(search_articles_path, method: "get", class: "form") do %>
@@ -27,5 +30,7 @@
           </div>
         <% end %>
       </div>
-
+    </main>
+  </div>
 </div>
+</body>

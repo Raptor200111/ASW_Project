@@ -1,3 +1,15 @@
+body {
+    -webkit-tap-highlight-color: transparent;
+    -webkit-text-size-adjust: 100%;
+    background-color: #1c1c1c;
+    color: #cacece;
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", "Noto Sans", "Liberation Sans", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+    font-size: 1rem;
+    font-weight:  400;
+    line-height: 1.5;
+    margin: 0;
+    text-align: left;
+}
 #middle {
     background:#1c1c1c;
     padding-bottom: 3rem;
@@ -5,6 +17,40 @@
     z-index: 5;
 }
 
+div {
+    display: block;
+    unicode-bidi: isolate;
+}
+
+#middle .kbin-containerL {
+    grid-template-areas:
+        "main main"
+        "sidebar sidebar";
+    grid-template-columns: 1fr;
+    margin: 0 auto;
+}
+
+.kbin-containerL {
+    margin: 0 auto;
+    max-width: 1360px;
+}
+
+#middle #main {
+    overflow-x: clip;
+}
+#middle #main {
+    grid-area: main;
+    padding: 0 .5rem;
+    position: relative;
+}
+#main {
+    padding-bottom: 1rem;
+}
+
+main {
+    display: block;
+    unicode-bidi: isolate;
+}
 .section--top {
     border-top: 0 !important;
     margin-top: 0 !important;
@@ -15,6 +61,10 @@
     padding: 2rem 1rem;
 }
 
+div {
+    display: block;
+    unicode-bidi: isolate;
+}
 .page-settings .container {
     margin: 0 auto;
     max-width: 32.7rem;
@@ -77,4 +127,270 @@ input {
     height: 2.5rem;
     margin-bottom: .5rem;
     z-index: 5;
+}
+
+
+.subjects .entry:first-child, .subjects .post:first-child {
+    margin-top: 0;
+}
+.subjects .entry, .subjects .post {
+    margin-top: .5rem;
+}
+.entry {
+    display: grid;
+    grid-template-areas:
+        "vote image title"
+        "vote image shortDesc"
+        "vote image meta"
+        "vote image footer"
+        "body body body";
+    grid-template-columns: min-content min-content 1fr;
+    grid-template-rows: 1fr min-content;
+    padding: 0;
+    position: relative;
+    z-index: 2;
+}
+.section {
+    background-color: #2c2c2c;
+    border: 1px solid #373737;
+    color: #cacece;
+    margin-bottom: .5rem;
+    padding: 2rem 1rem;
+}
+.overview .comments-tree {
+    margin-top: -.5rem;
+}
+.comments-tree {
+    position: relative;
+}
+
+.subject .more {
+    background: #1c1c1c;
+    bottom: -15px;
+    cursor: pointer;
+    position: absolute;
+    text-align: center;
+    width: 100%;
+}
+.subject .js-container {
+    display: none;
+    font-size: 1rem;
+    margin-top: 1rem;
+}
+.js-container {
+    margin-bottom: 0;
+}
+
+
+.entry header {
+    align-items: flex-start;
+    display: flex;
+    flex-wrap: wrap;
+    grid-area: title;
+    margin: 10px;
+    overflow-wrap: anywhere;
+}
+.entry .no-image-placeholder, .entry .short-desc, .entry .vote, .entry figure, .entry footer, .entry header, .entry__meta {
+    margin-left: 10px;
+}
+.entry .no-image-placeholder img, .entry figure img {
+    height: 100%;
+    object-fit: contain;
+    -o-object-fit: contain;
+    position: absolute;
+    top: 0;
+    width: 100%;
+}
+
+
+.entry .no-image-placeholder, .entry figure {
+    height: 93.3333333333px;
+    width: 140px;
+}
+
+.entry .no-image-placeholder, .entry figure {
+    grid-area: image;
+    height: 113.3333333333px;
+    justify-self: right;
+    margin: 10px 0 10px 10px;
+    overflow: hidden;
+    position: relative;
+    width: 170px;
+}
+
+figure {
+    margin: 0;
+}
+
+figure {
+    display: block;
+    margin-block-start: 1em;
+    margin-block-end: 1em;
+    margin-inline-start: 40px;
+    margin-inline-end: 40px;
+    unicode-bidi: isolate;
+}
+.entry .no-image-placeholder .image-filler, .entry figure .image-filler {
+    background-position: 50%;
+    filter: blur(8px);
+    height: 110%;
+    left: -5%;
+    position: absolute;
+    top: -5%;
+    width: 110%;
+}
+img {
+    overflow-clip-margin: content-box;
+    overflow: clip;
+}
+header {
+    display: block;
+    unicode-bidi: isolate;
+}
+.entry header h1, .entry header h2 {
+    font-size: 1.1rem;
+    font-weight: 500;
+    line-height: 1.2;
+    margin: 0;
+}
+
+h2 {
+    display: block;
+    font-size: 1.5rem;
+    margin-block-start: 0.83em;
+    margin-block-end: 0.83em;
+    margin-inline-start: 0px;
+    margin-inline-end: 0px;
+    font-weight: bold;
+    unicode-bidi: isolate;
+}
+
+.section aN {
+    color: #cdd5de;
+    overflow-wrap: anywhere;
+}
+
+aN {
+    color: #cdd5de;
+    text-decoration: none;
+}
+
+.entry__domain, .entry__domain aN {
+    color: #cecece;
+}
+.entry__domain {
+    font-size: .7rem;
+}
+
+.content, .row {
+    position: relative;
+    word-break: break-word;
+}
+.content {
+    overflow: hidden !important;
+}
+.entry .short-desc {
+    grid-area: shortDesc;
+}
+
+.entry .short-desc p {
+    font-size: .85rem;
+    margin: 0 10px 1rem 0;
+}
+
+p {
+    display: block;
+    margin-block-start: 1em;
+    margin-block-end: 1em;
+    margin-inline-start: 0px;
+    margin-inline-end: 0px;
+    unicode-bidi: isolate;
+}
+
+.entry__meta {
+    align-self: flex-end;
+    grid-area: meta;
+}
+
+.meta {
+    color: #cecece;
+    font-size: .8rem;
+    opacity: .75;
+}
+aside {
+    display: block;
+    unicode-bidi: isolate;
+}
+
+.meta aN:first-of-type {
+    margin-left: 0;
+}
+
+.meta aN {
+    color: #d9dde5;
+    font-weight: 700;
+    padding: .5rem 0;
+}
+
+.vote {
+    display: grid;
+    gap: .5rem;
+    grid-template-rows: min-content min-content;
+}
+.vote__thread {
+    display: block;
+    margin-top: 0em;
+    unicode-bidi: isolate;
+}
+
+.vote buttonVote {
+    background-color:#1c1c1c;
+    border: 0;
+    color: #b6b6b6;
+    cursor: pointer;
+    font-weight: 700;
+    height: 1.9rem;
+    margin: 0;
+    padding: 0;
+    width: 4rem;
+}
+
+
+.entry footer {
+    align-self: flex-end;
+    grid-area: footer;
+    margin-bottom:10px;
+}
+
+footer {
+    display: block;
+    unicode-bidi: isolate;
+}
+
+.entry footer menu {
+    column-gap: 1rem;
+    display: grid;
+    grid-auto-columns: max-content;
+    grid-auto-flow: column;
+    list-style: none;
+    opacity: .75;
+}
+.section menu {
+    font-size: .8rem;
+}
+menu {
+    margin: 0;
+    padding: 0;
+}
+
+.entry footer menu>li {
+    line-height: 1rem;
+}
+
+.section menu>li {
+    padding: .5rem 0;
+    position: relative;
+}
+.meta-link {
+    color: #d9dde5;
 }

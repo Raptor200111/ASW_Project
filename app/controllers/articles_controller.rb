@@ -15,10 +15,10 @@ class ArticlesController < ApplicationController
     # Apply ordering based on order_filter
     case @order_filter
     when 'top'
-      @articles = @articles.left_joins(:vote_articles)
-                   .group('articles.id')
-                   .select('articles.*, COUNT(vote_articles.id) AS votes_count')
-                   .order('votes_count DESC')
+      @articles = @articles.select("articles.*, (SELECT COUNT(*) FROM vote_articles WHERE vote_articles.article_id = articles.id AND vote_articles.value = 'up')
+                    - (SELECT COUNT(*) FROM vote_articles WHERE vote_articles.article_id = articles.id AND vote_articles.value = 'down') AS vote_score")
+                    .order('vote_score DESC')
+
     when 'commented'
       @articles = @articles.left_outer_joins(:comments)
                            .group(:id)
@@ -39,6 +39,7 @@ class ArticlesController < ApplicationController
   # GET /articles/1 or /articles/1.json
   def show
   end
+
   def search
     @search_text = params[:search_text]
     @articles = Article.where("title LIKE ? OR body LIKE ?", "%#{@search_text}%", "%#{@search_text}%")
@@ -151,6 +152,20 @@ class ArticlesController < ApplicationController
         format.json { render json: @article.errors, status: :unprocessable_entity }
       end
     end
+  end
+
+  def commentOrder
+    @article = Article.find(params[:id])
+    @commentOrder_filter = params[:commentOrder]
+    case params[:commentOrder]
+    when 'top'
+      @commentOrder_filter = 'top'
+    when 'newest'
+      @commentOrder_filter = 'newest'
+    when 'oldest'
+      @commentOrder_filter = 'oldest'
+    end
+    render :show
   end
 
   private

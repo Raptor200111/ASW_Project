@@ -34,16 +34,12 @@
     </thead>
 		<tbody>
   		<% @magazines.each do |magazine| %>
-  		<script> magazine.nComms = 0 </script>
   			<tr>
   				<th><%= link_to magazine.name, magazine_path(magazine) %></th>
   				<th><%= magazine.articles.size %></th>
-    				<script><%= magazine.articles.each do |article| %>
-    				  magazine.nComms += article.comments.size
-    				<% end %>
-    				</script>
   				<th><%= magazine.nComms %></th>
-  				<th><%= magazine.subscribers.size %><%= button_to !current_user.nil? && current_user.subscriptions.find_by(magazine: magazine) ? "Unsubscribe" : "Subscribe", subscribe_magazine_path(magazine), method: :put %></th>
+  				<th><%= magazine.subscribers.size %><%= button_to !current_user.nil? && current_user.subscriptions.find_by(magazine: magazine) ? "Unsubscribe" : "Subscribe",
+  				      current_user.subscriptions.find_by(magazine: magazine) ? unsubcribe_magazine_path(magazine) : subcribe_magazine_path(magazine), current_user.subscriptions.find_by(magazine: magazine) ? method: :delete : method: :post %></th>
   			</tr>
   		<% end %>
 		</tbody>
