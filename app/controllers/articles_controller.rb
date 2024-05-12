@@ -1,5 +1,7 @@
 class ArticlesController < ApplicationController
+  before_action :authenticate_user!, only: [:create, :update, :destroy, :boost, :vote_up, :vote_down]
   before_action :set_article, only: %i[ show edit update destroy vote_up vote_down boost]
+  before_action :check_owner, only: [:update, :destroy]
 
   # GET /articles or /articles.json
   def index
@@ -72,28 +74,26 @@ class ArticlesController < ApplicationController
 
   # POST /articles or /articles.json
   def create
-    if current_user.nil?
+    if request.headers['Accept'].present?
+      @article = Article.new(request.body)
       respond_to do |format|
-        format.html {redirect_to new_user_session_path, notice: 'You need to log in to create article.'}
-        format.json {head :no_content }
+        if @article.save
+          format.json { render :show, status: :created, location: @article }
+        else
+          format.json { render(json: {"error": "Missing parameter in body"}, status: 400)}
+        end
       end
-      return
-    end
-    @article = current_user.articles.build(article_params)
-
-    respond_to do |format|
-      if @article.save
-#        if session[:created_ids].nil?
-#           session[:created_ids]= [@article.id] #.push(@article.id)
-#        else
-#           session[:created_ids].push(@article.id)
-#        end
-        format.html { redirect_to article_url(@article), notice: "Article was successfully created." }
-        format.json { render :show, status: :created, location: @article }
-      else
-        @show_url_field = @article.url_required?
-        format.html { render :new, status: :unprocessable_entity }
-        format.json { render json: @article.errors, status: :unprocessable_entity }
+    else
+      @article = current_user.articles.build(article_params)
+      respond_to do |format|
+        if @article.save
+          format.html { redirect_to article_url(@article), notice: "Article was successfully created." }
+          format.json { render :show, status: :created, location: @article }
+        else
+          @show_url_field = @article.url_required?
+          format.html { render :new, status: :unprocessable_entity }
+          format.json { render json: @article.errors, status: :unprocessable_entity }
+        end
       end
     end
   end
@@ -113,20 +113,10 @@ class ArticlesController < ApplicationController
 
   # DELETE /articles/1 or /articles/1.json
   def destroy
-    @article = Article.find(params[:id])
-
-    # Check if the current user is the creator of the article
-    if !current_user.nil? and @article.user == current_user
-      @article.destroy
-      respond_to do |format|
-        format.html { redirect_to articles_url, notice: "Article was successfully destroyed." }
-        format.json { head :no_content }
-      end
-    else
-      respond_to do |format|
-        format.html { redirect_to root_path, notice: "You are not allowed to delete this article." }
-        format.json { head :forbidden }
-      end
+    @article.destroy
+    respond_to do |format|
+      format.html { redirect_to articles_url, notice: "Article was successfully destroyed." }
+      format.json { head :no_content }
     end
   end
   #/articles/:id/vote_up
@@ -140,13 +130,6 @@ class ArticlesController < ApplicationController
   end
 
   def boost
-    if current_user.nil?
-      respond_to do |format|
-        format.html {redirect_to new_user_session_path, notice: 'You need to log in to boost.'}
-        format.json {head :no_content }
-      end
-      return
-    end
     existing_boost = current_user.boosts.find_by(article: @article)
     begin
       if existing_boost
@@ -206,6 +189,39 @@ class ArticlesController < ApplicationController
         redirect_to new_user_session_path
       else
         redirect_back(fallback_location: root_path)
+      end
+    end
+
+    def authenticate_user!
+      if request.headers['Accept'].present?
+        if !request.headers['Authorization'].present?
+          respond_to do |format|
+            format.json { render(json: {"error": "Missing api key"}, status: 400)}
+          end
+          return
+        end
+        if !User.exists?(api_key: request.headers['Authorization'])
+          respond_to do |format|
+            format.json { render(json: {"error": "Not logged in"}, status: 401)}
+          end
+          return
+        end
+      else
+        unless current_user
+          respond_to do |format|
+            format.html { redirect_to new_user_session_path, alert: 'You must be logged in to perform this action.' }
+            format.json { render json: { error: 'You must be logged in to perform this action' }, status: :unauthorized }
+          end
+        end
+      end
+    end
+
+    def check_owner
+      unless current_user == @article.user
+        respond_to do |format|
+          format.html { redirect_to articles_url, alert: 'You are not authorized to perform this action.' }
+          format.json { render json: { error: 'You are not authorized to perform this action' }, status: :forbidden }
+        end
       end
     end
 

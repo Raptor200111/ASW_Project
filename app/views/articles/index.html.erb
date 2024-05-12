@@ -20,7 +20,8 @@
   </div>
 </div>
 
-<p style="color: green"><%= notice %></p>
+<h2 style="color: green"><%= notice %></h2>
+<h2 style="color: red"><%= alert %></h2>
 
 <% @articles.each do |article| %>
   <%= render partial: "short_article", locals: {article: article} %>

@@ -1,4 +1,8 @@
 Rails.application.routes.draw do
+  get 'vote_articles/index'
+  get 'vote_articles/show'
+  get 'vote_articles/new'
+  get 'vote_articles/edit'
 
   devise_for :users, controllers: {
     registrations: 'users/registrations',
@@ -27,6 +31,8 @@ Rails.application.routes.draw do
       put 'subscribe'
     end
   end
+
+  resources :vote_articles
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
   root 'articles#index'
