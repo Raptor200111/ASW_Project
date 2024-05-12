@@ -34,10 +34,19 @@ class ArticlesController < ApplicationController
     when 'link'
       @articles = @articles.where(article_type: 'link')
     end
+    respond_to do |format|
+      format.html
+      format.json { render json: @articles, status: :ok }
+    end
   end
 
   # GET /articles/1 or /articles/1.json
   def show
+    @article = Article.find(params[:id])
+    respond_to do |format|
+      format.html
+      format.json { render json: @article, status: :ok }
+    end
   end
 
   def search

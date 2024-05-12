@@ -44,7 +44,8 @@
                                          PATCH    /articles/:id(.:format)                                                                           articles#update
                                          PUT      /articles/:id(.:format)                                                                           articles#update
                                          DELETE   /articles/:id(.:format)                                                                           articles#destroy
-                      subscribe_magazine PUT      /magazines/:id/subscribe(.:format)                                                                magazines#subscribe
+                      subscribe_magazine POST     /magazines/:id/subscribe(.:format)                                                                magazines#subscribe
+                     unsubscibe_magazine DELETE   /magazines/:id/unsubscibe(.:format)                                                               magazines#unsubscibe
                                magazines GET      /magazines(.:format)                                                                              magazines#index
                                          POST     /magazines(.:format)                                                                              magazines#create
                             new_magazine GET      /magazines/new(.:format)                                                                          magazines#new
@@ -61,6 +62,7 @@
                                          PATCH    /vote_articles/:id(.:format)                                                                      vote_articles#update
                                          PUT      /vote_articles/:id(.:format)                                                                      vote_articles#update
                                          DELETE   /vote_articles/:id(.:format)                                                                      vote_articles#destroy
+                            commentOrder GET      /commentOrder(.:format)                                                                           articles#commentOrder
                                     root GET      /                                                                                                 articles#index
         turbo_recede_historical_location GET      /recede_historical_location(.:format)                                                             turbo/native/navigation#recede
         turbo_resume_historical_location GET      /resume_historical_location(.:format)                                                             turbo/native/navigation#resume
