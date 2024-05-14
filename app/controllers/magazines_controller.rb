@@ -41,22 +41,14 @@ class MagazinesController < ApplicationController
 
   # POST /magazines or /magazines.json
   def create
-<<<<<<< HEAD
     if request.headers['Accept'].present? && request.headers['Accept'] == 'application/json'
-=======
-    if request.headers['Accept'].present?
->>>>>>> d4f7b78 (comprovacions de si hi ha api key)
       if !request.headers['Authorization'].present?
         respond_to do |format|
           format.json { render(json: {"error": "Missing api key"}, status: 400)}
         end
         return
       end
-<<<<<<< HEAD
       if ('1' != request.headers['Authorization'])
-=======
-      if !User.exists?(api_key: request.headers['key'])
->>>>>>> d4f7b78 (comprovacions de si hi ha api key)
         respond_to do |format|
           format.json { render(json: {"error": "Not logged in"}, status: 401)}
         end
@@ -109,32 +101,19 @@ class MagazinesController < ApplicationController
   # POST /magazines/1/subscribe
   def subscribe
     # comportament http
-<<<<<<< HEAD
     if request.headers['Accept'].present? && request.headers['Accept'] == 'application/json'
-=======
-    if request.headers['Accept'].present?
->>>>>>> d4f7b78 (comprovacions de si hi ha api key)
       if !request.headers['Authorization'].present?
         respond_to do |format|
           format.json { render(json: {"error": "Missing api key"}, status: 400)}
         end
         return
-<<<<<<< HEAD
       elsif ('1' != request.headers['Authorization'])
-=======
-      end
-      if !User.exists?(api_key: request.headers['Authorization'])
->>>>>>> d4f7b78 (comprovacions de si hi ha api key)
         respond_to do |format|
           format.json { render(json: {"error": "Not logged in"}, status: 401)}
         end
         return
       else
-<<<<<<< HEAD
         @user = User.find(id: request.headers['Authorization'])
-=======
-        @user = User.find(api_key: request.headers['Authorization'])
->>>>>>> d4f7b78 (comprovacions de si hi ha api key)
         isSubs = @user.subscriptions.find_by(magazine: @magazine)
         begin
           if isSubs
