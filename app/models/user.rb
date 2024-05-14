@@ -1,8 +1,7 @@
 class User < ApplicationRecord
 
-  has_one_attached :avatar do |attachable|
-    attachable.variant :thumb, resize_to_limit: [100, 100]
-  end
+  has_one_attached :avatar
+  has_one_attached :background
 
   has_many :articles, dependent: :destroy
   # Include default devise modules. Others available are:
@@ -27,8 +26,6 @@ class User < ApplicationRecord
       user.password = Devise.friendly_token[0, 20]
       user.full_name = auth.info.name
       user.avatar_url = auth.info.image
-      #user.avatar = nil
-      user.avatar.url = auth.info.image
     end
   end
 
