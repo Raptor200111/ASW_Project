@@ -1,4 +1,8 @@
 class User < ApplicationRecord
+
+  has_one_attached :avatar
+  has_one_attached :background
+
   has_many :articles, dependent: :destroy
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
@@ -11,6 +15,7 @@ class User < ApplicationRecord
   has_many :comments, dependent: :destroy
   has_many :vote_comments
   has_many :voted_comments, through: :vote_comments, source: :comment
+
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable,
          :omniauthable, omniauth_providers: [:google_oauth2]
@@ -21,7 +26,20 @@ class User < ApplicationRecord
       user.password = Devise.friendly_token[0, 20]
       user.full_name = auth.info.name
       user.avatar_url = auth.info.image
-
     end
+  end
+
+  def get_avatar(size=100)
+    if self.avatar.attached?
+      self.avatar.variant(resize: "#{size}×#{size}!")
+    else
+      image_tag self.avatar_url, size: size
+    end
+  end
+
+  private
+
+  def user_params
+    params.require(:user).permit(:avatar)
   end
 end

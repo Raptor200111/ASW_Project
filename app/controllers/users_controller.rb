@@ -10,6 +10,31 @@ class UsersController < ApplicationController
     #end
   end
 
+  def update
+    @user = User.find_by(id: params[:id])
+    @user.full_name = params[:user][:full_name]
+    if params[:user][:avatar] != nil
+      @user.avatar = params[:user][:avatar]
+    end
+    if params[:user][:background] != nil
+      @user.background = params[:user][:background]
+    end
+    @user.save
+    redirect_to user_path(@user.id)
+  end
+
+  def deleteAvatar
+    @user = User.find_by(id: params[:id])
+    @user.avatar.purge
+    redirect_to user_path(@user.id)
+  end
+
+  def deleteBack
+    @user = User.find_by(id: params[:id])
+    @user.background.purge
+    redirect_to user_path(@user.id)
+  end
+
   private
 
   def set_user
