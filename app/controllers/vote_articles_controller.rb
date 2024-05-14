@@ -29,7 +29,7 @@ class VoteArticlesController < ApplicationController
   def create
       @article = Article.find(params[:article_id])
       if current_user.nil?
-        @existing_vote = @article.vote_articles.find_by(params[:user_id])
+        @existing_vote = @article.vote_articles.find_by(user_id: params[:user_id])
       else
         @existing_vote = @article.vote_articles.find_by(user_id: current_user.id)
       end
@@ -42,7 +42,7 @@ class VoteArticlesController < ApplicationController
         end
       else
         if current_user.nil?
-          @vote_article = @article.vote_articles.find_or_initialize_by(params[:user_id])
+          @vote_article = @article.vote_articles.find_or_initialize_by(user_id: params[:user_id])
         else
           @vote_article = @article.vote_articles.find_or_initialize_by(user_id: current_user.id)
         end
@@ -133,7 +133,7 @@ class VoteArticlesController < ApplicationController
         return
       end
     else
-      if current_user != @article.user
+      if current_user != @vote_article.user
         respond_to do |format|
           format.html { redirect_to articles_url, alert: 'You are not authorized to perform this action.' }
           format.json { render json: { error: 'You are not authorized to perform this action' }, status: :forbidden }

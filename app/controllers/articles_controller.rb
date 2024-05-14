@@ -52,6 +52,10 @@ class ArticlesController < ApplicationController
   def search
     @search_text = params[:search_text]
     @articles = Article.where("title LIKE ? OR body LIKE ?", "%#{@search_text}%", "%#{@search_text}%")
+    respond_to do |format|
+      format.html
+      format.json { render json: @articles, status: :ok }
+    end
   end
 
   # GET /articles/new
@@ -158,19 +162,19 @@ class ArticlesController < ApplicationController
   end
 
   def boost
-    existing_boost = current_user.boosts.find_by(article: @article)
+    @existing_boost = current_user.boosts.find_by(article: @article)
     begin
-      if existing_boost
-        existing_boost.destroy
+      if @existing_boost
+        @existing_boost.destroy
         respond_to do |format|
           format.html {redirect_back(fallback_location: root_path, notice: 'Boost removed successfully!')}
-          format.json {render :show, status: :ok, location: @article }
+          format.json {render @existing_boost, status: :ok}
         end
       else
         current_user.boosts.create!(article: @article)
         respond_to do |format|
           format.html {redirect_back(fallback_location: root_path, notice: 'Article boosted successfully!')}
-          format.json {render :show, status: :ok, location: @article }
+          format.json {render @existing_boost, status: :ok }
         end
       end
     rescue ActiveRecord::RecordInvalid => e
