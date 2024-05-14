@@ -1,5 +1,5 @@
 class MagazinesController < ApplicationController
-  before_action :set_magazine, only: %i[ show edit update destroy subscribe unsubscribe]
+  before_action :set_magazine, only: %i[ show edit update subscribe unsubscribe]
 
   # GET /magazines or /magazines.json
   def index
@@ -41,7 +41,7 @@ class MagazinesController < ApplicationController
 
   # POST /magazines or /magazines.json
   def create
-    if request.headers['Accept'].present?
+    if request.headers['Accept'].present? && request.headers['Accept'] == 'application/json'
       if !request.headers['Authorization'].present?
         respond_to do |format|
           format.json { render(json: {"error": "Missing api key"}, status: 400)}
@@ -54,7 +54,7 @@ class MagazinesController < ApplicationController
         end
         return
       else
-        @magazine = Magazine.new(request.body)
+        @magazine = Magazine.new(JSON.parse(request.body.read))
         respond_to do |format|
           if @magazine.save
             format.json { render :show, status: :created, location: @magazine }
@@ -98,27 +98,16 @@ class MagazinesController < ApplicationController
     end
   end
 
-  # DELETE /magazines/1 or /magazines/1.json
-  def destroy
-    @magazine.destroy
-
-    respond_to do |format|
-      format.html { redirect_to magazines_url, notice: "Magazine was successfully destroyed." }
-      format.json { head :no_content }
-    end
-  end
-
   # POST /magazines/1/subscribe
   def subscribe
     # comportament http
-    if request.headers['Accept'].present?
+    if request.headers['Accept'].present? && request.headers['Accept'] == 'application/json'
       if !request.headers['Authorization'].present?
         respond_to do |format|
           format.json { render(json: {"error": "Missing api key"}, status: 400)}
         end
         return
-      end
-      if !User.exists?(api_key: request.headers['Authorization'])
+      elsif !User.exists?(api_key: request.headers['Authorization'])
         respond_to do |format|
           format.json { render(json: {"error": "Not logged in"}, status: 401)}
         end
@@ -127,49 +116,52 @@ class MagazinesController < ApplicationController
         @user = User.find(api_key: request.headers['Authorization'])
         isSubs = @user.subscriptions.find_by(magazine: @magazine)
         begin
-        if isSubs
-          respond_to do |format|
-            format.json { render(json: {"error": "Already subscribed"}, status: 204)}
+          if isSubs
+            respond_to do |format|
+              format.json { render(json: {"error": "Already subscribed"}, status: 204)}
+            end
+          else
+            @user.subs << @magazine
+            respond_to do |format|
+              format.html {redirect_to magazines_path, notice: 'Subscribed successfully!'}
+              format.json {head :no_content }
+            end
           end
-        else
-          @user.subs << @magazine
-          respond_to do |format|
-            format.html {redirect_to magazines_path, notice: 'Subscribed successfully!'}
-            format.json {head :no_content }
-          end
-        end
         end
       end
     else
-    # comportament web
+      # comportament web
       if current_user.nil?
-        respond_to do |format|
-          format.html {redirect_to magazines_path, notice: 'You need to log in to subscribe.'}
-          format.json {head :no_content }
-        end
-        return
+      respond_to do |format|
+        format.html {redirect_to magazines_path, notice: 'You need to log in to subscribe.'}
+        format.json {head :no_content }
       end
+      return
+      else
       isSubs = current_user.subscriptions.find_by(magazine: @magazine)
-      begin
-        if isSubs
-          respond_to do |format|
-            format.html {redirect_to magazines_path, notice: 'Already subscribed!'}
-            format.json {head :no_content }
-          end
-        else
-          current_user.subs << @magazine
-          respond_to do |format|
-            format.html {redirect_to magazines_path, notice: 'Subscribed successfully!'}
-            format.json {head :no_content }
+        begin
+          if isSubs
+            isSubs.destroy
+            current_user.subs.delete(@magazine)
+            respond_to do |format|
+              format.html {redirect_to magazines_path, notice: 'Unsubscibed successfully!'}
+              format.json {head :no_content }
+            end
+          else
+            current_user.subs << @magazine
+            respond_to do |format|
+              format.html {redirect_to magazines_path, notice: 'Subscribed successfully!'}
+              format.json {head :no_content }
+            end
           end
         end
       end
     end
   end
 
-  # POST /magazines/1/unsubcribe
+  # DELETE /magazines/1/unsubscribe
   def unsubscribe
-    if request.headers['Accept'].present?
+    if request.headers['Accept'].present? && request.headers['Accept'] == 'application/json'
       if !request.headers['Authorization'].present?
         respond_to do |format|
           format.json { render(json: {"error": "Missing api key"}, status: 400)}
@@ -197,30 +189,6 @@ class MagazinesController < ApplicationController
             format.json { render(json: {"error": "Already unsubscribed"}, status: 204)}
           end
         end
-        end
-      end
-    else
-      if current_user.nil?
-        respond_to do |format|
-          format.html {redirect_to magazines_path, notice: 'You need to log in to subscribe.'}
-          format.json {head :no_content }
-        end
-        return
-      end
-      isSubs = current_user.subscriptions.find_by(magazine: @magazine)
-      begin
-        if isSubs
-          isSubs.destroy
-          current_user.subs.delete(@magazine)
-          respond_to do |format|
-            format.html {redirect_to magazines_path, notice: 'Unsubscibed successfully!'}
-            format.json {head :no_content }
-          end
-        else
-          respond_to do |format|
-            format.html {redirect_to magazines_path, notice: 'Already unsubscribed!'}
-            format.json {head :no_content }
-          end
         end
       end
     end

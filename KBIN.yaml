@@ -2,16 +2,29 @@ openapi: 3.0.2
 info:
   version: 1.0.0
   title: KBIN
-  description: "This is the Open API documentation for the REST API of our beloved application **KBIN** deployed at <https://3.90.39.111:8080>."
+  description: "This is the Open API documentation for the REST API of our beloved application **KBIN** deployed at <http://75.101.238.24:8080>."
 servers:
-  - url: 'https://3.90.39.111:8080/'
+  - url: 'http://75.101.238.24:8080'
 paths:
   /magazines:
     post:
       tags:
         - Magazines
       summary: Adds a new magazine
+      security:
+      - ApiKeyAuth: []
       operationId: addMagazine
+      parameters:
+      - name: sort
+        in: query
+        description: The way you want to sort the magazines
+        required: false
+        schema:
+          type: string
+          enum:
+           - 'threads'
+           - 'comments'
+           - 'subs'
       requestBody:
         description: Provide a name and a title for the magazine. Description and rules are optional
         content:
