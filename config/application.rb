@@ -8,6 +8,9 @@ Bundler.require(*Rails.groups)
 
 module Waslab04
   class Application < Rails::Application
+
+    config.web_console.permissions = '0.0.0.0'
+    config.web_console.whiny_requests = false
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 7.0
 
