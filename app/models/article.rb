@@ -25,5 +25,17 @@ class Article < ApplicationRecord
   def boost_count
     boosts.count
   end
+
+  def as_custom_json
+    as_json(
+      include: {
+        user: { only: [:id, :username, :email] },
+        magazine: { only: [:id, :name] },
+        vote_articles: { only: [:id, :value, :user_id] },
+        boosts:{ only: [:id, :user_id, :created_at]},
+        comments: { only: [:id, :user_id, :parent_id, :body, :created_at]}
+      },
+      except: [:user_id, :magazine_id]
+    )
+  end
 end
-#  belongs_to :user, class_name: 'User', optional: true

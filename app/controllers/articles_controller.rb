@@ -40,6 +40,11 @@ class ArticlesController < ApplicationController
 
   # GET /articles/1 or /articles/1.json
   def show
+    respond_to do |format|
+      format.html
+      format.json { render json:  @article.as_custom_json, status: :ok }
+      #format.json { render json: article_with_details(@article), status: :ok }
+    end
   end
 
   def search
@@ -192,7 +197,13 @@ class ArticlesController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_article
-      @article = Article.find(params[:id])
+      #@article = Article.find(params[:id])
+      @article = Article.includes(:user, :magazine, :vote_articles, :boosts, :comments).find(params[:id])
+    rescue ActiveRecord::RecordNotFound
+      respond_to do |format|
+        format.html { redirect_to articles_url, alert: 'Article not found.' }
+        format.json { render json: { error: "Not Found" }, status: :not_found }
+      end
     end
 
     # Only allow a list of trusted parameters through.
