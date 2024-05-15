@@ -16,6 +16,9 @@
                                          PUT      /users(.:format)                                                                                  users/registrations#update
                                          DELETE   /users(.:format)                                                                                  users/registrations#destroy
                                          POST     /users(.:format)                                                                                  users/registrations#create
+                                         PATCH    /u/:id(.:format)                                                                                  users#update
+                                         PATCH    /u/:id/deleteAvatar(.:format)                                                                     users#deleteAvatar
+                                         PATCH    /u/:id/deleteBack(.:format)                                                                       users#deleteBack
                                     user GET      /u/:id(.:format)                                                                                  users#profile
                          vote_up_article POST     /articles/:id/vote_up(.:format)                                                                   articles#vote_up
                        vote_down_article POST     /articles/:id/vote_down(.:format)                                                                 articles#vote_down
@@ -49,6 +52,15 @@
                                          PATCH    /magazines/:id(.:format)                                                                          magazines#update
                                          PUT      /magazines/:id(.:format)                                                                          magazines#update
                                          DELETE   /magazines/:id(.:format)                                                                          magazines#destroy
+                           vote_articles GET      /vote_articles(.:format)                                                                          vote_articles#index
+                                         POST     /vote_articles(.:format)                                                                          vote_articles#create
+                        new_vote_article GET      /vote_articles/new(.:format)                                                                      vote_articles#new
+                       edit_vote_article GET      /vote_articles/:id/edit(.:format)                                                                 vote_articles#edit
+                            vote_article GET      /vote_articles/:id(.:format)                                                                      vote_articles#show
+                                         PATCH    /vote_articles/:id(.:format)                                                                      vote_articles#update
+                                         PUT      /vote_articles/:id(.:format)                                                                      vote_articles#update
+                                         DELETE   /vote_articles/:id(.:format)                                                                      vote_articles#destroy
+                            commentOrder GET      /commentOrder(.:format)                                                                           articles#commentOrder
                                     root GET      /                                                                                                 articles#index
         turbo_recede_historical_location GET      /recede_historical_location(.:format)                                                             turbo/native/navigation#recede
         turbo_resume_historical_location GET      /resume_historical_location(.:format)                                                             turbo/native/navigation#resume
