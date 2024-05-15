@@ -1,57 +1,41 @@
-<%= stylesheet_link_tag 'searchThread', media: 'all' %>
-<article id="<%=dom_id(article) %>" class="entry section subject">
-  <header>
-    <h1>
-      <% if article.url_required? %>
-        <aN><%= link_to article.title, article.url %></aN>
-      <% else %>
-        <aN><%= article.title %></aN>
-      <% end %>
-    </h1>
-  </header>
-  <div class="content short-desc"><p><%= truncate(article.body, length: 325) %></p></div>
-  <aside class="meta entry__meta">
-    <aN class="user-inline"><%= link_to article.user.email, user_path(article.user) %></aN>
-    <time class="timeago"><%= time_ago_in_words(article.created_at)%></time>
-    <aN class="magazine-in-line"><%= link_to article.magazine.name, magazine_path(article.magazine) %></aN>
-  </aside>
-  <figure>
-    <div class="image-filler"></div>
-    <aN><img class="thumb-subject" src="https://sesupport.edumall.jp/hc/article_attachments/900009570963/noImage.jpg" alt></aN>
-  </figure>
-  <aside class="vote">
-    <div class="vote__thread">
-        <div>
-          <%= button_to vote_up_article_path(article), method: :post, class: "buttonVote" do %>
-            <span><%= article.vote_articles.where(value: 'up').count %></span>
-            <i class="fa-solid fa-arrow-up"></i>
-          <% end %>
+<article>
+        <div class="likes">
+          <span>
+            <%= button_to vote_up_article_path(article), method: :post do %>
+            <%#<span><%= article.vote_articles.where(value: 'up').count ></span>%>
+              <span><%= article.votes_up %></span>
+              <i class="fa-solid fa-arrow-up"></i>
+            <% end %>
+          </span>
+          <span>
+            <%= button_to vote_down_article_path(article), method: :post do %>
+              <%#<span><%= article.vote_articles.where(value: 'down').count ></span>%>
+              <span><%= article.votes_down %></span>
+              <i class="fa-solid fa-arrow-down"></i>
+            <% end %>
+          </span>
         </div>
-      </div>
-      <div class="vote__thread">
-        <div>
-          <%= button_to vote_down_article_path(article), method: :post, class: "buttonVote" do %>
-            <span><%= article.vote_articles.where(value: 'down').count %></span>
-            <i class="fa-solid fa-arrow-up"></i>
-          <% end %>
-        </div>
-      </div>
-  </aside>
-  <footer>
-    <menu>
-      <li><aN><%= article.comments.count%> comments</aN></li>
-      <li><aN>
-        <%= button_to boost_article_path(article), method: :post, class: "boost-link" do %>
-          Boost(<%= article.boost_count %>)
-        <% end %>
-      </aN></li>
-      <span class="dropdown">
-          <aN> more</aN>
-          <div class="dropdown-content">
-            <%= link_to "Edit this article", edit_article_path(article) %>
-            <%= button_to "Delete this article", article, method: :delete, class: "aN" %>
+        <img src="https://sesupport.edumall.jp/hc/article_attachments/900009570963/noImage.jpg">
+        <div class="articlePreview">
+          <!-- cambiar esto por otra flexbox cuando esten los stats -->
+          <div>
+            <a href=<%= article_path(article) %>><%= article.title %></a>
+            <% if not article.url.nil? %>
+              <a id="link" href=<%= article.url %>>(<%= article.url %>)</a>
+            <% end %>
           </div>
-        </span>
-    </menu>
-  </footer>
-</article>
+          <br>
+          <span><%= truncate(article.body, length: 250) %></span>
+          <br>
+          <span>
+            <strong><%= link_to article.user.email, user_path(article.user)%></strong>  <!--%= @article.author %> Assuming you have an author attribute in your Article model -->
+            Published: <%= time_ago_in_words(article.created_at) %>
+            <strong><%= link_to article.magazine.name, magazine_path(article.magazine) %></strong>
+          </span>
+          <span>
+            <%= button_to boost_article_path(article), method: :post,remote: true, class: 'voteButton' do %>
+              Boost(<%= article.num_boosts %>)
+            <% end %>
+          </span>
+        </div>
+      </article>
