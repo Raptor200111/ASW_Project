@@ -1,6 +1,6 @@
 class CommentsController < ApplicationController
   before_action :set_comment, only: %i[ show edit update destroy vote_up vote_down ]
-  before_action :authenticate_user!, only: %i[ create update destroy ]
+  before_action :authenticate_user!, only: %i[ create update destroy vote_up vote_down]
 
   # GET /comments or /comments.json
   def index
@@ -134,34 +134,34 @@ class CommentsController < ApplicationController
       @article = Article.find(params[:article_id])
       @comment = @article.comments.find(params[:id])
 
-      if !current_user.nil?
-        existing_vote = @comment.vote_comments.find_by(user_id: current_user.id)
-        if existing_vote
-          if existing_vote.value != value
-            existing_vote.update(value: value)
-            flash[:notice] = "Vote changed."
-          else
-            existing_vote.destroy
-            flash[:notice] = "Unvoted successfully."
-          end
+      existing_vote = @comment.vote_comments.find_by(user_id: current_user.id)
+      if existing_vote
+        if existing_vote.value != value
+          existing_vote.update(value: value)
+          # flash[:notice] = "Vote changed."
         else
-          @vote = current_user.vote_comments.build(comment_id: @comment.id, value: value)
-          if @vote.save
-            flash[:notice] = "Voted successfully."
-          else
-            current_user.vote_comments.destroy
-            flash[:notice] = "Error voting"
-            flash[:notice] = @vote.errors.full_messages
-            flash[:notice] = @vote
-            flash[:notice] = value
-          end
+          existing_vote.destroy
+          # flash[:notice] = "Unvoted successfully."
         end
       else
-        flash[:notice] = "You must be logged in to vote"
+        @vote = current_user.vote_comments.build(comment_id: @comment.id, value: value)
+        if @vote.save
+          # flash[:notice] = "Voted successfully."
+        else
+          current_user.vote_comments.destroy
+          # flash[:notice] = "Error voting"
+          # flash[:notice] = @vote.errors.full_messages
+          # flash[:notice] = @vote
+          # flash[:notice] = value
+          render json: @vote.errors, status: :unprocessable_entity
+          return
+        end
       end
       @comment.votes_up = @comment.vote_comments.where(value: 'up').count
+      @comment.votes_down = @comment.vote_comments.where(value: 'down').count
       @comment.save
-      redirect_back(fallback_location: @article)
+      render json: @comment
+      # redirect_back(fallback_location: @article)
     end
 
     #api key authentication (hardcoded)
