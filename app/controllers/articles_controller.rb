@@ -1,4 +1,5 @@
 class ArticlesController < ApplicationController
+  before_action :authenticate_user!, only: [:create]
   before_action :set_article, only: %i[ show edit update destroy vote_up vote_down boost]
 
   # GET /articles or /articles.json
@@ -87,27 +88,19 @@ class ArticlesController < ApplicationController
   # POST /articles or /articles.json
   def create
     if current_user.nil?
-      respond_to do |format|
-        format.html {redirect_to new_user_session_path, notice: 'You need to log in to create article.'}
-        format.json {head :no_content }
-      end
-      return
+      @user = User.find(params[:user_id]) # Assuming you have user_id in the params
+      @article = @user.articles.build(article_params)
+    else
+      @article = current_user.articles.build(article_params)
     end
-
-    @article = current_user.articles.build(article_params)
     respond_to do |format|
       if @article.save
-#        if session[:created_ids].nil?
-#           session[:created_ids]= [@article.id] #.push(@article.id)
-#        else
-#           session[:created_ids].push(@article.id)
-#        end
         format.html { redirect_to article_url(@article), notice: "Article was successfully created." }
-        format.json { render :show, status: :created, location: @article }
+        format.json { render json: @article.as_custom_json, status: :created }
       else
         @show_url_field = @article.url_required?
         format.html { render :new, status: :unprocessable_entity }
-        format.json { render json: @article.errors, status: :unprocessable_entity }
+        format.json { render json: { error: @article.errors.full_messages.join(', ') }, status: :unprocessable_entity }
       end
     end
   end
@@ -242,5 +235,25 @@ class ArticlesController < ApplicationController
         redirect_back(fallback_location: root_path)
       end
     end
+
+  def authenticate_user!
+    if current_user.nil?
+      if request.headers['Accept'].present? and !request.headers['Authorization'].present?
+        respond_to do |format|
+          format.html { redirect_to new_user_session_path, alert: "Missing api key" }
+          format.json { render(json: {"error": "Missing api key"}, status: 400)}
+        end
+        return
+      end
+      if 'Liliu' !=request.headers['Authorization']
+        #!User.exists?(api_key: request.headers['key'])
+        respond_to do |format|
+          format.html { redirect_to new_user_session_path, alert: 'You must be logged in to perform this action.' }
+          format.json { render(json: {"error": "Not logged in AUTH"}, status: 401)}
+        end
+        return
+      end
+    end
+  end
 
 end
