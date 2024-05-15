@@ -260,6 +260,48 @@ paths:
           type: integer
           format: int64
 
+  /article/{articleId}/comments/{commentId}/vote_up:
+    post:
+      tags:
+      - comments
+      summary: Votes up a comment in an article
+      parameters:
+      - name: articleId
+        in: path
+        description: ID of Article to search
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - name: commentID
+        in: path
+        description: ID of Comment to search
+        required: true
+        schema:
+          type: integer
+          format: int64
+  
+  /article/{articleId}/comments/{commentId}/vote_down:
+    post:
+      tags:
+      - comments
+      summary: Votes down a comment in an article
+      parameters:
+      - name: articleId
+        in: path
+        description: ID of Article to search
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - name: commentID
+        in: path
+        description: ID of Comment to search
+        required: true
+        schema:
+          type: integer
+          format: int64
+
 
 
 
