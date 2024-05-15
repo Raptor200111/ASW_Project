@@ -209,6 +209,10 @@ paths:
                 body:
                   type: string
                   example: 'commentPostMan'
+                parent_id:
+                  type: integer
+                  example: 7
+                  description: 'ID of the parent comment'
         required: true
       
 
