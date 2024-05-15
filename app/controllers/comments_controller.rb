@@ -1,6 +1,6 @@
 class CommentsController < ApplicationController
   before_action :set_comment, only: %i[ show edit update destroy vote_up vote_down ]
-  before_action :authenticate_user!, only: %i[ create update ]
+  before_action :authenticate_user!, only: %i[ create update destroy ]
 
   # GET /comments or /comments.json
   def index
@@ -65,12 +65,12 @@ class CommentsController < ApplicationController
     end
   end
 
-  # PATCH/PUT /comments/1 or /comments/1.json
+  # PATCH/PUT /comments/1
   def update
     @article = Article.find(params[:article_id])
     @comment = @article.comments.find(params[:id])
 
-    if (check_owner())
+    if check_owner()
       if @comment.update(comment_params)
         respond_to do |format|
           format.html { redirect_to @article, notice: "Comment was successfully updated." }
@@ -90,20 +90,21 @@ class CommentsController < ApplicationController
     end
   end
 
-  # DELETE /comments/1 or /comments/1.json
+  # DELETE /comments/1
   def destroy
     @article = Article.find(params[:article_id])
     @comment = @article.comments.find(params[:id])
-    if !current_user.nil? and @article.user == current_user
+
+    if check_owner()
       @comment.destroy
       respond_to do |format|
         format.html { redirect_to @article, notice: "Comment was successfully destroyed." }
-        format.json { head :no_content }
+        format.json { render json: {message: "Comment was successfully destroyed."} }
       end
     else
       respond_to do |format|
         format.html { redirect_to @article, notice: "You are not allowed to delete this comment." }
-        format.json { head :forbidden }
+        format.json { render json: {message: "You are not allowed to delete this comment."} }
       end
     end
   end
