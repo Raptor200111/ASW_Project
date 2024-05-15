@@ -50,6 +50,10 @@ class ArticlesController < ApplicationController
   def search
     @search_text = params[:search_text]
     @articles = Article.where("title LIKE ? OR body LIKE ?", "%#{@search_text}%", "%#{@search_text}%")
+    respond_to do |format|
+      format.html
+      format.json { render json: @articles, status: :ok }
+    end
   end
 
   # GET /articles/new
