@@ -1,6 +1,6 @@
 class CommentsController < ApplicationController
   before_action :set_comment, only: %i[ show edit update destroy vote_up vote_down ]
-  before_action :authenticate_user!, only: %i[ create ]
+  before_action :authenticate_user!, only: %i[ create update ]
 
   # GET /comments or /comments.json
   def index
@@ -33,15 +33,15 @@ class CommentsController < ApplicationController
   end
 
   # GET /comments/1/edit
-  def edit
-    @article = Article.find(params[:article_id])
-    if !current_user.nil? and @comment.user == current_user
-      render :edit
-    else
-      # Redirect with a notice indicating they are not allowed to edit the article
-      redirect_to @article, notice: "You are not allowed to edit this comment."
-    end
-  end
+  # def edit
+  #   @article = Article.find(params[:article_id])
+  #   if (check_owner())
+  #     render :edit
+  #   else
+  #     format.json { render json: "you are not the owner" }
+  #     format.html { redirect_to @article, notice: "You are not allowed to edit this comment." }
+  #   end
+  # end
 
   # POST /comments or /comments.json
   def create
@@ -68,14 +68,24 @@ class CommentsController < ApplicationController
   # PATCH/PUT /comments/1 or /comments/1.json
   def update
     @article = Article.find(params[:article_id])
+    @comment = @article.comments.find(params[:id])
 
-    respond_to do |format|
+    if (check_owner())
       if @comment.update(comment_params)
-        format.html { redirect_to @article, notice: "Comment was successfully updated." }
-        format.json { render :show, status: :ok, location: @comment }
+        respond_to do |format|
+          format.html { redirect_to @article, notice: "Comment was successfully updated." }
+          format.json { render json: @comment }
+        end
       else
+        respond_to do |format|
+          format.html { render :edit, status: :unprocessable_entity }
+          format.json { render json: @comment.errors, status: :unprocessable_entity }
+        end
+      end
+    else
+      respond_to do |format|
         format.html { render :edit, status: :unprocessable_entity }
-        format.json { render json: @comment.errors, status: :unprocessable_entity }
+        format.json { render json: "you are not the owner" + @current_user.id.to_s}
       end
     end
   end
