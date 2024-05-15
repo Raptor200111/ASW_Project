@@ -58,6 +58,7 @@
                                          PATCH    /magazines/:id(.:format)                                                                          magazines#update
                                          PUT      /magazines/:id(.:format)                                                                          magazines#update
                                          DELETE   /magazines/:id(.:format)                                                                          magazines#destroy
+
                             commentOrder GET      /commentOrder(.:format)                                                                           articles#commentOrder
                                     root GET      /                                                                                                 articles#index
         turbo_recede_historical_location GET      /recede_historical_location(.:format)                                                             turbo/native/navigation#recede
