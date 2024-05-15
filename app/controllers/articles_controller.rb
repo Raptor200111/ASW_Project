@@ -1,7 +1,7 @@
 class ArticlesController < ApplicationController
-  before_action :authenticate_user!, only: [:create, :update]
+  before_action :authenticate_user!, only: [:create, :update, :destroy]
   before_action :set_article, only: %i[ show edit update destroy vote_up vote_down boost]
-  before_action :check_owner, only: [:update]
+  before_action :check_owner, only: [:update, :destroy]
 
   # GET /articles or /articles.json
   def index
@@ -121,19 +121,13 @@ class ArticlesController < ApplicationController
 
   # DELETE /articles/1 or /articles/1.json
   def destroy
-    @article = Article.find(params[:id])
-
-    # Check if the current user is the creator of the article
-    if !current_user.nil? and @article.user == current_user
-      @article.destroy
-      respond_to do |format|
+    respond_to do |format|
+      if @article.destroy
         format.html { redirect_to articles_url, notice: "Article was successfully destroyed." }
         format.json { head :no_content }
-      end
-    else
-      respond_to do |format|
-        format.html { redirect_to root_path, notice: "You are not allowed to delete this article." }
-        format.json { head :forbidden }
+      else
+        format.html { redirect_to article_url(@article), notice: "ERROR DELETE" }
+        format.json { render json: @article.errors, status: :unprocessable_entity }
       end
     end
   end
