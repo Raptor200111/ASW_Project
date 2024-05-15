@@ -180,11 +180,37 @@ paths:
           format: int64
       - name: order
         in: query
-        description: Order in which to return the comments. Can be 'oldest', 'newest', or 'votes_up'.
+        description: Order in which to return the comments. Can be 'oldest', 'newest', or default (most voted).
         required: false
         schema:
           type: string
-          enum: ['oldest', 'newest', 'votes_up']
+          enum: ['oldest', 'newest']
+    post:
+      tags:
+      - comments
+      summary: Creates a comment in an article
+      parameters:
+      - name: articleId
+        in: path
+        description: ID of Article to search
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        description: Provide the content of the Tweet
+        content:
+          application/json:
+            schema:
+              required:
+              - body
+              type: object
+              properties:
+                body:
+                  type: string
+                  example: 'commentPostMan'
+        required: true
+      
 
 
 
