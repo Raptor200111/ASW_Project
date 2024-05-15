@@ -39,9 +39,10 @@ Rails.application.routes.draw do
     end
   end
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
+  resources :vote_articles
 
   get 'commentOrder', to: 'articles#commentOrder'
-  
+
   root 'articles#index'
   #root 'magazines#index'
 end
