@@ -11,6 +11,10 @@ class VoteArticlesController < ApplicationController
   end
 
   def show
+    respond_to do |format|
+      format.html # show.html.erb
+      format.json { render json: @vote_article }
+    end
   end
 
   def new
