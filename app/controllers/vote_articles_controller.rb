@@ -80,6 +80,16 @@ class VoteArticlesController < ApplicationController
 
 # DELETE /vote_articles/:id
   def destroy
+    @vote_article.destroy
+    respond_to do |format|
+      if @vote_article.destroy
+        format.html { redirect_back fallback_location: root_path, notice: 'Vote was successfully destroyed.' }
+        format.json { head :no_content }
+      else
+        format.html { redirect_to articles_url }
+        format.json { render json: @vote_article.errors, status: :unprocessable_entity }
+      end
+    end
   end
 
   private
