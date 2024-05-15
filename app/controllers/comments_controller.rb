@@ -1,5 +1,6 @@
 class CommentsController < ApplicationController
   before_action :set_comment, only: %i[ show edit update destroy vote_up vote_down ]
+  before_action :authenticate_user!, only: %i[ create ]
 
   # GET /comments or /comments.json
   def index
@@ -44,21 +45,15 @@ class CommentsController < ApplicationController
 
   # POST /comments or /comments.json
   def create
-
+    #create comment with given and default values
     @article = Article.find(params[:article_id])
-
-    if current_user.nil?
-      redirect_to @article, notice: "You need to log in to comment."
-      return
-    end
-
     @comment = @article.comments.new(comment_params) do |c|
-      c.user = current_user
+      c.user = @current_user
     end
-
     @comment.votes_down = 0;
     @comment.votes_up = 0;
 
+    #returns the comment in json format
     respond_to do |format|
       if @comment.save
         format.json { render json: @comment }
@@ -157,4 +152,28 @@ class CommentsController < ApplicationController
       @comment.save
       redirect_back(fallback_location: @article)
     end
+
+    #api key authentication (hardcoded)
+    def authenticate_user!
+      #hardcoded user login for testing
+      @current_user = User.find_by(id: 1)
+
+      unless @current_user
+        respond_to do |format|
+          format.html { redirect_to new_user_session_path, alert: 'You must be logged in to perform this action.' }
+          format.json { render(json: {"error": "Not logged in AUTH"}, status: 401)}
+        end
+      end
+    end
+
+    # check if the user is the owner of the comment
+    def check_owner
+      @comment = Comment.find(params[:id])
+      if @current_user == @comment.user
+        return true
+      else
+        return false
+      end
+    end
+
 end
