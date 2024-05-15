@@ -28,26 +28,28 @@ class VoteArticlesController < ApplicationController
 # POST /vote_articles
   def create
       @article = Article.find(params[:article_id])
-      if current_user.nil?
-        @existing_vote = @article.vote_articles.find_by(user_id: params[:user_id])
-      else
-        @existing_vote = @article.vote_articles.find_by(user_id: current_user.id)
-      end
+      @existing_vote = @article.vote_articles.find_by(user_id: params[:user_id])
 
       if @existing_vote && @existing_vote.value == params[:value]
         @existing_vote.destroy
+        change_vote(@article, value, '-')
         respond_to do |format|
           format.html { redirect_back fallback_location: root_path, notice:  'Vote removed successfully' }
           format.json { render json: { message: 'Vote removed successfully' }, status: :ok }
         end
       else
-        if current_user.nil?
-          @vote_article = @article.vote_articles.find_or_initialize_by(user_id: params[:user_id])
-        else
-          @vote_article = @article.vote_articles.find_or_initialize_by(user_id: current_user.id)
+        if @existing_vote && @existing_vote.value != params[:value]
+          @existing_vote.destroy
+          if 'up' == params[:value]
+            @article.votes_down -=1
+          else
+            @article.votes_up -=1
+          end
+          @article.save
         end
-
+        @vote_article = @article.vote_articles.find_or_initialize_by(user_id: params[:user_id])
         @vote_article.value = params[:value]
+        change_vote(@article, params[:value], '+')
 
         respond_to do |format|
           if @vote_article.save
@@ -142,6 +144,18 @@ class VoteArticlesController < ApplicationController
     end
   end
 
+  def change_vote(article, value, operation)
+    if operation == '+' and value == 'up'
+      article.votes_up += 1
+    elsif operation == '+' and value == 'down'
+      article.votes_down += 1
+    elsif operation == '-' and value == 'up'
+      article.votes_up -= 1
+    elsif operation == '-' and value == 'down'
+      article.votes_down -= 1
+    end
+    article.save
+  end
   def vote_article_params
     params.require(:vote_article).permit(:value, :user_id, :article_id)
   end

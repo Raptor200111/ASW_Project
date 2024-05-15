@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_05_03_095308) do
+ActiveRecord::Schema[7.0].define(version: 2024_05_14_210337) do
   create_table "articles", force: :cascade do |t|
     t.string "title"
     t.text "body"
@@ -18,12 +18,11 @@ ActiveRecord::Schema[7.0].define(version: 2024_05_03_095308) do
     t.string "url"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "author"
     t.integer "votes_up", default: 0
     t.integer "votes_down", default: 0
-    t.boolean "boosted", default: false
     t.integer "magazine_id", null: false
     t.integer "user_id", null: false
+    t.integer "num_boosts", default: 0
     t.index ["magazine_id"], name: "index_articles_on_magazine_id"
     t.index ["user_id"], name: "index_articles_on_user_id"
   end

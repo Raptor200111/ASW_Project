@@ -26,45 +26,7 @@
 <% @articles.each do |article| %>
   <div class="bodyContainer">
     <div class="webBody">
-      <article>
-        <div class="likes">
-          <span>
-            <%= article.vote_articles.where(value: 'up').count %>
-            <%= button_to vote_up_article_path(article), method: :post do %>
-              <i class="fa-solid fa-arrow-up"></i>
-            <% end %>
-          </span>
-          <span>
-            <%=  article.vote_articles.where(value: 'down').count %>
-            <%= button_to vote_down_article_path(article), method: :post do %>
-              <i class="fa-solid fa-arrow-down"></i>
-            <% end %>
-          </span>
-        </div>
-        <img src="https://sesupport.edumall.jp/hc/article_attachments/900009570963/noImage.jpg">
-        <div class="articlePreview">
-          <!-- cambiar esto por otra flexbox cuando esten los stats -->
-          <div>
-            <a href=<%= article_path(article) %>><%= article.title %></a>
-            <% if not article.url.nil? %>
-              <a id="link" href=<%= article.url %>>(<%= article.url %>)</a>
-            <% end %>
-          </div>
-          <br>
-          <span><%= truncate(article.body, length: 250) %></span>
-          <br>
-          <span>
-            <strong><%= link_to article.user.email, user_path(article.user)%></strong>  <!--%= @article.author %> Assuming you have an author attribute in your Article model -->
-            Published: <%= time_ago_in_words(article.created_at) %>
-            <strong><%= link_to article.magazine.name, magazine_path(article.magazine) %></strong>
-          </span>
-          <span>
-            <%= button_to boost_article_path(article), method: :post,remote: true, class: 'voteButton' do %>
-              Boost(<%= article.boost_count %>)
-            <% end %>
-          </span>
-        </div>
-      </article>
+      <%= render partial: 'short_article', locals: { article: article } %>
     </div>
   </div>
 <% end %>

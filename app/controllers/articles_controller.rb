@@ -9,6 +9,16 @@ class ArticlesController < ApplicationController
     @order_filter = params[:order_filter] || 'newest'
     @type = params[:type]
 
+  # Check if order_filter is valid
+    unless %w(newest top commented).include?(@order_filter)
+      return render json: { error: "Invalid order_filter parameter. It must be 'newest', 'top', or 'commented'" }, status: :unprocessable_entity
+    end
+
+    # Check if type is valid
+    unless %w(link thread all).include?(@type)
+      return render json: { error: "Invalid type parameter. It must be 'link', 'thread', or 'all'" }, status: :unprocessable_entity
+    end
+
     # Set the default articles scope
     @articles = Article.all
 
@@ -41,11 +51,12 @@ class ArticlesController < ApplicationController
   end
 
   # GET /articles/1 or /articles/1.json
+  # GET /articles/1 or /articles/1.json
   def show
-    @article = Article.find(params[:id])
     respond_to do |format|
       format.html
-      format.json { render json: @article, status: :ok }
+      format.json { render json:  @article.as_custom_json, status: :ok }
+      #format.json { render json: article_with_details(@article), status: :ok }
     end
   end
 
@@ -91,25 +102,17 @@ class ArticlesController < ApplicationController
     if current_user.nil?
       @user = User.find(params[:user_id]) # Assuming you have user_id in the params
       @article = @user.articles.build(article_params)
-      #@article = Article.new(request.body)
-      respond_to do |format|
-        if @article.save
-          format.json { render json: @article, status: :created }
-        else
-          format.json { render(json: {"error": "Missing parameter in body"}, status: 400)}
-        end
-      end
     else
       @article = current_user.articles.build(article_params)
-      respond_to do |format|
-        if @article.save
-          format.html { redirect_to article_url(@article), notice: "Article was successfully created." }
-          format.json { render :show, status: :created, location: @article }
-        else
-          @show_url_field = @article.url_required?
-          format.html { render :new, status: :unprocessable_entity }
-          format.json { render json: @article.errors, status: :unprocessable_entity }
-        end
+    end
+    respond_to do |format|
+      if @article.save
+        format.html { redirect_to article_url(@article), notice: "Article was successfully created." }
+        format.json { render json: @article.as_custom_json, status: :created }
+      else
+        @show_url_field = @article.url_required?
+        format.html { render :new, status: :unprocessable_entity }
+        format.json { render json: { error: @article.errors.full_messages.join(', ') }, status: :unprocessable_entity }
       end
     end
   end
@@ -120,7 +123,7 @@ class ArticlesController < ApplicationController
       respond_to do |format|
         if @article.update(article_params)
           format.html { redirect_to article_url(@article), notice: "Article was successfully updated." }
-          format.json { render json: @article, status: :ok }
+          format.json { render json: @article.as_custom_json, status: :ok }
         else
           format.html { render :edit, status: :unprocessable_entity }
           format.json { render json: @article.errors, status: :unprocessable_entity }
@@ -141,6 +144,8 @@ class ArticlesController < ApplicationController
 
   # DELETE /articles/1 or /articles/1.json
   def destroy
+    @votes = @article.vote_articles
+
     respond_to do |format|
       if @article.destroy
         format.html { redirect_to articles_url, notice: "Article was successfully destroyed." }
@@ -162,19 +167,34 @@ class ArticlesController < ApplicationController
   end
 
   def boost
-    @existing_boost = current_user.boosts.find_by(article: @article)
+    if current_user.nil?
+      @uid = 3
+      @user = User.find(@uid)
+      @existing_boost = @user.boosts.find_by(article: @article)
+    else
+      @existing_boost = current_user.boosts.find_by(article: @article)
+    end
     begin
       if @existing_boost
         @existing_boost.destroy
+        @article.num_boosts -=1
+        @article.save
         respond_to do |format|
           format.html {redirect_back(fallback_location: root_path, notice: 'Boost removed successfully!')}
-          format.json {render @existing_boost, status: :ok}
+          format.json {render  json: { message: 'Boost removed successfully' }, status: :ok }
         end
       else
-        current_user.boosts.create!(article: @article)
+        if current_user.nil?
+          @user.boosts.create!(article: @article)
+        else
+          current_user.boosts.create!(article: @article)
+        end
+        @article.num_boosts +=1
+        @article.save
+        @article_show =  Article.includes(:user, :magazine, :vote_articles, :boosts, :comments).find(@article.id)
         respond_to do |format|
           format.html {redirect_back(fallback_location: root_path, notice: 'Article boosted successfully!')}
-          format.json {render @existing_boost, status: :ok }
+          format.json {render json: @article_show.as_custom_json, status: :ok }
         end
       end
     rescue ActiveRecord::RecordInvalid => e
@@ -202,7 +222,13 @@ class ArticlesController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_article
-      @article = Article.find(params[:id])
+      #@article = Article.find(params[:id])
+      @article = Article.includes(:user, :magazine, :vote_articles, :boosts, :comments).find(params[:id])
+    rescue ActiveRecord::RecordNotFound
+      respond_to do |format|
+        format.html { redirect_to articles_url, alert: 'Article not found.' }
+        format.json { render json: { error: "Not Found" }, status: :not_found }
+      end
     end
 
     # Only allow a list of trusted parameters through.
@@ -216,13 +242,16 @@ class ArticlesController < ApplicationController
         if existing_vote
           if existing_vote.value != value
             existing_vote.update(value: value)
+            change_vote_value(@article, value)
             flash[:notice] = "Vote changed"
           else
             existing_vote.destroy
+            change_vote(@article, value, '-')
             flash[:notice] = "UnVoted successfully"
           end
         else
           @vote = current_user.vote_articles.build(article_id: @article.id, value: value)
+          change_vote(@article, value, '+')
           if @vote.save
             flash[:success] = "Voted successfully"
           else
@@ -236,6 +265,29 @@ class ArticlesController < ApplicationController
       else
         redirect_back(fallback_location: root_path)
       end
+    end
+
+    def change_vote_value(article, value)
+      if value == 'up'
+        article.votes_down -=1
+        article.votes_up +=1
+      else
+        article.votes_down +=1
+        article.votes_up -=1
+      end
+      article.save
+    end
+    def change_vote(article, value, operation)
+      if operation == '+' and value == 'up'
+        article.votes_up += 1
+      elsif operation == '+' and value == 'down'
+        article.votes_down += 1
+      elsif operation == '-' and value == 'up'
+        article.votes_up -= 1
+      elsif operation == '-' and value == 'down'
+        article.votes_down -= 1
+      end
+      article.save
     end
 
     def authenticate_user!
