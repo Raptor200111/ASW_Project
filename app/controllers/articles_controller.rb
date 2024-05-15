@@ -1,6 +1,7 @@
 class ArticlesController < ApplicationController
-  before_action :authenticate_user!, only: [:create]
+  before_action :authenticate_user!, only: [:create, :update]
   before_action :set_article, only: %i[ show edit update destroy vote_up vote_down boost]
+  before_action :check_owner, only: [:update]
 
   # GET /articles or /articles.json
   def index
@@ -110,7 +111,7 @@ class ArticlesController < ApplicationController
     respond_to do |format|
       if @article.update(article_params)
         format.html { redirect_to article_url(@article), notice: "Article was successfully updated." }
-        format.json { render :show, status: :ok, location: @article }
+        format.json { render json: @article.as_custom_json, status: :ok }
       else
         format.html { render :edit, status: :unprocessable_entity }
         format.json { render json: @article.errors, status: :unprocessable_entity }
@@ -252,6 +253,27 @@ class ArticlesController < ApplicationController
           format.json { render(json: {"error": "Not logged in AUTH"}, status: 401)}
         end
         return
+      end
+    end
+  end
+
+  def check_owner
+    if current_user.nil?
+      if request.headers['Accept'].present? and request.headers['Authorization'].present? and 'Liliu'!= request.headers['Authorization']
+        #!User.exists?(api_key: request.headers['key'])
+        #@article.user != User.find_by(api_key: request.headers['Authorization'])
+        respond_to do |format|
+          format.html { redirect_to articles_url, alert: 'You are not authorized to perform this action.' }
+          format.json { render json: { error: 'You are not authorized to perform this action' }, status: :forbidden }
+        end
+        return
+      end
+    else
+      if current_user != @article.user
+        respond_to do |format|
+          format.html { redirect_to articles_url, alert: 'You are not authorized to perform this action.' }
+          format.json { render json: { error: 'You are not authorized to perform this action' }, status: :forbidden }
+        end
       end
     end
   end
