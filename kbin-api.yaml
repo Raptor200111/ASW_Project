@@ -240,6 +240,18 @@ paths:
                   type: string
                   example: 'editedCommentPostMan'
         required: true
+    get:
+      tags:
+      - comments
+      summary: View individual comment in an article
+      parameters:
+      - name: articleId
+        in: path
+        description: ID of Article to search
+        required: true
+        schema:
+          type: integer
+          format: int64
     delete:
       tags:
       - comments
