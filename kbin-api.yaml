@@ -180,11 +180,11 @@ paths:
           format: int64
       - name: order
         in: query
-        description: Order in which to return the comments. Can be 'oldest', 'newest', or 'votes_up'.
+        description: Order in which to return the comments. Can be 'oldest', 'newest', or default (most voted).
         required: false
         schema:
           type: string
-          enum: ['oldest', 'newest', 'votes_up']
+          enum: ['oldest', 'newest']
 
 
 

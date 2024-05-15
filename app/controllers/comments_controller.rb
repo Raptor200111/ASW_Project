@@ -16,7 +16,8 @@ class CommentsController < ApplicationController
       @comments = @comments.order(votes_up: :desc)
     end
 
-    render :json => @comments
+    # prints the comments and their replies (prints duplicates for each reply?)
+    render json: @comments.as_json(include: :replies)
   end
 
   # GET /comments/1 or /comments/1.json
