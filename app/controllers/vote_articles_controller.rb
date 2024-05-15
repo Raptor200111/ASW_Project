@@ -1,6 +1,7 @@
 class VoteArticlesController < ApplicationController
   before_action :authenticate_user!, only: [:create, :update, :destroy]
   before_action :set_vote_article, only: [:show, :update, :destroy]
+  before_action :check_owner, only: [:update, :destroy]
 
 
   def index
@@ -66,6 +67,15 @@ class VoteArticlesController < ApplicationController
 
 # PUT /vote_articles/:id
   def update
+    respond_to do |format|
+      if @vote_article.update(vote_article_params)
+        format.html { redirect_to @vote_article, notice: 'Vote was successfully updated.' }
+        format.json { render json: @vote_article }
+      else
+        format.html { render :edit }
+        format.json { render json: @vote_article.errors, status: :unprocessable_entity }
+      end
+    end
   end
 
 # DELETE /vote_articles/:id
@@ -98,6 +108,27 @@ class VoteArticlesController < ApplicationController
           format.json { render(json: {"error": "Not logged in AUTH"}, status: 401)}
         end
         return
+      end
+    end
+  end
+
+  def check_owner
+    if current_user.nil?
+      if request.headers['Accept'].present? and request.headers['Authorization'].present? and 'Liliu'!= request.headers['Authorization']
+        #!User.exists?(api_key: request.headers['key'])
+        #@article.user != User.find_by(api_key: request.headers['Authorization'])
+        respond_to do |format|
+          format.html { redirect_to articles_url, alert: 'You are not authorized to perform this action.' }
+          format.json { render json: { error: 'You are not authorized to perform this action' }, status: :forbidden }
+        end
+        return
+      end
+    else
+      if current_user != @vote_article.user
+        respond_to do |format|
+          format.html { redirect_to articles_url, alert: 'You are not authorized to perform this action.' }
+          format.json { render json: { error: 'You are not authorized to perform this action' }, status: :forbidden }
+        end
       end
     end
   end
