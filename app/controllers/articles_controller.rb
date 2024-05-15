@@ -163,7 +163,7 @@ class ArticlesController < ApplicationController
       boost = user.boosts.build(article_id: @article.id)
       if boost.save
         update_num_boost(1)
-        @article_show = Article.includes(:user, :magazine, :vote_articles, :boosts, :comments).find(@article.id)
+        @article.reload
         respond_to do |format|
           format.html {redirect_back(fallback_location: root_path, notice: 'Article boosted successfully!')}
           format.json {render json: @article.as_custom_json, status: :created }
