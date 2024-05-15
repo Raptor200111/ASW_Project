@@ -1,5 +1,5 @@
 class ArticlesController < ApplicationController
-  before_action :authenticate_user!, only: [:create, :update, :destroy]
+  before_action :authenticate_user!, only: [:create, :update, :destroy, :boost]
   before_action :set_article, only: %i[ show edit update destroy vote_up vote_down boost]
   before_action :check_owner, only: [:update, :destroy]
 
@@ -143,25 +143,33 @@ class ArticlesController < ApplicationController
 
   def boost
     if current_user.nil?
-      respond_to do |format|
-        format.html {redirect_to new_user_session_path, notice: 'You need to log in to boost.'}
-        format.json {head :no_content }
-      end
-      return
+      @uid = 3
+      @user = User.find(@uid)
+      @existing_boost = @user.boosts.find_by(article: @article)
+    else
+      @existing_boost = current_user.boosts.find_by(article: @article)
     end
-    existing_boost = current_user.boosts.find_by(article: @article)
     begin
-      if existing_boost
-        existing_boost.destroy
+      if @existing_boost
+        @existing_boost.destroy
+        @article.num_boosts -=1
+        @article.save
         respond_to do |format|
           format.html {redirect_back(fallback_location: root_path, notice: 'Boost removed successfully!')}
-          format.json {render :show, status: :ok, location: @article }
+          format.json {render  json: { message: 'Boost removed successfully' }, status: :ok }
         end
       else
-        current_user.boosts.create!(article: @article)
+        if current_user.nil?
+          @user.boosts.create!(article: @article)
+        else
+          current_user.boosts.create!(article: @article)
+        end
+        @article.num_boosts +=1
+        @article.save
+        @article_show =  Article.includes(:user, :magazine, :vote_articles, :boosts, :comments).find(@article.id)
         respond_to do |format|
           format.html {redirect_back(fallback_location: root_path, notice: 'Article boosted successfully!')}
-          format.json {render :show, status: :ok, location: @article }
+          format.json {render json: @article_show.as_custom_json, status: :ok }
         end
       end
     rescue ActiveRecord::RecordInvalid => e

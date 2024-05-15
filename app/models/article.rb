@@ -9,10 +9,11 @@ class Article < ApplicationRecord
   has_many :vote_articles
   has_many :voters, through: :vote_articles, source: :user
   #belongs_to  :magazine, class_name: 'Magazine', optional: true
-  validates :title, length: {minimum: 1, maximum: 255}
-  validates :body, length: { maximum:35000 }
+  validates :title, length: {minimum: 1, maximum: 255, message: "article surpases title has to have title with maximum of 255 character" }
+  validates :body, length: { maximum:35000, message: "article surpases body maximum of 35000 character" }
   validates :url, presence: true, if: :url_required?
   before_save :ensure_url_has_protocol, if: :url_required?
+  validates :article_type, inclusion: { in: %w(link thread), message: "%{value} is not a valid article type. It must be 'link' or 'thread'" }
   # Method to determine if URL is required based on article type
   def url_required?
     article_type == 'link'
@@ -21,9 +22,6 @@ class Article < ApplicationRecord
     unless url.blank?
       self.url = "http://#{url}" unless url.match?(/\Ahttp(s)?:\/\//)
     end
-  end
-  def boost_count
-    boosts.count
   end
 
   def as_custom_json
