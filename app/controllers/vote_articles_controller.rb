@@ -1,4 +1,5 @@
 class VoteArticlesController < ApplicationController
+  skip_before_action :verify_authenticity_token
   before_action :authenticate_user!, only: [:create, :update, :destroy]
   before_action :set_vote_article, only: [:show, :update, :destroy]
   before_action :check_owner, only: [:update, :destroy]
@@ -33,7 +34,7 @@ class VoteArticlesController < ApplicationController
 
     if @existing_vote && @existing_vote.value == params[:value]
       @existing_vote.destroy
-      change_vote(@article, value, '-')
+      update_numVote(@article, params[:value], -1)
       respond_to do |format|
         format.html { redirect_back fallback_location: root_path, notice:  'Vote removed successfully' }
         format.json { render json: { message: 'Vote removed successfully' }, status: :ok }
@@ -50,7 +51,7 @@ class VoteArticlesController < ApplicationController
       end
       @vote_article = @article.vote_articles.find_or_initialize_by(user_id: params[:user_id])
       @vote_article.value = params[:value]
-      change_vote(@article, params[:value], '+')
+      update_numVote(@article, params[:value], +1)
 
       respond_to do |format|
         if @vote_article.save
@@ -143,15 +144,11 @@ class VoteArticlesController < ApplicationController
     end
   end
 
-  def change_vote(article, value, operation)
-    if operation == '+' and value == 'up'
-      article.votes_up += 1
-    elsif operation == '+' and value == 'down'
-      article.votes_down += 1
-    elsif operation == '-' and value == 'up'
-      article.votes_up -= 1
-    elsif operation == '-' and value == 'down'
-      article.votes_down -= 1
+  def update_numVote(article, value, count)
+    if value == 'up'
+      article.votes_up += count
+    elsif value == 'down'
+      article.votes_down += count
     end
     article.save
   end

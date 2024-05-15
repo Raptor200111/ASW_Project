@@ -28,7 +28,8 @@
       <div class="vote__thread">
         <div>
           <%= button_to vote_up_article_path(article), method: :post, class: "buttonVote" do %>
-            <span><%= article.vote_articles.where(value: 'up').count %></span>
+            <%#<span><%= article.vote_articles.where(value: 'up').count ></span>%>
+            <span><%= article.votes_up %></span>
             <i class="fa-solid fa-arrow-up"></i>
           <% end %>
         </div>
@@ -36,7 +37,8 @@
       <div class="vote__thread">
         <div>
           <%= button_to vote_down_article_path(article), method: :post, class: "buttonVote" do %>
-            <span><%= article.vote_articles.where(value: 'down').count %></span>
+            <%#<span><%= article.vote_articles.where(value: 'down').count ></span>%>
+            <span><%= article.votes_down %></span>
             <i class="fa-solid fa-arrow-up"></i>
           <% end %>
         </div>
@@ -47,7 +49,7 @@
         <li><aN><%= article.comments.count%> comments</aN></li>
         <li><aN>
           <%= button_to boost_article_path(article), method: :post, class: "boost-link" do %>
-            Boost(<%= article.boost_count %>)
+            Boost(<%= article.num_boosts %>)
           <% end %>
         </aN></li>
         <span class="dropdown">

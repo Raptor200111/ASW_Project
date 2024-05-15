@@ -4,9 +4,9 @@ class Article < ApplicationRecord
   #has_many :comments, class_name: 'Comment', optional: true
   has_many :comments
   belongs_to :user
-  has_many :boosts
-  has_many :boosters, through: :boosts, source: :user
-  has_many :vote_articles
+  has_many :boosts, dependent: :destroy
+#  has_many :boosters, through: :boosts, source: :user
+  has_many :vote_articles, dependent: :destroy
   has_many :voters, through: :vote_articles, source: :user
   #belongs_to  :magazine, class_name: 'Magazine', optional: true
   validates :title, length: {minimum: 1, maximum: 255, message: "article surpases title has to have title with maximum of 255 character" }

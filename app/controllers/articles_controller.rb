@@ -1,4 +1,5 @@
 class ArticlesController < ApplicationController
+  skip_before_action :verify_authenticity_token
   before_action :authenticate_user!, only: [:create, :update, :destroy, :boost]
   before_action :set_article, only: %i[ show edit update destroy vote_up vote_down boost]
   before_action :check_owner, only: [:update, :destroy]
@@ -143,39 +144,35 @@ class ArticlesController < ApplicationController
 
   def boost
     if current_user.nil?
-      @uid = 3
-      @user = User.find(@uid)
-      @existing_boost = @user.boosts.find_by(article: @article)
+      @uid = 1
+      user= User.find(@uid)
     else
-      @existing_boost = current_user.boosts.find_by(article: @article)
+      user = current_user
     end
-    begin
-      if @existing_boost
-        @existing_boost.destroy
-        @article.num_boosts -=1
-        @article.save
+    if user.boosted_articles.exists?(id: @article.id)
+      # If the user has already boosted the article, delete the existing boost
+      if user.boosts.find_by(article_id: @article.id).destroy
+        update_num_boost(-1)
         respond_to do |format|
           format.html {redirect_back(fallback_location: root_path, notice: 'Boost removed successfully!')}
           format.json {render  json: { message: 'Boost removed successfully' }, status: :ok }
         end
-      else
-        if current_user.nil?
-          @user.boosts.create!(article: @article)
-        else
-          current_user.boosts.create!(article: @article)
-        end
-        @article.num_boosts +=1
-        @article.save
-        @article_show =  Article.includes(:user, :magazine, :vote_articles, :boosts, :comments).find(@article.id)
+      end
+    else
+      # If the user hasn't boosted the article yet, create a new boost
+      boost = user.boosts.build(article_id: @article.id)
+      if boost.save
+        update_num_boost(1)
+        @article_show = Article.includes(:user, :magazine, :vote_articles, :boosts, :comments).find(@article.id)
         respond_to do |format|
           format.html {redirect_back(fallback_location: root_path, notice: 'Article boosted successfully!')}
-          format.json {render json: @article_show.as_custom_json, status: :ok }
+          format.json {render json: @article.as_custom_json, status: :created }
         end
-      end
-    rescue ActiveRecord::RecordInvalid => e
-      respond_to do |format|
-        format.html {redirect_to root_path, alert: "Error: #{e.message}"}
-        format.json { render json: @article.errors, status: :unprocessable_entity }
+      else
+        respond_to do |format|
+          format.html {redirect_back(fallback_location: root_path, notice: 'Unable to boost article')}
+          format.json {render json:{ error: 'Unable to boost article' }, status: :unprocessable_entity }
+        end
       end
     end
   end
@@ -211,19 +208,40 @@ class ArticlesController < ApplicationController
       params.require(:article).permit(:title, :body, :article_type, :url, :author, :magazine_id)
     end
 
+  def update_num_boost(count)
+    @article.num_boosts += count
+    @article.save
+  end
+
+
+  def update_numVote(value, count)
+    if value == 'up'
+      @article.votes_up += count
+    elsif value == 'down'
+      @article.votes_down += count
+    end
+    @article.save
+  end
+
     def vote(value)
       if !current_user.nil?
         existing_vote = @article.vote_articles.find_by(user_id: current_user.id)
-        if existing_vote
-          if existing_vote.value != value
-            existing_vote.update(value: value)
-            flash[:notice] = "Vote changed"
-          else
+        if existing_vote && existing_vote.value == value
             existing_vote.destroy
+            update_numVote(value, -1)
             flash[:notice] = "UnVoted successfully"
-          end
         else
+          if existing_vote && existing_vote.value != value
+            existing_vote.destroy
+            if 'up' == value
+              @article.votes_down -=1
+            else
+              @article.votes_up -=1
+            end
+            flash[:notice] = "Vote changed"
+          end
           @vote = current_user.vote_articles.build(article_id: @article.id, value: value)
+          update_numVote(value, +1)
           if @vote.save
             flash[:success] = "Voted successfully"
           else
