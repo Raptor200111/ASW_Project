@@ -2,6 +2,7 @@ class User < ApplicationRecord
 
   has_one_attached :avatar
   has_one_attached :background
+  before_create :set_api_key
 
   has_many :articles, dependent: :destroy
   # Include default devise modules. Others available are:
@@ -20,12 +21,14 @@ class User < ApplicationRecord
          :recoverable, :rememberable, :validatable,
          :omniauthable, omniauth_providers: [:google_oauth2]
 
+
   def self.from_omniauth(auth)
     where(provider: auth.provider, uid: auth.uid).first_or_create do |user|
       user.email = auth.info.email
       user.password = Devise.friendly_token[0, 20]
       user.full_name = auth.info.name
       user.avatar_url = auth.info.image
+      user.description = nil
     end
   end
 
@@ -38,8 +41,12 @@ class User < ApplicationRecord
   end
 
   private
-
-  def user_params
-    params.require(:user).permit(:avatar)
+  def generate_api_key
+    self.api_key = SecureRandom.base58(24)
   end
+
+  def set_api_key
+    generate_api_key if api_key.blank?
+  end
+
 end

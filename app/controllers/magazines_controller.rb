@@ -1,8 +1,18 @@
 class MagazinesController < ApplicationController
-  before_action :set_magazine, only: %i[ show edit update destroy subscribe ]
+  before_action :set_user, only: [:create, :subscribe, :unsubscribe ]
+  before_action :set_magazine, only: %i[ show edit update subscribe unsubscribe]
 
   # GET /magazines or /magazines.json
   def index
+    @mag = Magazine.all
+    @mag.each do |magazine|
+      magazine.nComms=0
+    	magazine.articles.each do |article|
+    		magazine.nComms += article.comments.count
+    	end
+    	magazine.save
+    end
+
     @magazines = Magazine.order(params[:sort])
     if params[:sort] == "threads"
       @magazines = Magazine.all.sort_by{|magazine| magazine.articles.size }.reverse
@@ -15,6 +25,10 @@ class MagazinesController < ApplicationController
 
   # GET /magazines/1 or /magazines/1.json
   def show
+    @magazine.nComms=0
+  	@magazine.articles.each do |article|
+  		@magazine.nComms += article.comments.count
+  	end
   end
 
   # GET /magazines/new
@@ -28,22 +42,12 @@ class MagazinesController < ApplicationController
 
   # POST /magazines or /magazines.json
   def create
-    if current_user.nil?
-      respond_to do |format|
-        format.html {redirect_to root_path, notice: 'You need to log in to subscribe.'}
-        format.json {head :no_content }
-      end
-      return
-    end
-    @magazine = Magazine.new(magazine_params)
-
+    @magazine = Magazine.new(JSON.parse(request.body.read))
     respond_to do |format|
       if @magazine.save
-        format.html { redirect_to magazine_url(@magazine), notice: "Magazine was successfully created." }
         format.json { render :show, status: :created, location: @magazine }
       else
-        format.html { render :new, status: :unprocessable_entity }
-        format.json { render json: @magazine.errors, status: :unprocessable_entity }
+        format.json { render(json: {"error": "Missing parameter in body"}, status: 400)}
       end
     end
   end
@@ -61,35 +65,16 @@ class MagazinesController < ApplicationController
     end
   end
 
-  # DELETE /magazines/1 or /magazines/1.json
-  def destroy
-    @magazine.destroy
-
-    respond_to do |format|
-      format.html { redirect_to magazines_url, notice: "Magazine was successfully destroyed." }
-      format.json { head :no_content }
-    end
-  end
-
+  # POST /magazines/1/subscribe
   def subscribe
-    if current_user.nil?
-      respond_to do |format|
-        format.html {redirect_to magazines_path, notice: 'You need to log in to subscribe.'}
-        format.json {head :no_content }
-      end
-      return
-    end
-    isSubs = current_user.subscriptions.find_by(magazine: @magazine)
+    isSubs = @user.subscriptions.find_by(magazine: @magazine)
     begin
       if isSubs
-        isSubs.destroy
-        current_user.subs.delete(@magazine)
         respond_to do |format|
-          format.html {redirect_to magazines_path, notice: 'Unsubscibed successfully!'}
-          format.json {head :no_content }
+          format.json { render(json: {"error": "Already subscribed"}, status: 204)}
         end
       else
-        current_user.subs << @magazine
+        @user.subs << @magazine
         respond_to do |format|
           format.html {redirect_to magazines_path, notice: 'Subscribed successfully!'}
           format.json {head :no_content }
@@ -98,15 +83,59 @@ class MagazinesController < ApplicationController
     end
   end
 
+  # DELETE /magazines/1/unsubscribe
+  def unsubscribe
+    @user = User.find(api_key: request.headers['Authorization'])
+    isSubs = @user.subscriptions.find_by(magazine: @magazine)
+    begin
+      if isSubs
+        isSubs.destroy
+        @user.subs.delete(@magazine)
+        respond_to do |format|
+          format.html {redirect_to magazines_path, notice: 'Unsubscibed successfully!'}
+          format.json {head :no_content }
+        end
+      else
+        respond_to do |format|
+          format.json { render(json: {"error": "Already unsubscribed"}, status: 204)}
+        end
+      end
+    end
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_magazine
-      @magazine = Magazine.find(params[:id])
+      if !Magazine.exists?(params[:id])
+        respond_to do |format|
+          format.json { render(json: {"error": "Magazine with this id does not exist"}, status: 404)}
+        end
+      else
+        @magazine = Magazine.find(params[:id])
+      end
     end
 
     # Only allow a list of trusted parameters through.
     def magazine_params
       params.require(:magazine).permit(:name, :title, :url, :description, :rules)
     end
-end
+
+    def set_user
+      if request.headers['Accept'] == "application/json"
+        api_key = request.headers['Authorization']
+        if api_key.nil?
+          respond_to do |format|
+            format.json { render(json: {"error": "No Api key provided"}, status: 401)}
+          end
+        else
+          @user = User.find_by_api_key(api_key)
+          if @user.nil?
+            respond_to do |format|
+              format.json { render(json: {"error": "No user found with this Api key"}, status: 403)}
+            end
+          end
+        end
+      end
+    end
+  end
 

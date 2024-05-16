@@ -11,6 +11,7 @@ gem "turbo-rails",     "1.1.1"
 gem "stimulus-rails",  "1.0.4"
 gem "jbuilder",        "2.11.5"
 gem "puma",            "5.6.4"
+gem "rack-cors"
 gem "font-awesome-rails"
 gem "bootsnap",        "1.12.0", require: false
 
@@ -20,7 +21,6 @@ gem "omniauth-google-oauth2"
 gem "omniauth-rails_csrf_protection"
 gem "image_processing", ">= 1.2"
 gem "aws-sdk-s3", require: false
-
 
 group :development, :test do
   gem "sqlite3", "1.4.2"
@@ -35,6 +35,7 @@ group :test do
   gem "capybara",           "3.37.1"
   gem "selenium-webdriver", "4.2.0"
   gem "webdrivers",         "5.0.0"
+  gem 'tzinfo-data'
 end
 
 group :production do
@@ -44,4 +45,4 @@ end
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem.
 # Uncomment the following line if you're running Rails
 # on a native Windows system:
-gem "tzinfo-data", platforms: [:mingw, :mswin, :x64_mingw, :jruby]
+# gem "tzinfo-data", platforms: [:mingw, :mswin, :x64_mingw, :jruby]

@@ -23,6 +23,10 @@
 
         <p><%= @user.full_name %></p>
         <p><%= @user.email %> </p>
+        <p><%= @user.description %> </p>
+        <% if current_user and @user == current_user %>
+          <p> API-KEY: <%= @user.api_key %></p>
+        <% end %>
       </div>
 
       <div id="profileButtons">

@@ -1,0 +1,481 @@
+openapi: 3.0.2
+info:
+  version: 1.0.0
+  title: Wall of Tweets
+  description: "This is the Open API documentation for the REST API of our beloved application **Wall of Tweets** deployed at <https://fib-asw-wotapi.fly.dev/>. <br>All operations are executable. Only one operation requires authentication: `deleteTweet`. In this case, you must **Authorize** your request by providing the token value you got when you created the tweet."
+servers:
+  - url: 'https://fib-asw-wotapi.fly.dev/'
+paths:
+
+  /article/{articleId}/comments:
+    get:
+      tags:
+      - comments
+      summary: View comments of an article
+      parameters:
+      - name: articleId
+        in: path
+        description: ID of Article to search
+        required: true
+        schema:
+          type: integer
+      - name: order
+        in: query
+        description: Order in which to return the comments. Can be 'oldest', 'newest', or default (most voted).
+        required: false
+        schema:
+          type: string
+          enum: ['oldest', 'newest']
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Comment'
+        400:
+          description: 'Error: Bad Request'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  value:
+                    error: "Invalid order parameter"
+        404:
+          description: 'Error: Not Found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  value:
+                    error: "Couldn't find Article with 'id'=3"
+    post:
+      tags:
+      - comments
+      summary: Creates a comment in an article
+      parameters:
+      - name: articleId
+        in: path
+        description: ID of Article to search
+        required: true
+        schema:
+          type: integer
+      requestBody:
+        description: Provide the content of the Comment
+        content:
+          application/json:
+            schema:
+              required:
+              - body
+              type: object
+              properties:
+                body:
+                  type: string
+                  example: 'commentPostMan'
+                  description: 'The text content of the comment'
+                parent_id:
+                  type: integer
+                  example: 7
+                  description: 'ID of the comment being replied to, if comment is a reply'
+        required: true
+      responses:
+        201:
+          description: Comment created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Comment'
+        400:
+          description: 'Error: Bad Request'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  value:
+                    error: "You didn't provide all the required fields"
+        401:
+          description: 'Error: Unauthorized'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                noApiKey:
+                  $ref: '#/components/examples/error401'
+                wrongApiKey:
+                  value:
+                    error: "Invalid Api key provided."
+        403:
+          description: 'Error: Forbidden'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error403'
+        404:
+          description: 'Error: Not Found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  value:
+                    error: "Couldn't find Article with 'id'=3"
+
+  /artice/{articleId}/comments/{commentId}:
+    patch:
+      tags:
+      - comments
+      summary: Updates a comment in an article
+      parameters:
+      - name: articleId
+        in: path
+        description: ID of Article to search
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - name: commentId
+        in: path
+        description: ID of Comment to search
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        description: Provide the new body for the comment
+        content:
+          application/json:
+            schema:
+              required:
+              - body
+              type: object
+              properties:
+                body:
+                  type: string
+                  example: 'commentPostMan'
+        required: true
+      responses:
+        200:
+          description: Comment updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Comment'
+        400:
+          description: 'Error: Bad Request'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  value:
+                    error: "You didn't provide all the required fields"
+        401:
+          description: 'Error: Unauthorized'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error401'
+        403:
+          description: 'Error: Forbidden'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error403'
+        404:
+          description: 'Error: Not Found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                commentNotFound:
+                  value:
+                    error: "Couldn't find Comment with 'id'=3"
+                articleNotFound:
+                  value:
+                    error: "Couldn't find Article with 'id'=17"
+    get:
+      tags:
+      - comments
+      summary: View an individual comment of an article
+      parameters:
+      - name: articleId
+        in: path
+        description: ID of Article to search
+        required: true
+        schema:
+          type: integer
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Comment'
+        404:
+          description: 'Error: Not Found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                articleNotFound:
+                  value:
+                    error: "Couldn't find Article with 'id'=3"
+                commentNotFound:
+                  value:
+                    error: "Couldn't find Comment with 'id'=17"
+    delete:
+      tags:
+      - comments
+      summary: Deletes a comment in an article
+      parameters:
+      - name: articleId
+        in: path
+        description: ID of Article to search
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - name: commentID
+        in: path
+        description: ID of Comment to search
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        204:
+          description: Comment deleted
+          content:
+            application/json:
+              example:
+                message: 'Comment was successfully deleted'
+        401:
+          description: 'Error: Unauthorized'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error401'
+        403:
+          description: 'Error: Forbidden'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error403'
+        404:
+          description: 'Error: Not Found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                commentNotFound:
+                  value:
+                    error: "Couldn't find Comment with 'id'=3"
+                articleNotFound:
+                  value:
+                    error: "Couldn't find Article with 'id'=17"
+
+  /article/{articleId}/comments/{commentId}/vote_up:
+    post:
+      tags:
+      - comments
+      summary: Votes up a comment in an article
+      parameters:
+      - name: articleId
+        in: path
+        description: ID of Article to search
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - name: commentID
+        in: path
+        description: ID of Comment to search
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        200:
+          description: Comment voted up
+          content:
+            application/json:
+              example:
+                id: 1
+                body: 'commentPostMan'
+                articleId: 2
+                parent_id: null
+                created_at: '2021-05-10T15:00:00.000Z'
+                updated_at: '2021-05-10T15:00:00.000Z'
+                votes_up: 1
+                votes_down: 0
+                user_id: 1
+                replies: []
+        404:
+          description: 'Error: Not Found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                commentNotFound:
+                  value:
+                    error: "Couldn't find Comment with 'id'=3"
+                articleNotFound:
+                  value:
+                    error: "Couldn't find Article with 'id'=17"
+  
+  /article/{articleId}/comments/{commentId}/vote_down:
+    post:
+      tags:
+      - comments
+      summary: Votes down a comment in an article
+      parameters:
+      - name: articleId
+        in: path
+        description: ID of Article to search
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - name: commentID
+        in: path
+        description: ID of Comment to search
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        200:
+          description: Comment voted down
+          content:
+            application/json:
+              example:
+                id: 1
+                body: 'commentPostMan'
+                articleId: 2
+                parent_id: null
+                created_at: '2021-05-10T15:00:00.000Z'
+                updated_at: '2021-05-10T15:00:00.000Z'
+                votes_up: 0
+                votes_down: 1
+                user_id: 1
+                replies: []
+        404:
+          description: 'Error: Not Found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                commentNotFound:
+                  value:
+                    error: "Couldn't find Comment with 'id'=3"
+                articleNotFound:
+                  value:
+                    error: "Couldn't find Article with 'id'=17"
+
+
+
+
+
+
+
+
+
+components:
+  schemas:
+    Comment:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 1
+        body:
+          type: string
+          example: 'commentPostMan'
+        articleId:
+          type: integer
+          format: int64
+          example: 2
+        parent_id:
+          type: integer
+          format: int64
+          example: null
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+        votes_up:
+          type: integer
+          format: int32
+        votes_down:
+          type: integer
+          format: int32
+        user_id:
+          type: integer
+          format: int64
+        replies:
+          type: array
+          items:
+            $ref: '#/components/schemas/Comment'
+          description: 'An array of replies to the comment. This field is not present if there are no replies.'
+    
+    ErrorResult:
+      type: object
+      properties:
+        error: 
+          type: string
+          example: 'Content is too long (maximum is 280 characters)'
+      required:
+        - message
+
+  examples:
+    error400:
+      value:
+        error: "You didn't provide all the required fields"
+    error401:
+      value:
+        error: "Missing api key"
+    userNotFound:
+      value:
+        error: "No user with this apikey"
+    error403:
+      value:
+        error: "You are not allowed to perform this action."
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      name: Authorization
+      in: header

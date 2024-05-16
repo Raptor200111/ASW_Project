@@ -2,14 +2,16 @@
 
 <%= render @article %>
 
+<% if @commentOrder_filter.nil?
+    @commentOrder_filter = 'top'
+    end %>
+
 <div class="secHeader">
   <div class="webBody" id="filter">
     <nav>
-      <a href="linkhere">top</a>
-      <a href="linkhere" id="activeFilter">hot</a>
-      <a href="linkhere">active</a>
-      <a href="linkhere">newest</a>
-      <a href="linkhere">oldest</a>
+      <%= link_to 'Top', commentOrder_path(id: @article.id, commentOrder: 'top') %>
+      <%= link_to 'Newest', commentOrder_path(id: @article.id, commentOrder: 'newest') %>
+      <%= link_to 'Oldest', commentOrder_path(id: @article.id, commentOrder: 'oldest') %>
     </nav>
     <div class="filterIcons">
       <a href="linkhere"><i class="fa-solid fa-layer-group"></i></i></a>
@@ -29,9 +31,23 @@
 </div>
 
 <div class="bodyContainer" id="comments">
-  <% @article.comments.order(created_at: :desc).each do |comment| %>
-    <% unless comment.parent_id %>
-      <%= render comment %>
+  <% if @commentOrder_filter == 'newest' %>
+    <% @article.comments.order(created_at: :desc).each do |comment| %>
+      <% unless comment.parent_id %>
+        <%= render comment %>
+      <% end %>
+    <% end %>
+  <% elsif @commentOrder_filter == 'oldest' %>
+    <% @article.comments.order(created_at: :asc).each do |comment| %>
+      <% unless comment.parent_id %>
+        <%= render comment %>
+      <% end %>
+    <% end %>
+  <% elsif @commentOrder_filter == 'top' %>
+    <% @article.comments.order(votes_up: :desc).each do |comment| %>
+      <% unless comment.parent_id %>
+        <%= render comment %>
+      <% end %>
     <% end %>
   <% end %>
 </div>
