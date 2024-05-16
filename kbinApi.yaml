@@ -196,7 +196,7 @@ paths:
       summary: Boost an article
       description: Boosts an article for the current user.
       tags:
-        - articles/boost
+        - articles
       parameters:
         - name: id
           in: path
@@ -245,7 +245,7 @@ paths:
       summary: Unboost an article
       description: Removes a boost from an article for the current user.
       tags:
-        - articles/boost
+        - articles
       parameters:
         - name: id
           in: path
@@ -327,7 +327,7 @@ paths:
   /articles/{id}/vote_up:
     post:
       tags:
-        - articles/vote
+        - articles
       summary: Vote up an article
       description: |
         This endpoint allows a user to vote up an article.
@@ -386,7 +386,7 @@ paths:
   /articles/{id}/vote_down:
     post:
       tags:
-        - articles/vote
+        - articles
       summary: Vote down an article
       description: |
         This endpoint allows a user to vote down an article.
@@ -436,7 +436,7 @@ paths:
   /articles/{id}/unvote_up:
     delete:
       tags:
-        - articles/vote
+        - articles
       summary: Remove an upvote from an article
       description: |
         Removes the upvote from the specified article.
@@ -504,7 +504,7 @@ paths:
   /articles/{id}/unvote_down:
     delete:
       tags:
-        - articles/vote
+        - articles
       summary: Unvote Down for Article
       description: |
         Removes the downvote from the specified article.
