@@ -120,7 +120,7 @@ class ArticlesController < ApplicationController
     respond_to do |format|
       if @article.destroy
         format.html { redirect_to articles_url, notice: "Article was successfully destroyed." }
-        format.json  { render json: { message: 'Boost removed successfully' }, status: :ok }
+        format.json  { render json: { message: 'Destroyed article uccessfully' }, status: :ok }
       else
         format.html { redirect_to article_url(@article), notice: "ERROR DELETE" }
         format.json { render json: @article.errors, status: :unprocessable_entity }
