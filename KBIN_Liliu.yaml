@@ -337,112 +337,102 @@ paths:
   /articles/{id}/vote_up:
     post:
       summary: Vote up an article
+      description: |
+        This endpoint allows a user to vote up an article.
       parameters:
         - in: path
           name: id
           required: true
-          description: ID of the article to vote on
+          description: The ID of the article to vote up
           schema:
             type: integer
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                value:
-                  type: string
-                  enum: [up]
-                  description: The vote value
-                  example: up
       responses:
-        '201':
-          description: Vote successfully created
+        '200':
+          description: Vote was successfully created
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/VoteArticle'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
         '401':
-          description: Unauthorized - Missing API key
+          description: Unauthorized
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-                    description: Error message
-                    example: Missing API key
-        '403':
-          description: Forbidden - Not authorized to vote on the article
+                $ref: '#/components/schemas/ErrorResult'
+        '404':
+          description: Article not found
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-                    description: Error message
-                    example: You are not authorized to vote on this article
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error404'
+        '422':
+          description: Unprocessable entity
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
       security:
       - ApiKeyAuth: []
   /articles/{id}/vote_down:
     post:
       summary: Vote down an article
+      description: |
+        This endpoint allows a user to vote down an article.
       parameters:
         - in: path
           name: id
           required: true
-          description: ID of the article to vote on
+          description: ID of the article to vote down
           schema:
             type: integer
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                value:
-                  type: string
-                  enum: [down]
-                  description: The vote value
-                  example: down
       responses:
-        '201':
-          description: Vote successfully created
+        '200':
+          description: Vote was successfully created
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/VoteArticle'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
         '401':
-          description: Unauthorized - Missing API key
+          description: Unauthorized
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-                    description: Error message
-                    example: Missing API key
-        '403':
-          description: Forbidden - Not authorized to vote on the article
+                $ref: '#/components/schemas/ErrorResult'
+        '404':
+          description: Article not found
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-                    description: Error message
-                    example: You are not authorized to vote on this article
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error404'
+        '422':
+          description: Unprocessable entity
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
       security:
       - ApiKeyAuth: []
   /articles/{id}/unvote_up:
     delete:
-      summary: Unvote Up for Article
+      summary: Remove an upvote from an article
       description: |
         Removes the upvote from the specified article.
         Requires authentication.
