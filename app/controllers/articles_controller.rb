@@ -1,7 +1,7 @@
 class ArticlesController < ApplicationController
   skip_before_action :verify_authenticity_token
-  before_action :authenticate_user!, only: %i[create update destroy vote_up vote_down vote unvote_up unvote_down boost_web boost unboost ]
   before_action :set_article, only: %i[ show edit update destroy vote vote_up vote_down unvote_up unvote_down boost_web boost unboost ]
+  before_action :authenticate_user!, only: %i[create update destroy vote_up vote_down vote unvote_up unvote_down boost_web boost unboost ]
   before_action :check_owner, only: %i[update destroy]
 
   # GET /articles or /articles.json
@@ -117,16 +117,26 @@ class ArticlesController < ApplicationController
 
   # DELETE /articles/1 or /articles/1.json
   def destroy
+      @article.destroy
+        respond_to do |format|
+        format.html { redirect_to articles_url, notice: "Article was successfully destroyed." }
+        format.json  { render json: { message: 'Destroyed article uccessfully' }, status: :no_content }
+      end
+  end
+=begin
+  def destroy
     respond_to do |format|
       if @article.destroy
         format.html { redirect_to articles_url, notice: "Article was successfully destroyed." }
-        format.json  { render json: { message: 'Boost removed successfully' }, status: :ok }
+        format.json  { render json: { message: 'Destroyed article uccessfully' }, status: :ok }
       else
         format.html { redirect_to article_url(@article), notice: "ERROR DELETE" }
         format.json { render json: @article.errors, status: :unprocessable_entity }
       end
     end
   end
+=end
+
   #/articles/:id/vote_up
   def vote_up
     vote_api('up')
@@ -284,10 +294,10 @@ class ArticlesController < ApplicationController
     def set_article
       #@article = Article.find(params[:id])
       @article = Article.includes(:user, :magazine, :vote_articles, :boosts, :comments).find(params[:id])
-    rescue ActiveRecord::RecordNotFound
+    rescue ActiveRecord::RecordNotFound => e
       respond_to do |format|
         format.html { redirect_to articles_url, alert: 'Article not found.' }
-        format.json { render json: { error: "Not Found" }, status: :not_found }
+        format.json { render json: { error:  e.message }, status: :not_found }
       end
       return
     end
@@ -400,6 +410,7 @@ class ArticlesController < ApplicationController
         format.html { redirect_to articles_url, alert: 'You are not authorized to perform this action.' }
         format.json { render json: { error: 'You are not authorized to perform this action' }, status: :forbidden }
       end
+      return
     end
   end
 
