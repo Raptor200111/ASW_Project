@@ -516,7 +516,7 @@ paths:
       parameters:
       - name: magazineId
         in: path
-        description: ID of Tweet to return
+        description: ID of Magazine to return
         required: true
         schema:
           type: integer
@@ -720,7 +720,7 @@ components:
         error: "You are not allowed to perform this action."
     error404:
       value:
-        message: "There is no tweet with 'id'=8"
+        message: "There is no magazine with 'id'=8"
   securitySchemes:
     ApiKeyAuth:
       type: apiKey
