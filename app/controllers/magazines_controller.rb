@@ -48,7 +48,7 @@ class MagazinesController < ApplicationController
         end
         return
       end
-      if !User.exists?(api_key: request.headers['key'])
+      if ('1' != request.headers['Authorization'])
         respond_to do |format|
           format.json { render(json: {"error": "Not logged in"}, status: 401)}
         end
@@ -107,13 +107,13 @@ class MagazinesController < ApplicationController
           format.json { render(json: {"error": "Missing api key"}, status: 400)}
         end
         return
-      elsif !User.exists?(api_key: request.headers['Authorization'])
+      elsif ('1' != request.headers['Authorization'])
         respond_to do |format|
           format.json { render(json: {"error": "Not logged in"}, status: 401)}
         end
         return
       else
-        @user = User.find(api_key: request.headers['Authorization'])
+        @user = User.find(id: request.headers['Authorization'])
         isSubs = @user.subscriptions.find_by(magazine: @magazine)
         begin
           if isSubs
@@ -132,13 +132,13 @@ class MagazinesController < ApplicationController
     else
       # comportament web
       if current_user.nil?
-      respond_to do |format|
-        format.html {redirect_to magazines_path, notice: 'You need to log in to subscribe.'}
-        format.json {head :no_content }
-      end
-      return
+        respond_to do |format|
+          format.html {redirect_to magazines_path, notice: 'You need to log in to subscribe.'}
+          format.json {head :no_content }
+        end
+        return
       else
-      isSubs = current_user.subscriptions.find_by(magazine: @magazine)
+        isSubs = current_user.subscriptions.find_by(magazine: @magazine)
         begin
           if isSubs
             isSubs.destroy
@@ -155,22 +155,6 @@ class MagazinesController < ApplicationController
             end
           end
         end
-        return
-      end
-      isSubs = current_user.subscriptions.find_by(magazine: @magazine)
-      begin
-        if isSubs
-          respond_to do |format|
-            format.html {redirect_to magazines_path, notice: 'Already subscribed!'}
-            format.json {head :no_content }
-          end
-        else
-          current_user.subs << @magazine
-          respond_to do |format|
-            format.html {redirect_to magazines_path, notice: 'Subscribed successfully!'}
-            format.json {head :no_content }
-          end
-        end
       end
     end
   end
@@ -184,7 +168,7 @@ class MagazinesController < ApplicationController
         end
         return
       end
-      if !User.exists?(api_key: request.headers['Authorization'])
+      if ('1' != request.headers['Authorization'].present?)
         respond_to do |format|
           format.json { render(json: {"error": "Not logged in"}, status: 401)}
         end
