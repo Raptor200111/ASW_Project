@@ -1,10 +1,12 @@
 class UsersController < ApplicationController
   skip_before_action :verify_authenticity_token
-  before_action :set_user
+  before_action :set_user, only: [:update, :deleteAvatar, :deleteBack, :show_boosts]
+
   def profile
+    @requested_user = User.find(params[:id])
     respond_to do |format|
       format.html
-      format.json { render json:  @user, status: :ok }
+      format.json { render json: @requested_user, status: :ok }
     end
   end
 
