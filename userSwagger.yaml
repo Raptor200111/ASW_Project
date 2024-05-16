@@ -8,9 +8,9 @@ servers:
 paths:
   /u/{id}:
     get:
+      tags:
+        - Users
       summary: Get User Profile
-      security:
-      - ApiKeyAuth: []
       parameters:
         - name: id
           in: path
@@ -30,7 +30,9 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-    patch:
+    put:
+      tags:
+        - Users
       summary: Update User Profile
       security:
       - ApiKeyAuth: []
@@ -61,6 +63,8 @@ paths:
 
   /u/{id}/articles:
     get:
+      tags:
+        - Users
       summary: Get User Articles
       parameters:
         - name: id
@@ -80,6 +84,8 @@ paths:
 
   /u/{id}/comments:
     get:
+      tags:
+        - Users
       summary: Get User Comments
       parameters:
         - name: id
@@ -99,6 +105,8 @@ paths:
 
   /u/{id}/boosts:
     get:
+      tags:
+        - Users
       summary: Get User Boosts
       security:
       - ApiKeyAuth: []
@@ -125,7 +133,9 @@ paths:
                 $ref: '#/components/schemas/Error'
 
   /u/{id}/deleteAvatar:
-    patch:
+    put:
+      tags:
+        - Users
       summary: Delete User Avatar
       security:
       - ApiKeyAuth: []
@@ -150,7 +160,9 @@ paths:
                 $ref: '#/components/schemas/Error'
 
   /u/{id}/deleteBack:
-    patch:
+    put:
+      tags:
+        - Users
       summary: Delete User Background
       security:
       - ApiKeyAuth: []
@@ -251,7 +263,7 @@ components:
           type: string
         error:
           type: string
-          
+
   securitySchemes:
     ApiKeyAuth:
       type: apiKey
