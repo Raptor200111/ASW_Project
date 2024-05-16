@@ -48,7 +48,7 @@
       <menu>
         <li><aN><%= article.comments.count%> comments</aN></li>
         <li><aN>
-          <%= button_to boost_article_path(article), method: :post, class: "boost-link" do %>
+          <%= button_to boost_web_article_path(article), method: :post, class: "boost-link" do %>
             Boost(<%= article.num_boosts %>)
           <% end %>
         </aN></li>
