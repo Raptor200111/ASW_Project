@@ -5,7 +5,7 @@ class UsersController < ApplicationController
   def profile
     @requested_user = User.find(params[:id])
     respond_to do |format|
-      format.html
+      format.html { redirect_to user_path(@requested_user.id) }
       format.json { render json: @requested_user, status: :ok }
     end
   end
