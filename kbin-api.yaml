@@ -254,6 +254,44 @@ paths:
         schema:
           type: integer
           format: int64
+      responses:
+        204:
+          description: Comment deleted
+          content:
+            application/json:
+              example:
+                message: 'Comment was successfully deleted'
+        401:
+          description: 'Error: Unauthorized'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error401'
+        403:
+          description: 'Error: Forbidden'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error403'
+        404:
+          description: 'Error: Not Found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                commentNotFound:
+                  value:
+                    error: "Couldn't find Comment with 'id'=3"
+                articleNotFound:
+                  value:
+                    error: "Couldn't find Article with 'id'=17"
 
   /article/{articleId}/comments/{commentId}/vote_up:
     post:
@@ -275,6 +313,35 @@ paths:
         schema:
           type: integer
           format: int64
+      responses:
+        200:
+          description: Comment voted up
+          content:
+            application/json:
+              example:
+                id: 1
+                body: 'commentPostMan'
+                articleId: 2
+                parent_id: null
+                created_at: '2021-05-10T15:00:00.000Z'
+                updated_at: '2021-05-10T15:00:00.000Z'
+                votes_up: 1
+                votes_down: 0
+                user_id: 1
+                replies: []
+        404:
+          description: 'Error: Not Found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                commentNotFound:
+                  value:
+                    error: "Couldn't find Comment with 'id'=3"
+                articleNotFound:
+                  value:
+                    error: "Couldn't find Article with 'id'=17"
   
   /article/{articleId}/comments/{commentId}/vote_down:
     post:
@@ -296,6 +363,35 @@ paths:
         schema:
           type: integer
           format: int64
+      responses:
+        200:
+          description: Comment voted down
+          content:
+            application/json:
+              example:
+                id: 1
+                body: 'commentPostMan'
+                articleId: 2
+                parent_id: null
+                created_at: '2021-05-10T15:00:00.000Z'
+                updated_at: '2021-05-10T15:00:00.000Z'
+                votes_up: 0
+                votes_down: 1
+                user_id: 1
+                replies: []
+        404:
+          description: 'Error: Not Found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                commentNotFound:
+                  value:
+                    error: "Couldn't find Comment with 'id'=3"
+                articleNotFound:
+                  value:
+                    error: "Couldn't find Article with 'id'=17"
 
 
 

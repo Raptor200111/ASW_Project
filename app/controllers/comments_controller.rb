@@ -80,9 +80,6 @@ class CommentsController < ApplicationController
 
   # DELETE /comments/1
   def destroy
-    @article = Article.find(params[:article_id])
-    @comment = @article.comments.find(params[:id])
-
     # comprova si l'usuari es el propietari del comentari
     check_owner()
 
