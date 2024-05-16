@@ -2,55 +2,58 @@ openapi: 3.0.2
 info:
   version: 1.0.0
   title: KBIN
-  description: "This is the Open API documentation for the REST API of our beloved application **KBIN** deployed at <https://3.90.39.111:8080>."
+  description: "This is the Open API documentation for the REST API of our beloved application **KBIN** deployed at <https://174.129.53.222:8080>."
 servers:
-  - url: 'http://54.91.238.194:8080'
+  - url: 'https://delta-12-kbin-8d30caa623a4.herokuapp.com/'
 paths:
-  /articles:
+  /magazines:
     post:
       tags:
-      - articles
-      summary: Create a new article
-      operationId: createArticle
+        - Magazines
+      summary: Adds a new magazine
+      security:
+      - ApiKeyAuth: []
+      operationId: addMagazine
       requestBody:
-        required: true
+        description: Provide a name and a title for the magazine. Description and rules are optional
         content:
           application/json:
             schema:
               required:
+              - name
               - title
-              - body
-              - article_type
-              - user_id
-              - magazine_id
               type: object
               properties:
+                name:
+                  type: string
+                  example: 'Hola'
                 title:
                   type: string
-                body:
+                  example: 'Hola bon dia'
+                description:
                   type: string
-                article_type:
+                  example: ''
+                rules:
                   type: string
-                url:
-                  type: string
-                user_id:
-                  type: integer
-                magazine_id:
-                  type: integer
+                  example: ''
+        required: true
       responses:
-        '201':
-          description: Article created successfully
+        201:
+          description: Magazine created
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ArticleComplete'
-        '400':
-          description: 'Error: Bad Request'
+                $ref: '#/components/schemas/Magazine'
+        400:
+          description: 'Missing name'
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResult'
-        '401':
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error400'
+        401:
           description: 'Error: Unauthorized'
           content:
             application/json:
@@ -59,314 +62,134 @@ paths:
               examples:
                 errorExample:
                   $ref: '#/components/examples/error401'
-      security:
-      - ApiKeyAuth: []
     get:
       tags:
-      - articles
-      summary: Retrieves all articles
-      operationId: getAllArticles
+      - Magazines
+      summary: Retrieves all the magazines
+      operationId: getAllMagazines
       parameters:
-        - name: type
-          in: query
-          description: Filter articles by type (e.g., all, link or thread).
-          schema:
-            type: string
-            enum: [all, link, thread]
-          example: all
-        - name: order_filter
-          in: query
-          description: Order articles by order_filter (e.g. newest, top or commented).
-          schema:
-            type: string
-            enum: [newest, top, commented]
-          example: newest
+      - name: sort
+        in: query
+        description: The way you want to sort the magazines
+        required: false
+        schema:
+          type: string
+          enum:
+           - 'threads'
+           - 'comments'
+           - 'subs'
       responses:
-        '200':
+        200:
           description: successful operation
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Article'
-  /articles/{id}:
+                  $ref: '#/components/schemas/Magazine'
+  /magazines/{magazineId}:
     get:
       tags:
-      - articles
-      summary: Retrieves a specific article by ID
-      operationId: getArticleById
+      - Magazines
+      summary: Finds a Magazine by its ID
+      operationId: getMagazineById
       parameters:
-      - name: id
+      - name: magazineId
         in: path
-        description: ID of article to return
+        description: ID of Tweet to return
         required: true
         schema:
           type: integer
+          format: int64
       responses:
-        '200':
+        200:
           description: successful operation
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ArticleComplete'
-        '404':
-          description: 'Error: Not Found'
+                $ref: '#/components/schemas/Magazine'
+        404:
+          description: 'No magazine with this id'
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResult'
-    patch:
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error404'
+  /magazines/{magazineId}/subscribe:
+    post:
       tags:
-      - articles
-      summary: Updates a specific article by ID
-      operationId: updateArticleById
-      parameters:
-      - name: id
-        in: path
-        description: ID of article to update
-        required: true
-        schema:
-          type: integer
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                title:
-                  type: string
-                body:
-                  type: string
-                article_type:
-                  type: string
-                url:
-                  type: string
-                magazine_id:
-                  type: integer
-      responses:
-        '200':
-          description: Article updated successfully
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ArticleComplete'
-        '400':
-          description: 'Error: Bad Request'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResult'
-        '404':
-          description: 'Error: Not Found'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResult'
+      - Magazines
+      summary: If not subscribe, subscribe to the magazine.
       security:
       - ApiKeyAuth: []
-    delete:
-      tags:
-      - articles
-      summary: Deletes a specific article by ID
-      operationId: deleteArticleById
+      operationId: subscirbe
       parameters:
-      - name: id
+      - name: magazineId
         in: path
-        description: ID of article to delete
+        description: ID of Magazine to subscribe
         required: true
         schema:
           type: integer
+          format: int64
       responses:
-        '204':
+        200:
+            description: successful operation
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Magazine'
+        401:
+          description: 'Error: Unauthorized'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error401'
+        404:
+          description: 'No magazine with this id'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error404'
+  /magazines/{magazineId}/unsubscribe:
+    delete:
+      tags:
+      - Magazines
+      summary: If subscribe, unsubscribe.
+      security:
+      - ApiKeyAuth: []
+      operationId: unsubscribe
+      parameters:
+      - name: magazineId
+        in: path
+        description: Id of Magazine to unsubscribe
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        204:
           description: No content
-        '404':
-          description: 'Error: Not Found'
+          content:
+            application/json: {}
+        401:
+          description: 'Error: Unauthorized'
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResult'
-      security:
-      - ApiKeyAuth: []
-  /articles/{id}/boost:
-    post:
-      summary: Boost an article
-      description: Boosts an article for the current user.
-      tags:
-        - Articles
-      parameters:
-        - name: id
-          in: path
-          required: true
-          description: ID of the article to boost
-          schema:
-            type: integer
-      responses:
-        '201':
-          description: Article boosted successfully
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  id:
-                    type: integer
-                  title:
-                    type: string
-                  body:
-                    type: string
-                  num_boosts:
-                    type: integer
-        '200':
-          description: Article already boosted
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: You have already boosted this article
-        '401':
-          description: Unauthorized
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: No user with this API key
-        '422':
-          description: Unprocessable Entity
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-                    example: Unable to boost article
-      security:
-      - ApiKeyAuth: []
-  /articles/{id}/unboost:
-    delete:
-      summary: Unboost an article
-      description: Removes a boost from an article for the current user.
-      tags:
-        - Articles
-      parameters:
-        - name: id
-          in: path
-          required: true
-          description: ID of the article to unboost
-          schema:
-            type: integer
-      responses:
-        '200':
-          description: Boost removed successfully
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: Boost removed successfully
-        '401':
-          description: Unauthorized
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: No user with this API key
-        '404':
-          description: Not Found
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-                    example: Boost not found
-        '422':
-          description: Unprocessable Entity
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-                    example: Error removing boost
-      security:
-      - ApiKeyAuth: []
-  /articles/search:
-    get:
-      tags:
-        - articles
-      summary: Search articles by title or body
-      operationId: searchArticles
-      parameters:
-        - name: search_text
-          in: query
-          description: Text to search for in article titles or bodies
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: Successful operation
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Article'
-        '400':
-          description: Bad request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResult'
-  /articles/{id}/vote_up:
-    post:
-      summary: Vote up an article
-      description: |
-        This endpoint allows a user to vote up an article.
-      parameters:
-        - in: path
-          name: id
-          required: true
-          description: The ID of the article to vote up
-          schema:
-            type: integer
-      responses:
-        '200':
-          description: Vote was successfully created
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/VoteArticle'
-        '400':
-          description: Bad request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResult'
-        '401':
-          description: Unauthorized
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResult'
-        '404':
-          description: Article not found
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error401'
+        404:
+          description: 'No magazine with this id'
           content:
             application/json:
               schema:
@@ -374,353 +197,44 @@ paths:
               examples:
                 errorExample:
                   $ref: '#/components/examples/error404'
-        '422':
-          description: Unprocessable entity
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResult'
-      security:
-      - ApiKeyAuth: []
-  /articles/{id}/vote_down:
-    post:
-      summary: Vote down an article
-      description: |
-        This endpoint allows a user to vote down an article.
-      parameters:
-        - in: path
-          name: id
-          required: true
-          description: ID of the article to vote down
-          schema:
-            type: integer
-      responses:
-        '200':
-          description: Vote was successfully created
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/VoteArticle'
-        '400':
-          description: Bad request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResult'
-        '401':
-          description: Unauthorized
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResult'
-        '404':
-          description: Article not found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResult'
-              examples:
-                errorExample:
-                  $ref: '#/components/examples/error404'
-        '422':
-          description: Unprocessable entity
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResult'
-      security:
-      - ApiKeyAuth: []
-  /articles/{id}/unvote_up:
-    delete:
-      summary: Remove an upvote from an article
-      description: |
-        Removes the upvote from the specified article.
-        Requires authentication.
-      parameters:
-        - in: path
-          name: id
-          required: true
-          description: ID of the article to unvote up
-          schema:
-            type: integer
-      responses:
-        '200':
-          description: Vote removed successfully
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: Vote removed successfully
-        '400':
-          description: Invalid request or missing parameters
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-                    example: Invalid request or missing parameters
-        '401':
-          description: Unauthorized - API key is missing or invalid
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-                    example: Unauthorized - API key is missing or invalid
-        '404':
-          description: Article not found
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-                    example: Article not found
-        '500':
-          description: Internal server error
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-                    example: Internal server error
-      security:
-      - ApiKeyAuth: []
-  /articles/{id}/unvote_down:
-    delete:
-      summary: Unvote Down for Article
-      description: |
-        Removes the downvote from the specified article.
-        Requires authentication.
-      parameters:
-        - in: path
-          name: id
-          required: true
-          description: ID of the article to unvote down
-          schema:
-            type: integer
-      responses:
-        '200':
-          description: Vote removed successfully
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: Vote removed successfully
-        '400':
-          description: Invalid request or missing parameters
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-                    example: Invalid request or missing parameters
-        '401':
-          description: Unauthorized - API key is missing or invalid
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-                    example: Unauthorized - API key is missing or invalid
-        '404':
-          description: Article not found
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-                    example: Article not found
-        '500':
-          description: Internal server error
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-                    example: Internal server error
-      security:
-      - ApiKeyAuth: []
 components:
   schemas:
-    Article:
+    Magazine:
       type: object
       properties:
         id:
-          type: integer
-          example: 1
-        title:
-          type: string
-          example: Article Title
-        body:
-          type: string
-          example: Article Body Content
-        article_type:
-          type: string
-          example: Thread
-        url:
-          type: string
-          example: http://example.com
-        votes_up:
-          type: integer
-          example: 10
-        votes_down:
           type: integer
           example: 2
-        num_boosts:
-          type: integer
-          example: 1
-        created_at:
-          type: string
-          format: date-time
-          example: "2024-05-14T12:00:00Z"
-        updated_at:
-          type: string
-          format: date-time
-          example: "2024-05-14T12:00:00Z"
-        magazine_id:
-          type: integer
-          example: 1
-        user_id:
-          type: integer
-          example: 1
-    ArticleComplete:
-      type: object
-      properties:
-        id:
-          type: integer
-          example: 1
-        title:
-          type: string
-          example: Article Title
-        body:
-          type: string
-          example: Article Body Content
-        article_type:
-          type: string
-          enum: [link, thread]
-          example: Thread
-        url:
-          type: string
-          example: http://example.com
-        votes_up:
-          type: integer
-          example: 10
-        votes_down:
-          type: integer
-          example: 2
-        num_boosts:
-          type: integer
-          example: 1
-        created_at:
-          type: string
-          format: date-time
-          example: "2024-05-14T12:00:00Z"
-        updated_at:
-          type: string
-          format: date-time
-          example: "2024-05-14T12:00:00Z"
-        magazine:
-          $ref: '#/components/schemas/MagazineArticle'
-        user:
-          $ref: '#/components/schemas/UserArticle'
-        vote_articles:
-          type: array
-          items:
-            $ref: '#/components/schemas/VoteArticleArticle'
-        boosts:
-          type: array
-          items:
-            $ref: '#/components/schemas/BoostArticle'
-        comments:
-          type: array
-          items:
-            $ref: '#/components/schemas/CommentArticle'
-    VoteArticle:
-      type: object
-      properties:
-        id:
-          type: integer
-        user_id:
-          type: integer
-        article_id:
-          type: integer
-        value:
-          type: string
-      required:
-        - user_id
-        - article_id
-    MagazineArticle:
-      type: object
-      properties:
-        id:
-          type: integer
         name:
           type: string
-    UserArticle:
-      type: object
-      properties:
-        id:
+          example: hola
+        title:
+          type: string
+          example: hola
+        description:
+          type: string
+          example:
+        rules:
+          type: string
+          example:
+        createdAt:
+          type: string
+          example: '2024-05-16T18:43:30.622Z'
+        updatedAt:
+          type: string
+          example: '2024-05-16T20:30:02.460Z'
+        nThreads:
           type: integer
-        full_name:
-          type: string
-        email:
-          type: string
-    VoteArticleArticle:
-      type: object
-      properties:
-        id:
+          example: 2
+        nComms:
           type: integer
-        value:
-          type: string
-        created_at:
-          type: string
-          format: date-time
-    BoostArticle:
-      type: object
-      properties:
-        id:
+          example: 2
+        nSubs:
           type: integer
-        user_id:
+          example: 2
+        url:
           type: string
-        created_at:
-          type: string
-          format: date-time
-    CommentArticle:
-      type: object
-      properties:
-        id:
-          type: integer
-        user_id:
-          type: string
-        parent_id:
-          type: string
-        body:
-          type: string
-        created_at:
-          type: string
-          format: date-time
+          example: 'https://delta-12-kbin-8d30caa623a4.herokuapp.com/magazines/1.json'
     ErrorResult:
       type: object
       properties:
