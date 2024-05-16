@@ -38,7 +38,7 @@
   				<th><%= link_to magazine.name, magazine_path(magazine) %></th>
   				<th><%= magazine.articles.size %></th>
   				<th><%= magazine.nComms %></th>
-  				<th><%= magazine.subscribers.size %><%= button_to !current_user.nil? && current_user.subscriptions.find_by(magazine: magazine) ? "Unsubscribe" : "Subscribe", subscribe_magazine_path(magazine), method: :put %></th>
+  				<th><%= magazine.subscribers.size %><%= button_to !current_user.nil? && current_user.subscriptions.find_by(magazine: magazine) ? "Unsubscribe" : "Subscribe", subscribe_magazine_path(magazine), method: :post %></th>
   			</tr>
   		<% end %>
 		</tbody>
