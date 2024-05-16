@@ -14,6 +14,7 @@ class UsersController < ApplicationController
   def update
     @user = User.find_by(id: params[:id])
     @user.full_name = params[:user][:full_name]
+    @user.description = params[:user][:description]
     if params[:user][:avatar] != nil
       @user.avatar = params[:user][:avatar]
     end
