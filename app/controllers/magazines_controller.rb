@@ -84,7 +84,6 @@ class MagazinesController < ApplicationController
 
   # DELETE /magazines/1/unsubscribe
   def unsubscribe
-    @user = User.find(api_key: request.headers['Authorization'])
     isSubs = @user.subscriptions.find_by(magazine: @magazine)
     begin
       if isSubs
