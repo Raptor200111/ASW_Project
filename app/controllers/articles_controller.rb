@@ -1,7 +1,7 @@
 class ArticlesController < ApplicationController
   skip_before_action :verify_authenticity_token
-  before_action :authenticate_user!, only: [:create, :update, :destroy, :boost]
-  before_action :set_article, only: %i[ show edit update destroy vote_up vote_down boost]
+  before_action :authenticate_user!, only: [:create, :update, :destroy, :vote_up, :vote_down, :vote, :unvote_up, :unvote_down, :boost_web, :boost, :unboost ]
+  before_action :set_article, only: %i[ show edit update destroy vote vote_up vote_down unvote_up unvote_down boost_web boost unboost ]
   before_action :check_owner, only: [:update, :destroy]
 
   # GET /articles or /articles.json
@@ -89,12 +89,7 @@ class ArticlesController < ApplicationController
 
   # POST /articles or /articles.json
   def create
-    if current_user.nil?
-      @user = User.find(params[:user_id]) # Assuming you have user_id in the params
-      @article = @user.articles.build(article_params)
-    else
-      @article = current_user.articles.build(article_params)
-    end
+    @user.articles.build(article_params)
     respond_to do |format|
       if @article.save
         format.html { redirect_to article_url(@article), notice: "Article was successfully created." }
@@ -134,24 +129,72 @@ class ArticlesController < ApplicationController
   end
   #/articles/:id/vote_up
   def vote_up
-    vote('up')
+    vote_api('up')
   end
 
     #/articles/:id/vote_down
   def vote_down
-    vote('down')
+    vote_api('down')
   end
 
-  def boost
-    if current_user.nil?
-      @uid = 1
-      user= User.find(@uid)
+  def vote
+    if !current_user.nil?
+      existing_vote = @article.vote_articles.find_by(user_id: current_user.id)
+      if existing_vote && existing_vote.value == params[:value]
+          existing_vote.destroy
+          update_numVote(value, -1)
+          respond_to do |format|
+            format.html { redirect_back fallback_location: root_path, notice:  'Vote removed successfully' }
+            format.json { render json: { message: 'Vote removed successfully' }, status: :ok }
+          end
+      else
+        if existing_vote && existing_vote.value != params[:value]
+          existing_vote.destroy
+          if 'up' == params[:value]
+            @article.votes_down -=1
+          else
+            @article.votes_up -=1
+          end
+        end
+        @vote_article = current_user.vote_articles.build(article_id: @article.id, value: params[:value])
+        update_numVote(params[:value], +1)
+        respond_to do |format|
+          if @vote_article.save
+            format.html { redirect_back fallback_location: root_path, notice: 'Vote was successfully created.' }
+            format.json { render json: @vote_article, status: :created }
+          else
+            format.html { redirect_back fallback_location: root_path, status: :unprocessable_entity }
+            format.json { render json: { error: @vote_article.errors.full_messages.join(', ') }, status: :unprocessable_entity }
+          end
+        end
+      end
     else
-      user = current_user
+      respond_to do |format|
+        format.html { redirect_to new_user_session_path, notice:  'Only web functionality' }
+        format.json { render json: { message: 'Only web functionality' }, status: :unauthorized }
+      end
     end
-    if user.boosted_articles.exists?(id: @article.id)
+  end
+
+  def unvote_up
+    unvote_api('up')
+  end
+
+  def unvote_down
+    unvote_api('down')
+  end
+
+  def boost_web
+    if current_user.nil?
+      respond_to do |format|
+        format.html {redirect_back(fallback_location: root_path, notice: 'Only web access')}
+        format.json {render  json: { message: 'Only web access' }, status: :unauthorized }
+      end
+      return
+    end
+    if current_user.boosted_articles.exists?(id: @article.id)
       # If the user has already boosted the article, delete the existing boost
-      if user.boosts.find_by(article_id: @article.id).destroy
+      if current_user.boosts.find_by(article_id: @article.id).destroy
         update_num_boost(-1)
         respond_to do |format|
           format.html {redirect_back(fallback_location: root_path, notice: 'Boost removed successfully!')}
@@ -160,7 +203,7 @@ class ArticlesController < ApplicationController
       end
     else
       # If the user hasn't boosted the article yet, create a new boost
-      boost = user.boosts.build(article_id: @article.id)
+      boost = current_user.boosts.build(article_id: @article.id)
       if boost.save
         update_num_boost(1)
         @article.reload
@@ -173,6 +216,51 @@ class ArticlesController < ApplicationController
           format.html {redirect_back(fallback_location: root_path, notice: 'Unable to boost article')}
           format.json {render json:{ error: 'Unable to boost article' }, status: :unprocessable_entity }
         end
+      end
+    end
+  end
+
+  def boost
+    if @user.boosted_articles.exists?(id: @article.id)
+      # If the user has already boosted the article, delete the existing boost
+      respond_to do |format|
+        format.html {redirect_back(fallback_location: root_path, notice: 'You have already boosted this article')}
+        format.json {render  json: { message: 'You have already boosted this article' }, status: :ok }
+      end
+    else
+      # If the user hasn't boosted the article yet, create a new boost
+      boost = @user.boosts.build(article_id: @article.id)
+      respond_to do |format|
+        if boost.save
+          update_num_boost(1)
+          @article.reload
+          format.html {redirect_back(fallback_location: root_path, notice: 'Article boosted successfully!')}
+          format.json {render json: @article.as_custom_json, status: :created }
+        else
+          format.html {redirect_back(fallback_location: root_path, notice: 'Unable to boost article')}
+          format.json {render json:{ error: 'Unable to boost article' }, status: :unprocessable_entity }
+        end
+      end
+    end
+  end
+
+  def unboost
+    if @user.boosted_articles.exists?(id: @article.id)
+      # If the user has already boosted the article, delete the existing boost
+      respond_to do |format|
+        if @user.boosts.find_by(article_id: @article.id).destroy
+        update_num_boost(-1)
+          format.html {redirect_back(fallback_location: root_path, notice: 'Boost removed successfully!')}
+          format.json {render  json: { message: 'Boost removed successfully' }, status: :ok }
+        else
+          format.html { redirect_back(fallback_location: root_path, notice: "ERROR DELETE Boost" )}
+          format.json { render json: @article.errors, status: :unprocessable_entity }
+        end
+      end
+    else
+      respond_to do |format|
+        format.html { redirect_back(fallback_location: root_path, notice: "Boost not found" )}
+        format.json { render json: { error: 'Boost not found' }, status: :not_found }
       end
     end
   end
@@ -223,77 +311,93 @@ class ArticlesController < ApplicationController
     @article.save
   end
 
-    def vote(value)
-      if !current_user.nil?
-        existing_vote = @article.vote_articles.find_by(user_id: current_user.id)
-        if existing_vote && existing_vote.value == value
-            existing_vote.destroy
-            update_numVote(value, -1)
-            flash[:notice] = "UnVoted successfully"
-        else
-          if existing_vote && existing_vote.value != value
-            existing_vote.destroy
-            if 'up' == value
-              @article.votes_down -=1
-            else
-              @article.votes_up -=1
-            end
-            flash[:notice] = "Vote changed"
-          end
-          @vote = current_user.vote_articles.build(article_id: @article.id, value: value)
-          update_numVote(value, +1)
-          if @vote.save
-            flash[:success] = "Voted successfully"
-          else
-            current_user.vote_articles.destroy
-            flash[:success] = "Error Vote"
-          end
-        end
-      end
-      if current_user.nil?
-        redirect_to new_user_session_path
-      else
-        redirect_back(fallback_location: root_path)
-      end
-    end
-
-  def authenticate_user!
+  def vote_api(value)
     if current_user.nil?
-      if request.headers['Accept'].present? and !request.headers['Authorization'].present?
+      existing_vote = @article.vote_articles.find_by(user_id: @user.id)
+      if existing_vote
         respond_to do |format|
-          format.html { redirect_to new_user_session_path, alert: "Missing api key" }
-          format.json { render(json: {"error": "Missing api key"}, status: 400)}
+          format.html { redirect_back fallback_location: root_path, notice:  'You have already voted this article' }
+          format.json { render json: { message: 'You have already voted this article', existing_vote: existing_vote }, status: :unprocessable_entity }
         end
-        return
-      end
-      if 'Liliu' !=request.headers['Authorization']
-        #!User.exists?(api_key: request.headers['key'])
+      else
+        @vote_article = @user.vote_articles.build(article_id: @article.id, value: value)
+        update_numVote(value, +1)
         respond_to do |format|
-          format.html { redirect_to new_user_session_path, alert: 'You must be logged in to perform this action.' }
-          format.json { render(json: {"error": "Not logged in AUTH"}, status: 401)}
+          if @vote_article.save
+            format.html { redirect_back fallback_location: root_path, notice: 'Vote was successfully created.' }
+            format.json { render json: @vote_article, status: :created }
+          else
+            format.html { redirect_back fallback_location: root_path, status: :unprocessable_entity }
+            format.json { render json: { error: @vote_article.errors.full_messages.join(', ') }, status: :unprocessable_entity }
+          end
         end
-        return
       end
     end
   end
 
-  def check_owner
+  def unvote_api(value)
     if current_user.nil?
-      if request.headers['Accept'].present? and request.headers['Authorization'].present? and 'Liliu'!= request.headers['Authorization']
-        #!User.exists?(api_key: request.headers['key'])
-        #@article.user != User.find_by(api_key: request.headers['Authorization'])
+      existing_vote = @article.vote_articles.find_by(user_id: @user.id)
+      if existing_vote
+          existing_value = existing_vote.value
+          if existing_value != value
+            respond_to do |format|
+              format.html { redirect_back fallback_location: root_path, notice:  'Unvote with incorrect value' }
+              format.json { render json: { message: 'Unvote with incorrect value', existing_vote: existing_vote }, status: :unprocessable_entity }
+            end
+          else
+            existing_vote.destroy
+            update_numVote(value, -1)
+            respond_to do |format|
+              format.html { redirect_back fallback_location: root_path, notice:  'Vote removed successfully' }
+              format.json { render json: { message: 'Vote removed successfully' }, status: :ok }
+            end
+          end
+      else
         respond_to do |format|
-          format.html { redirect_to articles_url, alert: 'You are not authorized to perform this action.' }
-          format.json { render json: { error: 'You are not authorized to perform this action' }, status: :forbidden }
+          format.html { redirect_back fallback_location: root_path, notice:  'Vote Not found' }
+          format.json { render json: { message: 'Vote Not found' }, status: :not_found }
+        end
+      end
+    end
+  end
+
+  def authenticate_user!
+    if current_user.nil?
+      if request.headers['Accept'].present? && !request.headers['Authorization'].present?
+        respond_to do |format|
+          format.html { redirect_to new_user_session_path, alert: "Missing api key" }
+          format.json { render(json: { "error": "Missing api key" }, status: 400) }
+        end
+        return
+      end
+      if request.headers['Authorization'] == 'Liliu'
+        @user = User.find_by(id: 1)
+        unless @user
+          respond_to do |format|
+            format.html { redirect_to new_user_session_path, alert: "No user with this apikey" }
+            format.json { render(json: { "error": "No user with this apikey" }, status: 401) }
+          end
+          return
+        end
+      else
+        respond_to do |format|
+          format.html { redirect_to new_user_session_path, alert: 'You must be logged in to perform this action.' }
+          format.json { render(json: { "error": "Not logged in AUTH" }, status: 401) }
         end
         return
       end
     else
-      if current_user != @article.user
-        respond_to do |format|
-          format.html { redirect_to articles_url, alert: 'You are not authorized to perform this action.' }
-          format.json { render json: { error: 'You are not authorized to perform this action' }, status: :forbidden }
-        end
+      @user = current_user
+    end
+  end
+
+  def check_owner
+    article_owner = @article.user
+    unless article_owner == current_user || (current_user.nil? && article_owner == @user)
+      respond_to do |format|
+        format.html { redirect_to articles_url, alert: 'You are not authorized to perform this action.' }
+        format.json { render json: { error: 'You are not authorized to perform this action' }, status: :forbidden }
       end
     end
   end

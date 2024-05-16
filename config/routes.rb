@@ -21,7 +21,12 @@ Rails.application.routes.draw do
     member do
       post 'vote_up'
       post 'vote_down'
+      post 'vote'
+      post 'boost_web'
       post 'boost'
+      delete 'unboost'
+      delete 'unvote_up'
+      delete 'unvote_down'
     end
     get 'new_link', on: :collection
     get 'search', on: :collection
@@ -39,7 +44,6 @@ Rails.application.routes.draw do
     end
   end
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
-  resources :vote_articles
 
   get 'commentOrder', to: 'articles#commentOrder'
 
