@@ -53,7 +53,7 @@ class CommentsController < ApplicationController
         c.votes_down = 0;
         c.votes_up = 0;
       end
-    rescue ActionController::ParameterMissing => e
+    rescue ActionController::ParameterMissing
       render json: {error: "You didn't provide all the required fields"}, status: :bad_request
       return
     end
@@ -65,9 +65,6 @@ class CommentsController < ApplicationController
 
   # PATCH /comments/1
   def update
-    @article = Article.find(params[:article_id])
-    @comment = @article.comments.find(params[:id])
-
     # comprova si l'usuari es el propietari del comentari
     check_owner()
 
@@ -75,7 +72,7 @@ class CommentsController < ApplicationController
     begin
       @comment.update(comment_params)
       render json: @comment
-    rescue ActionController::ParameterMissing => e
+    rescue ActionController::ParameterMissing
       render json: {error: "You didn't provide all the required fields"}, status: :bad_request
       return
     end
