@@ -14,9 +14,9 @@ Rails.application.routes.draw do
     #get 'users/sign_out', to: 'users/sessions#destroy', as: :destroy_user_session
     #get 'users/:id', to: 'users/users#show', as: :user
     #get 'users/:id/edit', to: 'users/users#edit', as: :edit_user
-    patch '/u/:id', to: 'users#update'
-    patch '/u/:id/deleteAvatar', to: 'users#deleteAvatar'
-    patch '/u/:id/deleteBack', to: 'users#deleteBack'
+    put '/u/:id', to: 'users#update'
+    put '/u/:id/deleteAvatar', to: 'users#deleteAvatar'
+    put '/u/:id/deleteBack', to: 'users#deleteBack'
   end
 
   #put '/u/:id', to: 'users/sessions', as: 'user'
