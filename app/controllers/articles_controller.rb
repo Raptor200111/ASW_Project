@@ -371,8 +371,8 @@ class ArticlesController < ApplicationController
         end
         return
       end
-      if request.headers['Authorization'] == 'Liliu'
-        @user = User.find_by(id: 1)
+      if request.headers['Authorization']
+        @user = User.find_by(api_key: request.headers['Authorization'])
         unless @user
           respond_to do |format|
             format.html { redirect_to new_user_session_path, alert: "No user with this apikey" }
