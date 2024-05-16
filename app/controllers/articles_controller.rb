@@ -89,7 +89,7 @@ class ArticlesController < ApplicationController
 
   # POST /articles or /articles.json
   def create
-    @user.articles.build(article_params)
+    @article = @user.articles.build(article_params)
     respond_to do |format|
       if @article.save
         format.html { redirect_to article_url(@article), notice: "Article was successfully created." }
