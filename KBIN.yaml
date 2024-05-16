@@ -4,7 +4,7 @@ info:
   title: KBIN
   description: "This is the Open API documentation for the REST API of our beloved application **KBIN** deployed at <https://174.129.53.222:8080>."
 servers:
-  - url: 'https://174.129.53.222:8080/'
+  - url: 'https://delta-12-kbin-8d30caa623a4.herokuapp.com/'
 paths:
   /magazines:
     post:
@@ -14,17 +14,6 @@ paths:
       security:
       - ApiKeyAuth: []
       operationId: addMagazine
-      parameters:
-      - name: sort
-        in: query
-        description: The way you want to sort the magazines
-        required: false
-        schema:
-          type: string
-          enum:
-           - 'threads'
-           - 'comments'
-           - 'subs'
       requestBody:
         description: Provide a name and a title for the magazine. Description and rules are optional
         content:
@@ -78,6 +67,17 @@ paths:
       - Magazines
       summary: Retrieves all the magazines
       operationId: getAllMagazines
+      parameters:
+      - name: sort
+        in: query
+        description: The way you want to sort the magazines
+        required: false
+        schema:
+          type: string
+          enum:
+           - 'threads'
+           - 'comments'
+           - 'subs'
       responses:
         200:
           description: successful operation
@@ -211,12 +211,6 @@ components:
         title:
           type: string
           example: hola
-        url:
-          type: string
-          example:
-        nComms:
-          type: integer
-          example: 9
         description:
           type: string
           example:
@@ -225,49 +219,22 @@ components:
           example:
         createdAt:
           type: string
-          example:
+          example: '2024-05-16T18:43:30.622Z'
         updatedAt:
           type: string
-          example:
-    Tweet:
-      type: object
-      properties:
-        id:
+          example: '2024-05-16T20:30:02.460Z'
+        nThreads:
           type: integer
-          format: int64
           example: 2
-        author:
-          type: string
-          minLength: 4
-          example: 'My name'
-        content:
-          type: string
-          minLength: 4
-          maxLength: 280
-          example: 'My content'
-        likes:
+        nComms:
           type: integer
-          format: int32
-        created_at:
+          example: 2
+        nSubs:
+          type: integer
+          example: 2
+        url:
           type: string
-          format: date-time
-        _links:
-          type: object
-          properties:
-            self:
-              type: string
-              format: url
-              example: 'https://fib-asw-wotapi.fly.dev/tweets/2'
-    NewTweet:
-      allOf:
-        - $ref: '#/components/schemas/Tweet'
-        - type: object
-          properties:
-            token:
-              type: string
-              example: '9656f8894781485f7e9e168584a17ec002ad77379a3e2b3ff4604b916d98c0a7'
-          required:
-            - token
+          example: 'https://delta-12-kbin-8d30caa623a4.herokuapp.com/magazines/1.json'
     ErrorResult:
       type: object
       properties:
