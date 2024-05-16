@@ -27,8 +27,7 @@
     <aside class="vote">
       <div class="vote__thread">
         <div>
-          <%= button_to vote_up_article_path(article), method: :post, class: "buttonVote" do %>
-            <%#<span><%= article.vote_articles.where(value: 'up').count ></span>%>
+          <%= button_to vote_article_path(article, value: 'up'), method: :post, class: "buttonVote" do %>
             <span><%= article.votes_up %></span>
             <i class="fa-solid fa-arrow-up"></i>
           <% end %>
@@ -36,7 +35,7 @@
       </div>
       <div class="vote__thread">
         <div>
-          <%= button_to vote_down_article_path(article), method: :post, class: "buttonVote" do %>
+          <%= button_to vote_article_path(article, value: 'down'), method: :post, class: "buttonVote" do %>
             <%#<span><%= article.vote_articles.where(value: 'down').count ></span>%>
             <span><%= article.votes_down %></span>
             <i class="fa-solid fa-arrow-up"></i>

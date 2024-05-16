@@ -21,10 +21,12 @@ Rails.application.routes.draw do
     member do
       post 'vote_up'
       post 'vote_down'
+      post 'vote'
       post 'boost_web'
       post 'boost'
       delete 'unboost'
-      delete 'unvote'
+      delete 'unvote_up'
+      delete 'unvote_down'
     end
     get 'new_link', on: :collection
     get 'search', on: :collection
