@@ -1,4 +1,5 @@
 class MagazinesController < ApplicationController
+  skip_before_action :verify_authenticity_token
   before_action :set_user, only: [:create, :subscribe, :unsubscribe ]
   before_action :set_magazine, only: %i[ show edit update subscribe unsubscribe]
 
