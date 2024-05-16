@@ -9,7 +9,7 @@ paths:
   /articles/{articleId}/comments:
     get:
       tags:
-      - comments
+      - Comments
       summary: View comments of an article
       parameters:
       - name: articleId
@@ -56,7 +56,7 @@ paths:
                     error: "Couldn't find Article with 'id'=3"
     post:
       tags:
-      - comments
+      - Comments
       summary: Creates a comment in an article
       parameters:
       - name: articleId
@@ -135,7 +135,7 @@ paths:
   /articles/{articleId}/comments/{commentId}:
     patch:
       tags:
-      - comments
+      - Comments
       summary: Updates a comment in an article
       parameters:
       - name: articleId
@@ -180,7 +180,7 @@ paths:
                 votes_up: 0
                 votes_down: 0
                 user_id: 1
-                  
+
         400:
           description: 'Error: Bad Request'
           content:
@@ -224,7 +224,7 @@ paths:
                     error: "Couldn't find Article with 'id'=17"
     get:
       tags:
-      - comments
+      - Comments
       summary: View an individual comment of an article
       parameters:
       - name: articleId
@@ -262,7 +262,7 @@ paths:
                     error: "Couldn't find Comment with 'id'=17"
     delete:
       tags:
-      - comments
+      - Comments
       summary: Deletes a comment in an article
       parameters:
       - name: articleId
@@ -321,7 +321,7 @@ paths:
   /articles/{articleId}/comments/{commentId}/vote_up:
     post:
       tags:
-      - comments
+      - Comments
       summary: Votes up a comment in an article
       parameters:
       - name: articleId
@@ -376,11 +376,11 @@ paths:
                 articleNotFound:
                   value:
                     error: "Couldn't find Article with 'id'=17"
-  
+
   /articles/{articleId}/comments/{commentId}/vote_down:
     post:
       tags:
-      - comments
+      - Comments
       summary: Votes down a comment in an article
       parameters:
       - name: articleId
@@ -626,6 +626,343 @@ paths:
               examples:
                 errorExample:
                   $ref: '#/components/examples/error404'
+  /u/{id}:
+    get:
+      tags:
+        - Users
+      summary: Get User Profile
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: User profile retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    default: 1
+                  email:
+                    default: "example@example.com"
+                  full_name:
+                    default: "Jose Garcia"
+                  uid:
+                    default: "123456789101112131415"
+                  avatar_url:
+                    default: "https://upload.wikimedia.org/wikipedia/commons/c/c1/Woman_in_Eyeglasses_%283%29.jpg"
+                  provider:
+                    default: "google_oauth2"
+                  created_at:
+                    default: "2024-05-16T18:00:06.268Z"
+                  updated_at:
+                    default: "2024-05-16T18:00:06.268Z"
+                  description:
+                    default: "Example"
+                  api_key:
+                    default: "dWpRJYJPy3hXzsYpVFfYtyVV"
+                  avatar:
+                    default: "https://upload.wikimedia.org/wikipedia/commons/c/c1/Woman_in_Eyeglasses_%283%29.jpg"
+                  background:
+                    default: "https://upload.wikimedia.org/wikipedia/commons/c/c1/Woman_in_Eyeglasses_%283%29.jpg"
+    put:
+      tags:
+        - Users
+      summary: Update User Profile
+      security:
+      - ApiKeyAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user:
+                  type: object
+                  properties:
+                    full_name:
+                      default: "Pepito Mortadelo"
+                    description:
+                      default: "Example of description"
+                    avatar:
+                      default: "https://upload.wikimedia.org/wikipedia/commons/c/c1/Woman_in_Eyeglasses_%283%29.jpg"
+                    background:
+                      default: "https://upload.wikimedia.org/wikipedia/commons/c/c1/Woman_in_Eyeglasses_%283%29.jpg"
+      responses:
+        '200':
+          description: User profile updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    default: "Updated User"
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                  type: object
+                  properties:
+                    status:
+                      default: 401
+                    error:
+                      default: "Unauthorized"
+        '404':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                  type: object
+                  properties:
+                    status:
+                      default: 404
+                    error:
+                      default: "Not Found"
+
+  /u/{id}/articles:
+    get:
+      tags:
+        - Users
+      summary: Get User Articles
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: User articles retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      default: 1
+                    title:
+                      default: Swagger
+                    body:
+                      default: Today I started using Swagger
+                    article_type:
+                      default: thread
+                    url:
+                      default: null
+                    created_at:
+                      default: 2024-05-16T18:43:57.946Z
+                    updated_at:
+                      default: 2024-05-16T18:43:57.946Z
+                    votes_up:
+                      default: 5
+                    votes_down:
+                      default: 2
+                    magazine_id:
+                      default: 6
+                    user_id:
+                      default: 8
+
+  /u/{id}/comments:
+    get:
+      tags:
+        - Users
+      summary: Get User Comments
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: User comments retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      default: 1
+                    body:
+                      default: "Comment"
+                    article_id:
+                      default: 2
+                    parent_id:
+                      default: null
+                    created_at:
+                      default: 2024-05-16T18:56:44.051Z
+                    updated_at:
+                      default: 2024-05-16T18:56:44.051Z
+                    votes_up:
+                      default: 10
+                    votes_down:
+                      default: 0
+                    user_id:
+                      default: 1
+
+  /u/{id}/boosts:
+    get:
+      tags:
+        - Users
+      summary: Get User Boosts
+      security:
+      - ApiKeyAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: User boosts retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      default: 3
+                    user_id:
+                      default: 1
+                    article_id:
+                      default: 2
+                    created_at:
+                      default: 2024-05-16T22:37:01.271Z
+                    updated_at:
+                      default: 2024-05-16T22:37:01.271Z
+
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                  type: object
+                  properties:
+                    status:
+                      default: 401
+                    error:
+                      default: "Unauthorized"
+        '404':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                  type: object
+                  properties:
+                    status:
+                      default: 404
+                    error:
+                      default: "Not Found"
+
+  /u/{id}/deleteAvatar:
+    put:
+      tags:
+        - Users
+      summary: Delete User Avatar
+      security:
+        - ApiKeyAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: User avatar deleted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    default: "User Avatar Deleted"
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                  type: object
+                  properties:
+                    status:
+                      default: 401
+                    error:
+                      default: "Unauthorized"
+        '404':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                  type: object
+                  properties:
+                    status:
+                      default: 404
+                    error:
+                      default: "Not Found"
+
+  /u/{id}/deleteBack:
+    put:
+      tags:
+        - Users
+      summary: Delete User Background
+      security:
+        - ApiKeyAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: User background deleted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    default: "User Background Deleted"
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                  type: object
+                  properties:
+                    status:
+                      default: 401
+                    error:
+                      default: "Unauthorized"
+        '404':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                  type: object
+                  properties:
+                    status:
+                      default: 404
+                    error:
+                      default: "Not Found"
 
 components:
   schemas:
@@ -667,7 +1004,7 @@ components:
           items:
             $ref: '#/components/schemas/Comment'
           description: 'An array of replies to the comment. This field is not present if there are no replies.'
-    
+
     Magazine:
       type: object
       properties:
@@ -708,7 +1045,7 @@ components:
     ErrorResult:
       type: object
       properties:
-        error: 
+        error:
           type: string
           example: 'Content is too long (maximum is 280 characters)'
       required:
