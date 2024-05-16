@@ -1,8 +1,12 @@
 class CommentsController < ApplicationController
+  # selecciona el comentari i l'article
   before_action :set_comment, only: %i[ show update destroy vote_up vote_down ]
 
   #comprova que l'usuari estigui loggejat
   before_action :authenticate_user!, only: %i[ create update destroy vote_up vote_down]
+
+  #comprova que l'usuari sigui el propietari del comentari
+  before_action :check_owner, only: %i[ update destroy ]
 
   # GET /comments
   def index
@@ -49,7 +53,7 @@ class CommentsController < ApplicationController
     # crea comentari amb valors donats i per defecte
     begin
       @comment = @article.comments.new(comment_params) do |c|
-        c.user = @current_user
+        c.user = @user
         c.votes_down = 0;
         c.votes_up = 0;
       end
@@ -65,9 +69,6 @@ class CommentsController < ApplicationController
 
   # PATCH /comments/1
   def update
-    # comprova si l'usuari es el propietari del comentari
-    check_owner()
-
     # actualitza el comentari amb els valors donats
     begin
       @comment.update(comment_params)
@@ -148,21 +149,33 @@ class CommentsController < ApplicationController
       render json: @comment
     end
 
-    #api key authentication (hardcoded)
     def authenticate_user!
-      #hardcoded user login for testing
-      @current_user = User.find_by(id: 1)
-
-      unless @current_user
-        render(json: {"error": "You provided no token"}, status: 401)
+      if current_user.nil?
+        if request.headers['Accept'].present? && !request.headers['Authorization'].present?
+          render(json: { "error": "Missing api key" }, status: 400)
+          return
+        end
+        if request.headers['Authorization']
+          @user = User.find_by(api_key: request.headers['Authorization'])
+          unless @user
+            render(json: { "error": "No user with this apikey" }, status: 401)
+            return
+          end
+        else
+          render(json: { "error": "Not logged in AUTH" }, status: 401)
+          return
+        end
+      else
+        @user = current_user
       end
     end
 
     # check if the user is the owner of the comment
     def check_owner
       @comment = Comment.find(params[:id])
-      unless @current_user == @comment.user
+      unless @user == @comment.user
         render(json: {"error": "You provided an invalid token"}, status: 403)
+        return
       end
     end
 end
