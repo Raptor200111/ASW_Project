@@ -16,10 +16,18 @@
                                          PUT      /users(.:format)                                                                                  users/registrations#update
                                          DELETE   /users(.:format)                                                                                  users/registrations#destroy
                                          POST     /users(.:format)                                                                                  users/registrations#create
+                                         PATCH    /u/:id(.:format)                                                                                  users#update
+                                         PATCH    /u/:id/deleteAvatar(.:format)                                                                     users#deleteAvatar
+                                         PATCH    /u/:id/deleteBack(.:format)                                                                       users#deleteBack
                                     user GET      /u/:id(.:format)                                                                                  users#profile
                          vote_up_article POST     /articles/:id/vote_up(.:format)                                                                   articles#vote_up
                        vote_down_article POST     /articles/:id/vote_down(.:format)                                                                 articles#vote_down
+                            vote_article POST     /articles/:id/vote(.:format)                                                                      articles#vote
+                       boost_web_article POST     /articles/:id/boost_web(.:format)                                                                 articles#boost_web
                            boost_article POST     /articles/:id/boost(.:format)                                                                     articles#boost
+                         unboost_article DELETE   /articles/:id/unboost(.:format)                                                                   articles#unboost
+                       unvote_up_article DELETE   /articles/:id/unvote_up(.:format)                                                                 articles#unvote_up
+                     unvote_down_article DELETE   /articles/:id/unvote_down(.:format)                                                               articles#unvote_down
                        new_link_articles GET      /articles/new_link(.:format)                                                                      articles#new_link
                          search_articles GET      /articles/search(.:format)                                                                        articles#search
                  vote_up_article_comment POST     /articles/:article_id/comments/:id/vote_up(.:format)                                              comments#vote_up
@@ -40,7 +48,7 @@
                                          PATCH    /articles/:id(.:format)                                                                           articles#update
                                          PUT      /articles/:id(.:format)                                                                           articles#update
                                          DELETE   /articles/:id(.:format)                                                                           articles#destroy
-                      subscribe_magazine PUT      /magazines/:id/subscribe(.:format)                                                                magazines#subscribe
+                      subscribe_magazine POST     /magazines/:id/subscribe(.:format)                                                                magazines#subscribe
                                magazines GET      /magazines(.:format)                                                                              magazines#index
                                          POST     /magazines(.:format)                                                                              magazines#create
                             new_magazine GET      /magazines/new(.:format)                                                                          magazines#new
@@ -49,6 +57,7 @@
                                          PATCH    /magazines/:id(.:format)                                                                          magazines#update
                                          PUT      /magazines/:id(.:format)                                                                          magazines#update
                                          DELETE   /magazines/:id(.:format)                                                                          magazines#destroy
+                            commentOrder GET      /commentOrder(.:format)                                                                           articles#commentOrder
                                     root GET      /                                                                                                 articles#index
         turbo_recede_historical_location GET      /recede_historical_location(.:format)                                                             turbo/native/navigation#recede
         turbo_resume_historical_location GET      /resume_historical_location(.:format)                                                             turbo/native/navigation#resume

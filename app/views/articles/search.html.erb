@@ -1,5 +1,4 @@
 <%= stylesheet_link_tag 'searchThread', media: 'all' %>
-<body>
 <div id="middle" class = "page-search page-settings">
   <div class="kbin-containerL">
     <main id="main">
@@ -16,21 +15,22 @@
         </div>
       </div>
       <div class="options options--top"></div>
-      <div id="content">
-        <% if @articles.any? %>
-          <ul>
-            <% @articles.each do |article| %>
-              <%= render partial: 'short_article', locals: { article: article } %>
-
-            <% end %>
-          </ul>
-        <% else %>
-          <div class="section">
-          <div class="container"> <h1>No articles found</h1></div>
-          </div>
-        <% end %>
-      </div>
     </main>
   </div>
 </div>
-</body>
+
+<% if @articles.any? %>
+  <ul>
+    <% @articles.each do |article| %>
+      <div class="bodyContainer">
+        <div class="webBody">
+          <%= render partial: 'short_article', locals: { article: article } %>
+        </div>
+      </div>
+    <% end %>
+  </ul>
+<% else %>
+  <div class="section">
+  <div class="container"> <h1>No articles found</h1></div>
+  </div>
+<% end %>
