@@ -82,16 +82,19 @@ paths:
               schema:
                 $ref: '#/components/schemas/Comment'
         401:
-          description: 'Error: Missing Authorization header'
+          description: 'Error: Unauthorized'
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResult'
               examples:
-                errorExample:
+                noApiKey:
                   $ref: '#/components/examples/error401'
+                wrongApiKey:
+                  value:
+                    error: "Invalid Api key provided."
         403:
-          description: 'Error: Invalid Authorization header'
+          description: 'Error: Forbidden'
           content:
             application/json:
               schema:
@@ -99,6 +102,16 @@ paths:
               examples:
                 errorExample:
                   $ref: '#/components/examples/error403'
+        404:
+          description: 'Error: Not Found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  value:
+                    error: "Couldn't find Article with 'id'=3"
         422:
           description: 'Error: Unprocessable Entity'
           content:
@@ -168,7 +181,8 @@ paths:
                 $ref: '#/components/schemas/ErrorResult'
               examples:
                 errorExample:
-                  $ref: '#/components/examples/error404'
+                  value:
+                    error: "Couldn't find Article with 'id'=3"
     get:
       tags:
       - comments
@@ -326,13 +340,10 @@ components:
         error: "You didn't provide all the required fields"
     error401:
       value:
-        error: "You provided no token"
+        error: "No Api key provided."
     error403:
       value:
-        error: "You provided an invalid token"
-    error404:
-      value:
-        error: "There is no tweet with 'id'=8"
+        error: "You are not allowed to perform this action."
   securitySchemes:
     ApiKeyAuth:
       type: apiKey

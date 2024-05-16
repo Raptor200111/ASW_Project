@@ -38,20 +38,29 @@ class CommentsController < ApplicationController
 
   # POST /comments
   def create
+    # busca el article amb l'id donat
+    begin
+      @article = Article.find(params[:article_id])
+    rescue ActiveRecord::RecordNotFound => e
+      render json: { error: e.message }, status: :not_found
+      return
+    end
+
     # crea comentari amb valors donats i per defecte
-    @article = Article.find(params[:article_id])
-    @comment = @article.comments.new(comment_params) do |c|
-      c.user = @current_user
-      c.votes_down = 0;
-      c.votes_up = 0;
+    begin
+      @comment = @article.comments.new(comment_params) do |c|
+        c.user = @current_user
+        c.votes_down = 0;
+        c.votes_up = 0;
+      end
+    rescue ActionController::ParameterMissing => e
+      render json: {error: "You didn't provide all the required fields"}, status: :bad_request
+      return
     end
     
     # retorna el comentari creat
-    if @comment.save
-      render json: @comment
-    else
-      render json: @comment.errors, status: :unprocessable_entity
-    end
+    @comment.save
+    render json: @comment
   end
 
   # PATCH /comments/1
