@@ -1,5 +1,5 @@
 class ArticlesController < ApplicationController
-  #skip_before_action :verify_authenticity_token
+  skip_before_action :verify_authenticity_token
   before_action :set_article, only: %i[ show edit update destroy vote vote_up vote_down unvote_up unvote_down boost_web boost unboost ]
   before_action :authenticate_user!, only: %i[create update destroy vote_up vote_down vote unvote_up unvote_down boost_web boost unboost ]
   before_action :check_owner, only: %i[update destroy]
