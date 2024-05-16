@@ -155,22 +155,6 @@ class MagazinesController < ApplicationController
             end
           end
         end
-        return
-      end
-      isSubs = current_user.subscriptions.find_by(magazine: @magazine)
-      begin
-        if isSubs
-          respond_to do |format|
-            format.html {redirect_to magazines_path, notice: 'Already subscribed!'}
-            format.json {head :no_content }
-          end
-        else
-          current_user.subs << @magazine
-          respond_to do |format|
-            format.html {redirect_to magazines_path, notice: 'Subscribed successfully!'}
-            format.json {head :no_content }
-          end
-        end
       end
     end
   end
