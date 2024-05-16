@@ -1,5 +1,4 @@
 class ArticlesController < ApplicationController
-  skip_before_action :verify_authenticity_token
   before_action :authenticate_user!, only: [:create, :update, :destroy, :vote_up, :vote_down, :vote, :unvote_up, :unvote_down, :boost_web, :boost, :unboost ]
   before_action :set_article, only: %i[ show edit update destroy vote vote_up vote_down unvote_up unvote_down boost_web boost unboost ]
   before_action :check_owner, only: [:update, :destroy]
@@ -120,7 +119,7 @@ class ArticlesController < ApplicationController
     respond_to do |format|
       if @article.destroy
         format.html { redirect_to articles_url, notice: "Article was successfully destroyed." }
-        format.json { head :no_content }
+        format.json  { render json: { message: 'Boost removed successfully' }, status: :ok }
       else
         format.html { redirect_to article_url(@article), notice: "ERROR DELETE" }
         format.json { render json: @article.errors, status: :unprocessable_entity }

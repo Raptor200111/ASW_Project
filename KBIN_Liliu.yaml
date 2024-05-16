@@ -4,7 +4,7 @@ info:
   title: KBIN
   description: "This is the Open API documentation for the REST API of our beloved application **KBIN** deployed at <https://3.90.39.111:8080>."
 servers:
-  - url: 'http://54.91.238.194:8080'
+  - url: 'http://54.163.212.28:8080'
 paths:
   /articles:
     post:
@@ -21,7 +21,6 @@ paths:
               - title
               - body
               - article_type
-              - user_id
               - magazine_id
               type: object
               properties:
