@@ -21,7 +21,6 @@ gem "omniauth-google-oauth2"
 gem "omniauth-rails_csrf_protection"
 gem "image_processing", ">= 1.2"
 gem "aws-sdk-s3", require: false
-gem 'rack-cors'
 
 group :development, :test do
   gem "sqlite3", "1.4.2"
