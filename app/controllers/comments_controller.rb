@@ -1,4 +1,5 @@
 class CommentsController < ApplicationController
+  skip_before_action :verify_authenticity_token
   # selecciona el comentari i l'article
   before_action :set_comment, only: %i[ show update destroy vote_up vote_down ]
 
