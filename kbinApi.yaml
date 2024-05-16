@@ -6,6 +6,570 @@ info:
 servers:
   - url: 'https://delta-12-kbin-8d30caa623a4.herokuapp.com/'
 paths:
+  /articles:
+    post:
+      tags:
+      - articles
+      summary: Create a new article
+      operationId: createArticle
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ArticleInput'
+      responses:
+        '201':
+          description: Article created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ArticleComplete'
+        '400':
+          description: 'Error: Bad Request'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error400'
+        '401':
+          description: 'Error: Unauthorized'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error401'
+        '422':
+          description: Unprocessable entity
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error422'
+      security:
+      - ApiKeyAuth: []
+    get:
+      tags:
+      - articles
+      summary: Retrieves all articles
+      operationId: getAllArticles
+      parameters:
+        - name: type
+          in: query
+          description: Filter articles by type (e.g., all, link or thread).
+          schema:
+            type: string
+            enum: [all, link, thread]
+          example: all
+        - name: order_filter
+          in: query
+          description: Order articles by order_filter (e.g. newest, top or commented).
+          schema:
+            type: string
+            enum: [newest, top, commented]
+          example: newest
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Article'
+  /articles/{id}:
+    get:
+      tags:
+      - articles
+      summary: Retrieves a specific article by ID
+      operationId: getArticleById
+      parameters:
+      - name: id
+        in: path
+        description: ID of article to return
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ArticleComplete'
+        '404':
+          description: 'Error: Not Found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error404'
+    put:
+      tags:
+      - articles
+      summary: Updates a specific article by ID
+      operationId: updateArticleById
+      parameters:
+      - name: id
+        in: path
+        description: ID of article to update
+        required: true
+        schema:
+          type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ArticleInput'
+      responses:
+        '200':
+          description: Article updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ArticleComplete'
+        '400':
+          description: 'Error: Bad Request'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error400'
+        '404':
+          description: 'Error: Not Found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error404'
+      security:
+      - ApiKeyAuth: []
+    delete:
+      tags:
+      - articles
+      summary: Deletes a specific article by ID
+      operationId: deleteArticleById
+      parameters:
+      - name: id
+        in: path
+        description: ID of article to delete
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: Deleted article successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Article was successfully destroyed
+        '404':
+          description: 'Error: Not Found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error404'
+      security:
+      - ApiKeyAuth: []
+  /articles/{id}/boost:
+    post:
+      summary: Boost an article
+      description: Boosts an article for the current user.
+      tags:
+        - articles/boost
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID of the article to boost
+          schema:
+            type: integer
+      responses:
+        '201':
+          description: Article boosted successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ArticleBoostResponse'
+        '200':
+          description: Article already boosted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              example:
+                type: string
+                example: You have already boosted this article
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              example:
+                errorExample:
+                  $ref: '#/components/examples/error401'
+        '422':
+          description: Unprocessable Entity
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              example:
+                errorExample:
+                  $ref: '#/components/examples/error422'
+      security:
+      - ApiKeyAuth: []
+  /articles/{id}/unboost:
+    delete:
+      summary: Unboost an article
+      description: Removes a boost from an article for the current user.
+      tags:
+        - articles/boost
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID of the article to unboost
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Boost removed successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Boost removed successfully
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              example:
+                errorExample:
+                  $ref: '#/components/examples/error401'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              example:
+                errorExample:
+                  $ref: '#/components/examples/error404'
+        '422':
+          description: Unprocessable Entity
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              example:
+                errorExample:
+                  $ref: '#/components/examples/error422'
+      security:
+      - ApiKeyAuth: []
+  /articles/search:
+    get:
+      tags:
+        - articles
+      summary: Search articles by title or body
+      operationId: searchArticles
+      parameters:
+        - name: search_text
+          in: query
+          description: Text to search for in article titles or bodies
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Article'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              example:
+                errorExample:
+                  $ref: '#/components/examples/error400'
+  /articles/{id}/vote_up:
+    post:
+      tags:
+        - articles/vote
+      summary: Vote up an article
+      description: |
+        This endpoint allows a user to vote up an article.
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: The ID of the article to vote up
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Vote was successfully created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VoteArticle'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              example:
+                errorExample:
+                  $ref: '#/components/examples/error400'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              example:
+                errorExample:
+                  $ref: '#/components/examples/error401'
+        '404':
+          description: Article not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error404'
+        '422':
+          description: Unprocessable entity
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              example:
+                errorExample:
+                  $ref: '#/components/examples/error422'
+      security:
+      - ApiKeyAuth: []
+  /articles/{id}/vote_down:
+    post:
+      tags:
+        - articles/vote
+      summary: Vote down an article
+      description: |
+        This endpoint allows a user to vote down an article.
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: ID of the article to vote down
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Vote was successfully created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VoteArticle'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+        '404':
+          description: Article not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error404'
+        '422':
+          description: Unprocessable entity
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+      security:
+      - ApiKeyAuth: []
+  /articles/{id}/unvote_up:
+    delete:
+      tags:
+        - articles/vote
+      summary: Remove an upvote from an article
+      description: |
+        Removes the upvote from the specified article.
+        Requires authentication.
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: ID of the article to unvote up
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Vote removed successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Vote removed successfully
+        '400':
+          description: Invalid request or missing parameters
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Invalid request or missing parameters
+        '401':
+          description: Unauthorized - API key is missing or invalid
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Unauthorized - API key is missing or invalid
+        '404':
+          description: Article not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Article not found
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Internal server error
+      security:
+      - ApiKeyAuth: []
+  /articles/{id}/unvote_down:
+    delete:
+      tags:
+        - articles/vote
+      summary: Unvote Down for Article
+      description: |
+        Removes the downvote from the specified article.
+        Requires authentication.
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: ID of the article to unvote down
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Vote removed successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Vote removed successfully
+        '400':
+          description: Invalid request or missing parameters
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Invalid request or missing parameters
+        '401':
+          description: Unauthorized - API key is missing or invalid
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Unauthorized - API key is missing or invalid
+        '404':
+          description: Article not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Article not found
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Internal server error
+      security:
+      - ApiKeyAuth: []
+
   /articles/{articleId}/comments:
     get:
       tags:
@@ -966,6 +1530,162 @@ paths:
 
 components:
   schemas:
+    CommonArticleProperties:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        title:
+          type: string
+          example: Article Title
+        body:
+          type: string
+          example: Article Body Content
+        articleType:
+          type: string
+          enum: [link, thread]
+          example: Thread
+        url:
+          type: string
+          example: http://example.com
+        votesUp:
+          type: integer
+          example: 10
+        votesDown:
+          type: integer
+          example: 2
+        numBoosts:
+          type: integer
+          example: 1
+        created_at:
+          type: string
+          format: date-time
+          example: "2024-05-14T12:00:00Z"
+        updated_at:
+          type: string
+          format: date-time
+          example: "2024-05-14T12:00:00Z"
+    Article:
+      allOf:
+        - $ref: '#/components/schemas/CommonArticleProperties'
+        - type: object
+          properties:
+            magazine_id:
+              type: integer
+              example: 1
+            user_id:
+              type: integer
+              example: 1
+    ArticleComplete:
+      allOf:
+        - $ref: '#/components/schemas/CommonArticleProperties'
+        - type: object
+          properties:
+            magazine:
+              $ref: '#/components/schemas/MagazineArticle'
+            user:
+              $ref: '#/components/schemas/UserArticle'
+            voteArticles:
+              type: array
+              items:
+                $ref: '#/components/schemas/VoteArticleArticle'
+            comments:
+              type: array
+              items:
+                $ref: '#/components/schemas/CommentArticle'
+    ArticleInput:
+      type: object
+      required:
+        - title
+        - body
+        - article_type
+        - magazine_id
+      properties:
+        title:
+          type: string
+        body:
+          type: string
+        article_type:
+          type: string
+        url:
+          type: string
+        magazine_id:
+          type: integer
+    VoteArticle:
+      type: object
+      properties:
+        id:
+          type: integer
+        user_id:
+          type: integer
+        article_id:
+          type: integer
+        value:
+          type: string
+      required:
+        - user_id
+        - article_id
+    Boost:
+      type: object
+      properties:
+        id:
+          type: integer
+        article_id:
+          type: integer
+        user_id:
+          type: integer
+        created_at:
+          type: string
+          format: date-time
+    ArticleBoostResponse:
+      type: object
+      properties:
+        article:
+          $ref: '#/components/schemas/Article'
+        boost:
+          $ref: '#/components/schemas/Boost'
+    MagazineArticle:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+    UserArticle:
+      type: object
+      properties:
+        id:
+          type: integer
+        full_name:
+          type: string
+        email:
+          type: string
+    VoteArticleArticle:
+      type: object
+      properties:
+        id:
+          type: integer
+        value:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+    CommentArticle:
+      type: object
+      properties:
+        id:
+          type: integer
+        user_id:
+          type: string
+        parent_id:
+          type: string
+        body:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+
     Comment:
       type: object
       properties:
@@ -1067,6 +1787,9 @@ components:
     error404:
       value:
         message: "There is no magazine with 'id'=8"
+    error422:
+      value:
+        message: "Unable to boost article"
   securitySchemes:
     ApiKeyAuth:
       type: apiKey
