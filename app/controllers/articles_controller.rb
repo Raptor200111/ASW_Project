@@ -1,7 +1,7 @@
 class ArticlesController < ApplicationController
   skip_before_action :verify_authenticity_token
-  before_action :authenticate_user!, only: [:create, :update, :destroy, :boost]
-  before_action :set_article, only: %i[ show edit update destroy vote_up vote_down boost]
+  before_action :authenticate_user!, only: [:create, :update, :destroy, :boost, :unboost ]
+  before_action :set_article, only: %i[ show edit update destroy vote_up vote_down unvote boost_web boost unboost ]
   before_action :check_owner, only: [:update, :destroy]
 
   # GET /articles or /articles.json
@@ -142,16 +142,24 @@ class ArticlesController < ApplicationController
     vote('down')
   end
 
-  def boost
-    if current_user.nil?
-      @uid = 1
-      user= User.find(@uid)
-    else
-      user = current_user
+  def unvote
+    respond_to do |format|
+      format.html {redirect_back(fallback_location: root_path, notice: 'Only web access')}
+      format.json {render  json: { message: 'inside unvote' }, status: :ok }
     end
-    if user.boosted_articles.exists?(id: @article.id)
+  end
+
+  def boost_web
+    if current_user.nil?
+      respond_to do |format|
+        format.html {redirect_back(fallback_location: root_path, notice: 'Only web access')}
+        format.json {render  json: { message: 'Only web access' }, status: :unauthorized }
+      end
+      return
+    end
+    if current_user.boosted_articles.exists?(id: @article.id)
       # If the user has already boosted the article, delete the existing boost
-      if user.boosts.find_by(article_id: @article.id).destroy
+      if current_user.boosts.find_by(article_id: @article.id).destroy
         update_num_boost(-1)
         respond_to do |format|
           format.html {redirect_back(fallback_location: root_path, notice: 'Boost removed successfully!')}
@@ -160,7 +168,7 @@ class ArticlesController < ApplicationController
       end
     else
       # If the user hasn't boosted the article yet, create a new boost
-      boost = user.boosts.build(article_id: @article.id)
+      boost = current_user.boosts.build(article_id: @article.id)
       if boost.save
         update_num_boost(1)
         @article.reload
@@ -173,6 +181,68 @@ class ArticlesController < ApplicationController
           format.html {redirect_back(fallback_location: root_path, notice: 'Unable to boost article')}
           format.json {render json:{ error: 'Unable to boost article' }, status: :unprocessable_entity }
         end
+      end
+    end
+  end
+
+  def boost
+    if current_user.nil?
+      @uid = 1
+      user= User.find(@uid)
+      if !user
+        respond_to do |format|
+          format.html {redirect_back(fallback_location: root_path, notice: 'You must be logged in to perform this action.e')}
+          format.json {render  json: { message: 'No user with this apikey' }, status: 401 }
+        end
+        return
+      end
+    end
+    if user.boosted_articles.exists?(id: @article.id)
+      # If the user has already boosted the article, delete the existing boost
+      respond_to do |format|
+        format.html {redirect_back(fallback_location: root_path, notice: 'You have already boosted this article')}
+        format.json {render  json: { message: 'You have already boosted this article' }, status: :ok }
+      end
+    else
+      # If the user hasn't boosted the article yet, create a new boost
+      boost = user.boosts.build(article_id: @article.id)
+      respond_to do |format|
+        if boost.save
+          update_num_boost(1)
+          @article.reload
+          format.html {redirect_back(fallback_location: root_path, notice: 'Article boosted successfully!')}
+          format.json {render json: @article.as_custom_json, status: :created }
+        else
+          format.html {redirect_back(fallback_location: root_path, notice: 'Unable to boost article')}
+          format.json {render json:{ error: 'Unable to boost article' }, status: :unprocessable_entity }
+        end
+      end
+    end
+  end
+
+  def unboost
+    if current_user.nil?
+      @uid = 1
+      user= User.find(@uid)
+    else
+      user = current_user
+    end
+    if user.boosted_articles.exists?(id: @article.id)
+      # If the user has already boosted the article, delete the existing boost
+      respond_to do |format|
+        if user.boosts.find_by(article_id: @article.id).destroy
+        update_num_boost(-1)
+          format.html {redirect_back(fallback_location: root_path, notice: 'Boost removed successfully!')}
+          format.json {render  json: { message: 'Boost removed successfully' }, status: :ok }
+        else
+          format.html { redirect_back(fallback_location: root_path, notice: "ERROR DELETE Boost" )}
+          format.json { render json: @article.errors, status: :unprocessable_entity }
+        end
+      end
+    else
+      respond_to do |format|
+        format.html { redirect_back(fallback_location: root_path, notice: "Boost not found" )}
+        format.json { render json: { error: 'Boost not found' }, status: :not_found }
       end
     end
   end

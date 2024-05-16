@@ -33,7 +33,7 @@
             <strong><%= link_to article.magazine.name, magazine_path(article.magazine) %></strong>
           </span>
           <span>
-            <%= button_to boost_article_path(article), method: :post,remote: true, class: 'voteButton' do %>
+            <%= button_to boost_web_article_path(article), method: :post,remote: true, class: 'voteButton' do %>
               Boost(<%= article.num_boosts %>)
             <% end %>
           </span>
