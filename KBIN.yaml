@@ -2,7 +2,7 @@ openapi: 3.0.2
 info:
   version: 1.0.0
   title: KBIN
-  description: "This is the Open API documentation for the REST API of our beloved application **KBIN** deployed at <http://75.101.238.24:8080>."
+  description: "This is the Open API documentation for the REST API of our beloved application **KBIN** deployed at <https://75.101.238.24:8080>."
 servers:
   - url: 'http://75.101.238.24:8080'
 paths:
