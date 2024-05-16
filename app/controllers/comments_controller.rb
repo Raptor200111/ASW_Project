@@ -98,7 +98,13 @@ class CommentsController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_comment
-      @comment = Comment.find(params[:id])
+      begin
+        @article = Article.find(params[:article_id])
+        @comment = Comment.find(params[:id])
+      rescue ActiveRecord::RecordNotFound => e
+        render json: { error: e.message }, status: :not_found
+        return
+      end
     end
 
     # Only allow a list of trusted parameters through.

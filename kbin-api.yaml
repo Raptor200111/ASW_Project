@@ -172,7 +172,7 @@ paths:
     get:
       tags:
       - comments
-      summary: View individual comment in an article
+      summary: View an individual comment of an article
       parameters:
       - name: articleId
         in: path
@@ -180,7 +180,26 @@ paths:
         required: true
         schema:
           type: integer
-          format: int64
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Comment'
+        404:
+          description: 'Error: Not Found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                articleNotFound:
+                  value:
+                    error: "Couldn't find Article with 'id'=3"
+                commentNotFound:
+                  value:
+                    error: "Couldn't find Comment with 'id'=17"
     delete:
       tags:
       - comments
@@ -300,7 +319,7 @@ components:
           example: 'Content is too long (maximum is 280 characters)'
       required:
         - message
-        
+
   examples:
     error400:
       value:
