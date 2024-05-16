@@ -11,7 +11,7 @@ gem "turbo-rails",     "1.1.1"
 gem "stimulus-rails",  "1.0.4"
 gem "jbuilder",        "2.11.5"
 gem "puma",            "5.6.4"
-gem "rack-cors",       "2.0.2"
+gem "rack-cors"
 gem "font-awesome-rails"
 gem "bootsnap",        "1.12.0", require: false
 

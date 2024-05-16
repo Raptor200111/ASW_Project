@@ -6,39 +6,35 @@ info:
 servers:
   - url: 'https://fib-asw-wotapi.fly.dev/'
 paths:
-  /tweets:
-    post:
+
+  /article/{articleId}/comments:
+    get:
       tags:
-      - tweets
-      summary: Adds a new Tweet to the Wall of Tweets
-      operationId: addTweet
-      requestBody:
-        description: Provide the author & content of the new Tweet
-        content:
-          application/json:
-            schema:
-              required:
-              - author
-              - content
-              type: object
-              properties:
-                author:
-                  type: string
-                  minLength: 4
-                  example: 'My name'
-                content:
-                  type: string
-                  minLength: 4
-                  maxLength: 280
-                  example: 'My content'
+      - comments
+      summary: View comments of an article
+      parameters:
+      - name: articleId
+        in: path
+        description: ID of Article to search
         required: true
+        schema:
+          type: integer
+      - name: order
+        in: query
+        description: Order in which to return the comments. Can be 'oldest', 'newest', or default (most voted).
+        required: false
+        schema:
+          type: string
+          enum: ['oldest', 'newest']
       responses:
-        201:
-          description: Tweet created
+        200:
+          description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/NewTweet'
+                type: array
+                items:
+                  $ref: '#/components/schemas/Comment'
         400:
           description: 'Error: Bad Request'
           content:
@@ -47,43 +43,8 @@ paths:
                 $ref: '#/components/schemas/ErrorResult'
               examples:
                 errorExample:
-                  $ref: '#/components/examples/error400'
-    get:
-      tags:
-      - tweets
-      summary: Retrieves all the Tweets
-      operationId: getAllTweets
-      responses:
-        200:
-          description: successful operation
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Tweet'
-  /tweets/{tweetId}:
-    get:
-      tags:
-      - tweets
-      summary: Finds a Tweet by its ID
-      description: Returns a single Tweet
-      operationId: getTweetById
-      parameters:
-      - name: tweetId
-        in: path
-        description: ID of Tweet to return
-        required: true
-        schema:
-          type: integer
-          format: int64
-      responses:
-        200:
-          description: successful operation
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Tweet'
+                  value:
+                    error: "Invalid order parameter"
         404:
           description: 'Error: Not Found'
           content:
@@ -92,25 +53,136 @@ paths:
                 $ref: '#/components/schemas/ErrorResult'
               examples:
                 errorExample:
-                  $ref: '#/components/examples/error404'
-    delete:
+                  value:
+                    error: "Couldn't find Article with 'id'=3"
+    post:
       tags:
-      - tweets
-      summary: If the Tweet exists, deletes it if the token is present and valid. If it does not exist, returns 204 No Content.
-      operationId: deleteTweet
+      - comments
+      summary: Creates a comment in an article
       parameters:
-      - name: tweetId
+      - name: articleId
         in: path
-        description: Tweet id to delete
+        description: ID of Article to search
+        required: true
+        schema:
+          type: integer
+      requestBody:
+        description: Provide the content of the Comment
+        content:
+          application/json:
+            schema:
+              required:
+              - body
+              type: object
+              properties:
+                body:
+                  type: string
+                  example: 'commentPostMan'
+                  description: 'The text content of the comment'
+                parent_id:
+                  type: integer
+                  example: 7
+                  description: 'ID of the comment being replied to, if comment is a reply'
+        required: true
+      responses:
+        201:
+          description: Comment created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Comment'
+        400:
+          description: 'Error: Bad Request'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  value:
+                    error: "You didn't provide all the required fields"
+        401:
+          description: 'Error: Unauthorized'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                noApiKey:
+                  $ref: '#/components/examples/error401'
+                wrongApiKey:
+                  value:
+                    error: "Invalid Api key provided."
+        403:
+          description: 'Error: Forbidden'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error403'
+        404:
+          description: 'Error: Not Found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  value:
+                    error: "Couldn't find Article with 'id'=3"
+
+  /artice/{articleId}/comments/{commentId}:
+    patch:
+      tags:
+      - comments
+      summary: Updates a comment in an article
+      parameters:
+      - name: articleId
+        in: path
+        description: ID of Article to search
         required: true
         schema:
           type: integer
           format: int64
+      - name: commentId
+        in: path
+        description: ID of Comment to search
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        description: Provide the new body for the comment
+        content:
+          application/json:
+            schema:
+              required:
+              - body
+              type: object
+              properties:
+                body:
+                  type: string
+                  example: 'commentPostMan'
+        required: true
       responses:
-        204:
-          description: No content
+        200:
+          description: Comment updated
           content:
-            application/json: {}
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Comment'
+        400:
+          description: 'Error: Bad Request'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  value:
+                    error: "You didn't provide all the required fields"
         401:
           description: 'Error: Unauthorized'
           content:
@@ -129,29 +201,6 @@ paths:
               examples:
                 errorExample:
                   $ref: '#/components/examples/error403'
-      security:
-      - ApiKeyAuth: []
-  /tweets/{tweetId}/likes:
-    post:
-      tags:
-      - tweets
-      summary: Likes a Tweet
-      operationId: likeTweet
-      parameters:
-      - name: tweetId
-        in: path
-        description: Tweet id to like
-        required: true
-        schema:
-          type: integer
-          format: int64
-      responses:
-        200:
-          description: Liked Tweet
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Tweet'
         404:
           description: 'Error: Not Found'
           content:
@@ -159,17 +208,16 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResult'
               examples:
-                errorExample:
-                  $ref: '#/components/examples/error404'
-
-
-
-
-  /article/{articleId}/comments:
+                commentNotFound:
+                  value:
+                    error: "Couldn't find Comment with 'id'=3"
+                articleNotFound:
+                  value:
+                    error: "Couldn't find Article with 'id'=17"
     get:
       tags:
       - comments
-      summary: Retrieves all the comments of an article
+      summary: View an individual comment of an article
       parameters:
       - name: articleId
         in: path
@@ -177,69 +225,26 @@ paths:
         required: true
         schema:
           type: integer
-          format: int64
-      - name: order
-        in: query
-        description: Order in which to return the comments. Can be 'oldest', 'newest', or default (most voted).
-        required: false
-        schema:
-          type: string
-          enum: ['oldest', 'newest']
-    post:
-      tags:
-      - comments
-      summary: Creates a comment in an article
-      parameters:
-      - name: articleId
-        in: path
-        description: ID of Article to search
-        required: true
-        schema:
-          type: integer
-          format: int64
-      requestBody:
-        description: Provide the content of the Tweet
-        content:
-          application/json:
-            schema:
-              required:
-              - body
-              type: object
-              properties:
-                body:
-                  type: string
-                  example: 'commentPostMan'
-                parent_id:
-                  type: integer
-                  example: 7
-                  description: 'ID of the parent comment'
-        required: true
-  /artice/{articleId}/comments/{commentId}:
-    patch:
-      tags:
-      - comments
-      summary: Updates a comment in an article
-      parameters:
-      - name: articleId
-        in: path
-        description: ID of Article to search
-        required: true
-        schema:
-          type: integer
-          format: int64
-      requestBody:
-        description: Provide the new body for the comment
-        content:
-          application/json:
-            schema:
-              required:
-              - body
-              type: object
-              properties:
-                body:
-                  type: string
-                  example: 'editedCommentPostMan'
-        required: true
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Comment'
+        404:
+          description: 'Error: Not Found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                articleNotFound:
+                  value:
+                    error: "Couldn't find Article with 'id'=3"
+                commentNotFound:
+                  value:
+                    error: "Couldn't find Comment with 'id'=17"
     delete:
       tags:
       - comments
@@ -259,6 +264,44 @@ paths:
         schema:
           type: integer
           format: int64
+      responses:
+        204:
+          description: Comment deleted
+          content:
+            application/json:
+              example:
+                message: 'Comment was successfully deleted'
+        401:
+          description: 'Error: Unauthorized'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error401'
+        403:
+          description: 'Error: Forbidden'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error403'
+        404:
+          description: 'Error: Not Found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                commentNotFound:
+                  value:
+                    error: "Couldn't find Comment with 'id'=3"
+                articleNotFound:
+                  value:
+                    error: "Couldn't find Article with 'id'=17"
 
   /article/{articleId}/comments/{commentId}/vote_up:
     post:
@@ -280,6 +323,35 @@ paths:
         schema:
           type: integer
           format: int64
+      responses:
+        200:
+          description: Comment voted up
+          content:
+            application/json:
+              example:
+                id: 1
+                body: 'commentPostMan'
+                articleId: 2
+                parent_id: null
+                created_at: '2021-05-10T15:00:00.000Z'
+                updated_at: '2021-05-10T15:00:00.000Z'
+                votes_up: 1
+                votes_down: 0
+                user_id: 1
+                replies: []
+        404:
+          description: 'Error: Not Found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                commentNotFound:
+                  value:
+                    error: "Couldn't find Comment with 'id'=3"
+                articleNotFound:
+                  value:
+                    error: "Couldn't find Article with 'id'=17"
   
   /article/{articleId}/comments/{commentId}/vote_down:
     post:
@@ -301,6 +373,35 @@ paths:
         schema:
           type: integer
           format: int64
+      responses:
+        200:
+          description: Comment voted down
+          content:
+            application/json:
+              example:
+                id: 1
+                body: 'commentPostMan'
+                articleId: 2
+                parent_id: null
+                created_at: '2021-05-10T15:00:00.000Z'
+                updated_at: '2021-05-10T15:00:00.000Z'
+                votes_up: 0
+                votes_down: 1
+                user_id: 1
+                replies: []
+        404:
+          description: 'Error: Not Found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                commentNotFound:
+                  value:
+                    error: "Couldn't find Comment with 'id'=3"
+                articleNotFound:
+                  value:
+                    error: "Couldn't find Article with 'id'=17"
 
 
 
@@ -312,66 +413,67 @@ paths:
 
 components:
   schemas:
-    Tweet:
+    Comment:
       type: object
       properties:
         id:
           type: integer
           format: int64
-          example: 2
-        author:
+          example: 1
+        body:
           type: string
-          minLength: 4
-          example: 'My name'
-        content:
-          type: string
-          minLength: 4
-          maxLength: 280
-          example: 'My content'
-        likes:
+          example: 'commentPostMan'
+        articleId:
           type: integer
-          format: int32
+          format: int64
+          example: 2
+        parent_id:
+          type: integer
+          format: int64
+          example: null
         created_at:
           type: string
           format: date-time
-        _links:
-          type: object
-          properties:
-            self:
-              type: string
-              format: url
-              example: 'https://fib-asw-wotapi.fly.dev/tweets/2'
-    NewTweet:
-      allOf:
-        - $ref: '#/components/schemas/Tweet'
-        - type: object
-          properties:
-            token:
-              type: string
-              example: '9656f8894781485f7e9e168584a17ec002ad77379a3e2b3ff4604b916d98c0a7'
-          required:
-            - token
+        updated_at:
+          type: string
+          format: date-time
+        votes_up:
+          type: integer
+          format: int32
+        votes_down:
+          type: integer
+          format: int32
+        user_id:
+          type: integer
+          format: int64
+        replies:
+          type: array
+          items:
+            $ref: '#/components/schemas/Comment'
+          description: 'An array of replies to the comment. This field is not present if there are no replies.'
+    
     ErrorResult:
       type: object
       properties:
-        message: 
+        error: 
           type: string
           example: 'Content is too long (maximum is 280 characters)'
       required:
         - message
+
   examples:
     error400:
       value:
-        message: "Content is too long (maximum is 280 characters)"
+        error: "You didn't provide all the required fields"
     error401:
       value:
-        message: "You provided no token"
+        error: "Missing api key"
+    userNotFound:
+      value:
+        error: "No user with this apikey"
     error403:
       value:
-        message: "You provided an invalid token"
-    error404:
-      value:
-        message: "There is no tweet with 'id'=8"
+        error: "You are not allowed to perform this action."
   securitySchemes:
     ApiKeyAuth:
       type: apiKey

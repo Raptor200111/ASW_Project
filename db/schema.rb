@@ -46,8 +46,10 @@ ActiveRecord::Schema[7.0].define(version: 2024_05_16_140901) do
     t.string "url"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "author"
     t.integer "votes_up", default: 0
     t.integer "votes_down", default: 0
+    t.boolean "boosted", default: false
     t.integer "magazine_id", null: false
     t.integer "user_id", null: false
     t.integer "num_boosts", default: 0
