@@ -7,7 +7,7 @@ servers:
   - url: 'https://fib-asw-wotapi.fly.dev/'
 paths:
 
-  /article/{articleId}/comments:
+  /articles/{articleId}/comments:
     get:
       tags:
       - comments
@@ -133,7 +133,7 @@ paths:
                   value:
                     error: "Couldn't find Article with 'id'=3"
 
-  /artice/{articleId}/comments/{commentId}:
+  /article/{articleId}/comments/{commentId}:
     patch:
       tags:
       - comments
