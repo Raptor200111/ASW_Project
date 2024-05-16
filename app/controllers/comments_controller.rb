@@ -7,7 +7,12 @@ class CommentsController < ApplicationController
   # GET /comments
   def index
     #agafa tots els comentaris de l'article
-    @article = Article.find(params[:article_id])
+    begin
+      @article = Article.find(params[:article_id])
+    rescue ActiveRecord::RecordNotFound => e
+      render json: { error: e.message }, status: :not_found
+      return
+    end
     @comments = @article.comments
 
     #ordenacio per default es votes_up
@@ -55,16 +60,15 @@ class CommentsController < ApplicationController
     @comment = @article.comments.find(params[:id])
 
     # comprova si l'usuari es el propietari del comentari
-    if check_owner()
-      # retorna el comentari actualitzat
-      if @comment.update(comment_params)
-        render json: @comment
-      else
-        render json: @comment.errors, status: :unprocessable_entity
-      end
-    else
-      # retorna error si l'usuari no es el propietari
-      format.json { render json: "you are not the owner" }
+    check_owner()
+
+    # actualitza el comentari amb els valors donats
+    begin
+      @comment.update(comment_params)
+      render json: @comment
+    rescue ActionController::ParameterMissing => e
+      render json: {error: "You didn't provide all the required fields"}, status: :bad_request
+      return
     end
   end
 
@@ -73,14 +77,12 @@ class CommentsController < ApplicationController
     @article = Article.find(params[:article_id])
     @comment = @article.comments.find(params[:id])
 
-    if check_owner()
-      # retorna missatge de comentari eliminat
-      @comment.destroy
-      render json: {message: "Comment was successfully destroyed."}
-    else
-      # retorna error si l'usuari no es el propietari
-      render json: {message: "You are not allowed to delete this comment."}
-    end
+    # comprova si l'usuari es el propietari del comentari
+    check_owner()
+
+    # retorna missatge de comentari eliminat
+    @comment.destroy
+    render json: {message: "Comment was successfully destroyed."}
   end
 
   # POST /comments/1/vote_up
@@ -143,17 +145,15 @@ class CommentsController < ApplicationController
       @current_user = User.find_by(id: 1)
 
       unless @current_user
-        render(json: {"error": "Not logged in AUTH"}, status: 401)
+        render(json: {"error": "You provided no token"}, status: 401)
       end
     end
 
     # check if the user is the owner of the comment
     def check_owner
       @comment = Comment.find(params[:id])
-      if @current_user == @comment.user
-        return true
-      else
-        return false
+      unless @current_user == @comment.user
+        render(json: {"error": "You provided an invalid token"}, status: 403)
       end
     end
 end
