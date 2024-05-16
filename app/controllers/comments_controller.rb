@@ -1,4 +1,5 @@
 class CommentsController < ApplicationController
+  skip_before_action :verify_authenticity_token
   # selecciona el comentari i l'article
   before_action :set_comment, only: %i[ show update destroy vote_up vote_down ]
 
@@ -62,7 +63,7 @@ class CommentsController < ApplicationController
       render json: { error: e.message }, status: :not_found
       return
     end
-    
+
     # retorna el comentari creat
     @comment.save
     render json: @comment
