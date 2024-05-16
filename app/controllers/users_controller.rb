@@ -5,7 +5,7 @@ class UsersController < ApplicationController
   def profile
     @user = User.find(params[:id])
     respond_to do |format|
-      format.htmls
+      format.html
       format.json { render json: @user, status: :ok }
     end
   end
