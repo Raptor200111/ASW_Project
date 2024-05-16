@@ -1,7 +1,7 @@
 class ArticlesController < ApplicationController
   skip_before_action :verify_authenticity_token
-  before_action :authenticate_user!, only: [:create, :update, :destroy, :vote_up, :vote_down, :vote, :unvote, :boost_web, :boost, :unboost ]
-  before_action :set_article, only: %i[ show edit update destroy vote vote_up vote_down unvote  boost_web boost unboost ]
+  before_action :authenticate_user!, only: [:create, :update, :destroy, :vote_up, :vote_down, :vote, :unvote_up, :unvote_down, :boost_web, :boost, :unboost ]
+  before_action :set_article, only: %i[ show edit update destroy vote vote_up vote_down unvote_up unvote_down boost_web boost unboost ]
   before_action :check_owner, only: [:update, :destroy]
 
   # GET /articles or /articles.json
@@ -176,24 +176,12 @@ class ArticlesController < ApplicationController
     end
   end
 
-  def unvote
-    if current_user.nil?
-      existing_vote = @article.vote_articles.find_by(user_id: @user.id)
-      if existing_vote
-          value = existing_vote.value
-          existing_vote.destroy
-          update_numVote(value, -1)
-          respond_to do |format|
-            format.html { redirect_back fallback_location: root_path, notice:  'Vote removed successfully' }
-            format.json { render json: { message: 'Vote removed successfully' }, status: :ok }
-          end
-      else
-        respond_to do |format|
-          format.html { redirect_back fallback_location: root_path, notice:  'Vote Not found' }
-          format.json { render json: { message: 'Vote Not found' }, status: :not_found }
-        end
-      end
-    end
+  def unvote_up
+    unvote_api('up')
+  end
+
+  def unvote_down
+    unvote_api('down')
   end
 
   def boost_web
@@ -342,6 +330,33 @@ class ArticlesController < ApplicationController
             format.html { redirect_back fallback_location: root_path, status: :unprocessable_entity }
             format.json { render json: { error: @vote_article.errors.full_messages.join(', ') }, status: :unprocessable_entity }
           end
+        end
+      end
+    end
+  end
+
+  def unvote_api(value)
+    if current_user.nil?
+      existing_vote = @article.vote_articles.find_by(user_id: @user.id)
+      if existing_vote
+          existing_value = existing_vote.value
+          if existing_value != value
+            respond_to do |format|
+              format.html { redirect_back fallback_location: root_path, notice:  'Vote with incorrect value' }
+              format.json { render json: existing_vote, status: :unprocessable_entity }
+            end
+          else
+            existing_vote.destroy
+            update_numVote(value, -1)
+            respond_to do |format|
+              format.html { redirect_back fallback_location: root_path, notice:  'Vote removed successfully' }
+              format.json { render json: { message: 'Vote removed successfully' }, status: :ok }
+            end
+          end
+      else
+        respond_to do |format|
+          format.html { redirect_back fallback_location: root_path, notice:  'Vote Not found' }
+          format.json { render json: { message: 'Vote Not found' }, status: :not_found }
         end
       end
     end

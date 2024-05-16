@@ -25,7 +25,8 @@ Rails.application.routes.draw do
       post 'boost_web'
       post 'boost'
       delete 'unboost'
-      delete 'unvote'
+      delete 'unvote_up'
+      delete 'unvote_down'
     end
     get 'new_link', on: :collection
     get 'search', on: :collection
