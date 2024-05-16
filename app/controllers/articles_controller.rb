@@ -117,6 +117,14 @@ class ArticlesController < ApplicationController
 
   # DELETE /articles/1 or /articles/1.json
   def destroy
+      @article.destroy
+        respond_to do |format|
+        format.html { redirect_to articles_url, notice: "Article was successfully destroyed." }
+        format.json  { render json: { message: 'Destroyed article uccessfully' }, status: :no_content }
+      end
+  end
+=begin
+  def destroy
     respond_to do |format|
       if @article.destroy
         format.html { redirect_to articles_url, notice: "Article was successfully destroyed." }
@@ -127,6 +135,8 @@ class ArticlesController < ApplicationController
       end
     end
   end
+=end
+
   #/articles/:id/vote_up
   def vote_up
     vote_api('up')
