@@ -1,0 +1,1 @@
+insert into magazines (name, title, url, created_at, updated_at, nComms, description, rules) values ("m", "m", "", 024-05-16T14:12:59.299Z, 024-05-16T14:12:59.299Z, 0, "", "");
