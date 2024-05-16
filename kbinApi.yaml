@@ -1,0 +1,1074 @@
+openapi: 3.0.2
+info:
+  version: 1.0.0
+  title: KBIN
+  description: "This is the Open API documentation for the REST API of our application **KBIN** deployed at <https://delta-12-kbin-8d30caa623a4.herokuapp.com/>. <br>All operations are executable. All operations that create/edit/delete require authentication. In this case, you must **Authorize** your request by providing the token value you got when you created the tweet."
+servers:
+  - url: 'https://delta-12-kbin-8d30caa623a4.herokuapp.com/'
+paths:
+  /articles/{articleId}/comments:
+    get:
+      tags:
+      - Comments
+      summary: View comments of an article
+      parameters:
+      - name: articleId
+        in: path
+        description: ID of Article to search
+        required: true
+        schema:
+          type: integer
+      - name: order
+        in: query
+        description: Order in which to return the comments. Can be 'oldest', 'newest', or default (most voted).
+        required: false
+        schema:
+          type: string
+          enum: ['oldest', 'newest']
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Comment'
+        400:
+          description: 'Error: Bad Request'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  value:
+                    error: "Invalid order parameter"
+        404:
+          description: 'Error: Not Found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  value:
+                    error: "Couldn't find Article with 'id'=3"
+    post:
+      tags:
+      - Comments
+      summary: Creates a comment in an article
+      parameters:
+      - name: articleId
+        in: path
+        description: ID of Article to search
+        required: true
+        schema:
+          type: integer
+      requestBody:
+        description: Provide the content of the Comment
+        content:
+          application/json:
+            schema:
+              required:
+              - body
+              type: object
+              properties:
+                body:
+                  type: string
+                  example: 'commentPostMan'
+                  description: 'The text content of the comment'
+                parent_id:
+                  type: integer
+                  example: 7
+                  description: 'ID of the comment being replied to, if comment is a reply'
+        required: true
+      responses:
+        201:
+          description: Comment created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Comment'
+        400:
+          description: 'Error: Bad Request'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  value:
+                    error: "You didn't provide all the required fields"
+        401:
+          description: 'Error: Unauthorized'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                noApiKey:
+                  $ref: '#/components/examples/error401'
+                wrongApiKey:
+                  value:
+                    error: "Invalid Api key provided."
+        403:
+          description: 'Error: Forbidden'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error403'
+        404:
+          description: 'Error: Not Found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  value:
+                    error: "Couldn't find Article with 'id'=3"
+
+  /articles/{articleId}/comments/{commentId}:
+    patch:
+      tags:
+      - Comments
+      summary: Updates a comment in an article
+      parameters:
+      - name: articleId
+        in: path
+        description: ID of Article to search
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - name: commentId
+        in: path
+        description: ID of Comment to search
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        description: Provide the new body for the comment
+        content:
+          application/json:
+            schema:
+              required:
+              - body
+              type: object
+              properties:
+                body:
+                  type: string
+                  example: 'commentPostMan'
+        required: true
+      responses:
+        200:
+          description: Comment updated
+          content:
+            application/json:
+              example:
+                id: 1
+                body: "sdfghjkl"
+                article_id: 2
+                parent_id: null
+                created_at: "2024-05-16T18:56:44.051Z"
+                updated_at: "2024-05-16T18:57:09.281Z"
+                votes_up: 0
+                votes_down: 0
+                user_id: 1
+
+        400:
+          description: 'Error: Bad Request'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  value:
+                    error: "You didn't provide all the required fields"
+        401:
+          description: 'Error: Unauthorized'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error401'
+        403:
+          description: 'Error: Forbidden'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error403'
+        404:
+          description: 'Error: Not Found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                commentNotFound:
+                  value:
+                    error: "Couldn't find Comment with 'id'=3"
+                articleNotFound:
+                  value:
+                    error: "Couldn't find Article with 'id'=17"
+    get:
+      tags:
+      - Comments
+      summary: View an individual comment of an article
+      parameters:
+      - name: articleId
+        in: path
+        description: ID of Article to search
+        required: true
+        schema:
+          type: integer
+      - name: commentId
+        in: path
+        description: ID of Comment to search
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Comment'
+        404:
+          description: 'Error: Not Found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                articleNotFound:
+                  value:
+                    error: "Couldn't find Article with 'id'=3"
+                commentNotFound:
+                  value:
+                    error: "Couldn't find Comment with 'id'=17"
+    delete:
+      tags:
+      - Comments
+      summary: Deletes a comment in an article
+      parameters:
+      - name: articleId
+        in: path
+        description: ID of Article to search
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - name: commentId
+        in: path
+        description: ID of Comment to search
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        204:
+          description: Comment deleted
+          content:
+            application/json:
+              example:
+                message: 'Comment was successfully deleted'
+        401:
+          description: 'Error: Unauthorized'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error401'
+        403:
+          description: 'Error: Forbidden'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error403'
+        404:
+          description: 'Error: Not Found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                commentNotFound:
+                  value:
+                    error: "Couldn't find Comment with 'id'=3"
+                articleNotFound:
+                  value:
+                    error: "Couldn't find Article with 'id'=17"
+
+  /articles/{articleId}/comments/{commentId}/vote_up:
+    post:
+      tags:
+      - Comments
+      summary: Votes up a comment in an article
+      parameters:
+      - name: articleId
+        in: path
+        description: ID of Article to search
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - name: commentId
+        in: path
+        description: ID of Comment to search
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        200:
+          description: Comment voted up
+          content:
+            application/json:
+              example:
+                id: 1
+                body: 'commentPostMan'
+                articleId: 2
+                parent_id: null
+                created_at: '2021-05-10T15:00:00.000Z'
+                updated_at: '2021-05-10T15:00:00.000Z'
+                votes_up: 1
+                votes_down: 0
+                user_id: 1
+                replies: []
+        401:
+          description: 'Error: Unauthorized'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error401'
+        404:
+          description: 'Error: Not Found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                commentNotFound:
+                  value:
+                    error: "Couldn't find Comment with 'id'=3"
+                articleNotFound:
+                  value:
+                    error: "Couldn't find Article with 'id'=17"
+
+  /articles/{articleId}/comments/{commentId}/vote_down:
+    post:
+      tags:
+      - Comments
+      summary: Votes down a comment in an article
+      parameters:
+      - name: articleId
+        in: path
+        description: ID of Article to search
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - name: commentId
+        in: path
+        description: ID of Comment to search
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        200:
+          description: Comment voted down
+          content:
+            application/json:
+              example:
+                id: 1
+                body: 'commentPostMan'
+                articleId: 2
+                parent_id: null
+                created_at: '2021-05-10T15:00:00.000Z'
+                updated_at: '2021-05-10T15:00:00.000Z'
+                votes_up: 0
+                votes_down: 1
+                user_id: 1
+                replies: []
+        401:
+          description: 'Error: Unauthorized'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error401'
+        404:
+          description: 'Error: Not Found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                commentNotFound:
+                  value:
+                    error: "Couldn't find Comment with 'id'=3"
+                articleNotFound:
+                  value:
+                    error: "Couldn't find Article with 'id'=17"
+  /magazines:
+    post:
+      tags:
+        - Magazines
+      summary: Adds a new magazine
+      security:
+      - ApiKeyAuth: []
+      operationId: addMagazine
+      requestBody:
+        description: Provide a name and a title for the magazine. Description and rules are optional
+        content:
+          application/json:
+            schema:
+              required:
+              - name
+              - title
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: 'Hola'
+                title:
+                  type: string
+                  example: 'Hola bon dia'
+                description:
+                  type: string
+                  example: ''
+                rules:
+                  type: string
+                  example: ''
+        required: true
+      responses:
+        201:
+          description: Magazine created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Magazine'
+        400:
+          description: 'Missing name'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error400'
+        401:
+          description: 'Error: Unauthorized'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error401'
+    get:
+      tags:
+      - Magazines
+      summary: Retrieves all the magazines
+      operationId: getAllMagazines
+      parameters:
+      - name: sort
+        in: query
+        description: The way you want to sort the magazines
+        required: false
+        schema:
+          type: string
+          enum:
+           - 'threads'
+           - 'comments'
+           - 'subs'
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Magazine'
+  /magazines/{magazineId}:
+    get:
+      tags:
+      - Magazines
+      summary: Finds a Magazine by its ID
+      operationId: getMagazineById
+      parameters:
+      - name: magazineId
+        in: path
+        description: ID of Magazine to return
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Magazine'
+        404:
+          description: 'No magazine with this id'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error404'
+  /magazines/{magazineId}/subscribe:
+    post:
+      tags:
+      - Magazines
+      summary: If not subscribe, subscribe to the magazine.
+      security:
+      - ApiKeyAuth: []
+      operationId: subscirbe
+      parameters:
+      - name: magazineId
+        in: path
+        description: ID of Magazine to subscribe
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        200:
+            description: successful operation
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Magazine'
+        401:
+          description: 'Error: Unauthorized'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error401'
+        404:
+          description: 'No magazine with this id'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error404'
+  /magazines/{magazineId}/unsubscribe:
+    delete:
+      tags:
+      - Magazines
+      summary: If subscribe, unsubscribe.
+      security:
+      - ApiKeyAuth: []
+      operationId: unsubscribe
+      parameters:
+      - name: magazineId
+        in: path
+        description: Id of Magazine to unsubscribe
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        204:
+          description: No content
+          content:
+            application/json: {}
+        401:
+          description: 'Error: Unauthorized'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error401'
+        404:
+          description: 'No magazine with this id'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error404'
+  /u/{id}:
+    get:
+      tags:
+        - Users
+      summary: Get User Profile
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: User profile retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    default: 1
+                  email:
+                    default: "example@example.com"
+                  full_name:
+                    default: "Jose Garcia"
+                  uid:
+                    default: "123456789101112131415"
+                  avatar_url:
+                    default: "https://upload.wikimedia.org/wikipedia/commons/c/c1/Woman_in_Eyeglasses_%283%29.jpg"
+                  provider:
+                    default: "google_oauth2"
+                  created_at:
+                    default: "2024-05-16T18:00:06.268Z"
+                  updated_at:
+                    default: "2024-05-16T18:00:06.268Z"
+                  description:
+                    default: "Example"
+                  api_key:
+                    default: "dWpRJYJPy3hXzsYpVFfYtyVV"
+                  avatar:
+                    default: "https://upload.wikimedia.org/wikipedia/commons/c/c1/Woman_in_Eyeglasses_%283%29.jpg"
+                  background:
+                    default: "https://upload.wikimedia.org/wikipedia/commons/c/c1/Woman_in_Eyeglasses_%283%29.jpg"
+    put:
+      tags:
+        - Users
+      summary: Update User Profile
+      security:
+      - ApiKeyAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user:
+                  type: object
+                  properties:
+                    full_name:
+                      default: "Pepito Mortadelo"
+                    description:
+                      default: "Example of description"
+                    avatar:
+                      default: "https://upload.wikimedia.org/wikipedia/commons/c/c1/Woman_in_Eyeglasses_%283%29.jpg"
+                    background:
+                      default: "https://upload.wikimedia.org/wikipedia/commons/c/c1/Woman_in_Eyeglasses_%283%29.jpg"
+      responses:
+        '200':
+          description: User profile updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    default: "Updated User"
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                  type: object
+                  properties:
+                    status:
+                      default: 401
+                    error:
+                      default: "Unauthorized"
+        '404':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                  type: object
+                  properties:
+                    status:
+                      default: 404
+                    error:
+                      default: "Not Found"
+
+  /u/{id}/articles:
+    get:
+      tags:
+        - Users
+      summary: Get User Articles
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: User articles retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      default: 1
+                    title:
+                      default: Swagger
+                    body:
+                      default: Today I started using Swagger
+                    article_type:
+                      default: thread
+                    url:
+                      default: null
+                    created_at:
+                      default: 2024-05-16T18:43:57.946Z
+                    updated_at:
+                      default: 2024-05-16T18:43:57.946Z
+                    votes_up:
+                      default: 5
+                    votes_down:
+                      default: 2
+                    magazine_id:
+                      default: 6
+                    user_id:
+                      default: 8
+
+  /u/{id}/comments:
+    get:
+      tags:
+        - Users
+      summary: Get User Comments
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: User comments retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      default: 1
+                    body:
+                      default: "Comment"
+                    article_id:
+                      default: 2
+                    parent_id:
+                      default: null
+                    created_at:
+                      default: 2024-05-16T18:56:44.051Z
+                    updated_at:
+                      default: 2024-05-16T18:56:44.051Z
+                    votes_up:
+                      default: 10
+                    votes_down:
+                      default: 0
+                    user_id:
+                      default: 1
+
+  /u/{id}/boosts:
+    get:
+      tags:
+        - Users
+      summary: Get User Boosts
+      security:
+      - ApiKeyAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: User boosts retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      default: 3
+                    user_id:
+                      default: 1
+                    article_id:
+                      default: 2
+                    created_at:
+                      default: 2024-05-16T22:37:01.271Z
+                    updated_at:
+                      default: 2024-05-16T22:37:01.271Z
+
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                  type: object
+                  properties:
+                    status:
+                      default: 401
+                    error:
+                      default: "Unauthorized"
+        '404':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                  type: object
+                  properties:
+                    status:
+                      default: 404
+                    error:
+                      default: "Not Found"
+
+  /u/{id}/deleteAvatar:
+    put:
+      tags:
+        - Users
+      summary: Delete User Avatar
+      security:
+        - ApiKeyAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: User avatar deleted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    default: "User Avatar Deleted"
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                  type: object
+                  properties:
+                    status:
+                      default: 401
+                    error:
+                      default: "Unauthorized"
+        '404':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                  type: object
+                  properties:
+                    status:
+                      default: 404
+                    error:
+                      default: "Not Found"
+
+  /u/{id}/deleteBack:
+    put:
+      tags:
+        - Users
+      summary: Delete User Background
+      security:
+        - ApiKeyAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: User background deleted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    default: "User Background Deleted"
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                  type: object
+                  properties:
+                    status:
+                      default: 401
+                    error:
+                      default: "Unauthorized"
+        '404':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                  type: object
+                  properties:
+                    status:
+                      default: 404
+                    error:
+                      default: "Not Found"
+
+components:
+  schemas:
+    Comment:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 1
+        body:
+          type: string
+          example: 'commentPostMan'
+        articleId:
+          type: integer
+          format: int64
+          example: 2
+        parent_id:
+          type: integer
+          format: int64
+          example: null
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+        votes_up:
+          type: integer
+          format: int32
+        votes_down:
+          type: integer
+          format: int32
+        user_id:
+          type: integer
+          format: int64
+        replies:
+          type: array
+          items:
+            $ref: '#/components/schemas/Comment'
+          description: 'An array of replies to the comment. This field is not present if there are no replies.'
+
+    Magazine:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 2
+        name:
+          type: string
+          example: hola
+        title:
+          type: string
+          example: hola
+        description:
+          type: string
+          example:
+        rules:
+          type: string
+          example:
+        createdAt:
+          type: string
+          example: '2024-05-16T18:43:30.622Z'
+        updatedAt:
+          type: string
+          example: '2024-05-16T20:30:02.460Z'
+        nThreads:
+          type: integer
+          example: 2
+        nComms:
+          type: integer
+          example: 2
+        nSubs:
+          type: integer
+          example: 2
+        url:
+          type: string
+          example: 'https://delta-12-kbin-8d30caa623a4.herokuapp.com/magazines/1.json'
+
+    ErrorResult:
+      type: object
+      properties:
+        error:
+          type: string
+          example: 'Content is too long (maximum is 280 characters)'
+      required:
+        - message
+
+  examples:
+    error400:
+      value:
+        error: "You didn't provide all the required fields"
+    error401:
+      value:
+        error: "Missing api key"
+    userNotFound:
+      value:
+        error: "No user with this apikey"
+    error403:
+      value:
+        error: "You are not allowed to perform this action."
+    error404:
+      value:
+        message: "There is no magazine with 'id'=8"
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      name: Authorization
+      in: header

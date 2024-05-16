@@ -4,10 +4,10 @@ info:
   title: Wall of Tweets
   description: "This is the Open API documentation for the REST API of our beloved application **Wall of Tweets** deployed at <https://fib-asw-wotapi.fly.dev/>. <br>All operations are executable. Only one operation requires authentication: `deleteTweet`. In this case, you must **Authorize** your request by providing the token value you got when you created the tweet."
 servers:
-  - url: 'https://fib-asw-wotapi.fly.dev/'
+  - url: 'https://delta-12-kbin-8d30caa623a4.herokuapp.com/'
 paths:
 
-  /article/{articleId}/comments:
+  /articles/{articleId}/comments:
     get:
       tags:
       - comments
@@ -133,7 +133,7 @@ paths:
                   value:
                     error: "Couldn't find Article with 'id'=3"
 
-  /artice/{articleId}/comments/{commentId}:
+  /articles/{articleId}/comments/{commentId}:
     patch:
       tags:
       - comments
@@ -225,6 +225,13 @@ paths:
         required: true
         schema:
           type: integer
+      - name: commentId
+        in: path
+        description: ID of Comment to search
+        required: true
+        schema:
+          type: integer
+          format: int64
       responses:
         200:
           description: OK
@@ -257,7 +264,7 @@ paths:
         schema:
           type: integer
           format: int64
-      - name: commentID
+      - name: commentId
         in: path
         description: ID of Comment to search
         required: true
@@ -303,7 +310,7 @@ paths:
                   value:
                     error: "Couldn't find Article with 'id'=17"
 
-  /article/{articleId}/comments/{commentId}/vote_up:
+  /articles/{articleId}/comments/{commentId}/vote_up:
     post:
       tags:
       - comments
@@ -316,7 +323,7 @@ paths:
         schema:
           type: integer
           format: int64
-      - name: commentID
+      - name: commentId
         in: path
         description: ID of Comment to search
         required: true
@@ -339,6 +346,15 @@ paths:
                 votes_down: 0
                 user_id: 1
                 replies: []
+        401:
+          description: 'Error: Unauthorized'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error401'
         404:
           description: 'Error: Not Found'
           content:
@@ -353,7 +369,7 @@ paths:
                   value:
                     error: "Couldn't find Article with 'id'=17"
   
-  /article/{articleId}/comments/{commentId}/vote_down:
+  /articles/{articleId}/comments/{commentId}/vote_down:
     post:
       tags:
       - comments
@@ -366,7 +382,7 @@ paths:
         schema:
           type: integer
           format: int64
-      - name: commentID
+      - name: commentId
         in: path
         description: ID of Comment to search
         required: true
@@ -389,6 +405,15 @@ paths:
                 votes_down: 1
                 user_id: 1
                 replies: []
+        401:
+          description: 'Error: Unauthorized'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error401'
         404:
           description: 'Error: Not Found'
           content:
