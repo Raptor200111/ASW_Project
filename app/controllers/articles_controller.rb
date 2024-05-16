@@ -317,7 +317,7 @@ class ArticlesController < ApplicationController
       if existing_vote
         respond_to do |format|
           format.html { redirect_back fallback_location: root_path, notice:  'You have already voted this article' }
-          format.json { render json: { message: 'You have already voted this article' }, status: :unprocessable_entity }
+          format.json { render json: { message: 'You have already voted this article', existing_vote: existing_vote }, status: :unprocessable_entity }
         end
       else
         @vote_article = @user.vote_articles.build(article_id: @article.id, value: value)
@@ -342,8 +342,8 @@ class ArticlesController < ApplicationController
           existing_value = existing_vote.value
           if existing_value != value
             respond_to do |format|
-              format.html { redirect_back fallback_location: root_path, notice:  'Vote with incorrect value' }
-              format.json { render json: existing_vote, status: :unprocessable_entity }
+              format.html { redirect_back fallback_location: root_path, notice:  'Unvote with incorrect value' }
+              format.json { render json: { message: 'Unvote with incorrect value', existing_vote: existing_vote }, status: :unprocessable_entity }
             end
           else
             existing_vote.destroy
