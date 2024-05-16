@@ -1,8 +1,12 @@
 class CommentsController < ApplicationController
+  # selecciona el comentari i l'article
   before_action :set_comment, only: %i[ show update destroy vote_up vote_down ]
 
   #comprova que l'usuari estigui loggejat
   before_action :authenticate_user!, only: %i[ create update destroy vote_up vote_down]
+
+  #comprova que l'usuari sigui el propietari del comentari
+  before_action :check_owner, only: %i[ update destroy ]
 
   # GET /comments
   def index
@@ -22,8 +26,11 @@ class CommentsController < ApplicationController
       @comments = @comments.order(created_at: :asc)
     when 'newest'
       @comments = @comments.order(created_at: :desc)
-    else
+    when nil
       @comments = @comments.order(votes_up: :desc)
+    else
+      render json: { error: "Invalid order parameter" }, status: :bad_request
+      return
     end
 
     # mostra tots els comentaris i els seus fills si en tenen
@@ -38,23 +45,21 @@ class CommentsController < ApplicationController
 
   # POST /comments
   def create
-    # busca el article amb l'id donat
     begin
+      # busca el article amb l'id donat
       @article = Article.find(params[:article_id])
-    rescue ActiveRecord::RecordNotFound => e
-      render json: { error: e.message }, status: :not_found
-      return
-    end
 
-    # crea comentari amb valors donats i per defecte
-    begin
+      # crea comentari amb valors donats i per defecte
       @comment = @article.comments.new(comment_params) do |c|
-        c.user = @current_user
+        c.user = @user
         c.votes_down = 0;
         c.votes_up = 0;
       end
     rescue ActionController::ParameterMissing
       render json: {error: "You didn't provide all the required fields"}, status: :bad_request
+      return
+    rescue ActiveRecord::RecordNotFound => e
+      render json: { error: e.message }, status: :not_found
       return
     end
     
@@ -65,9 +70,6 @@ class CommentsController < ApplicationController
 
   # PATCH /comments/1
   def update
-    # comprova si l'usuari es el propietari del comentari
-    check_owner()
-
     # actualitza el comentari amb els valors donats
     begin
       @comment.update(comment_params)
@@ -80,9 +82,6 @@ class CommentsController < ApplicationController
 
   # DELETE /comments/1
   def destroy
-    # comprova si l'usuari es el propietari del comentari
-    check_owner()
-
     # retorna missatge de comentari eliminat
     @comment.destroy
     render json: {message: "Comment was successfully destroyed."}
@@ -116,10 +115,7 @@ class CommentsController < ApplicationController
     end
 
     def vote(value)
-      @article = Article.find(params[:article_id])
-      @comment = @article.comments.find(params[:id])
-
-      existing_vote = @comment.vote_comments.find_by(user_id: current_user.id)
+      existing_vote = @comment.vote_comments.find_by(user_id: @user.id)
       if existing_vote
         if existing_vote.value != value
           # canvia valor del vot si es diferent
@@ -129,11 +125,11 @@ class CommentsController < ApplicationController
           existing_vote.destroy
         end
       else
-        @vote = current_user.vote_comments.build(comment_id: @comment.id, value: value)
+        @vote = @user.vote_comments.build(comment_id: @comment.id, value: value)
         unless @vote.save
           # crea vot si no existeix
           # retorna error si no es pot crear
-          current_user.vote_comments.destroy
+          @user.vote_comments.destroy
           render json: @vote.errors, status: :unprocessable_entity
           return
         end
@@ -148,21 +144,33 @@ class CommentsController < ApplicationController
       render json: @comment
     end
 
-    #api key authentication (hardcoded)
     def authenticate_user!
-      #hardcoded user login for testing
-      @current_user = User.find_by(id: 1)
-
-      unless @current_user
-        render(json: {"error": "You provided no token"}, status: 401)
+      if current_user.nil?
+        if request.headers['Accept'].present? && !request.headers['Authorization'].present?
+          render(json: { "error": "Missing api key" }, status: 401)
+          return
+        end
+        if request.headers['Authorization']
+          @user = User.find_by(api_key: request.headers['Authorization'])
+          unless @user
+            render(json: { "error": "No user with this apikey" }, status: 401)
+            return
+          end
+        else
+          render(json: { "error": "Missing api key" }, status: 401)
+          return
+        end
+      else
+        @user = current_user
       end
     end
 
     # check if the user is the owner of the comment
     def check_owner
       @comment = Comment.find(params[:id])
-      unless @current_user == @comment.user
+      unless @user == @comment.user
         render(json: {"error": "You provided an invalid token"}, status: 403)
+        return
       end
     end
 end
