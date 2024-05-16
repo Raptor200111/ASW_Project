@@ -1,7 +1,8 @@
 class ArticlesController < ApplicationController
-  before_action :authenticate_user!, only: [:create, :update, :destroy, :vote_up, :vote_down, :vote, :unvote_up, :unvote_down, :boost_web, :boost, :unboost ]
+  skip_before_action :verify_authenticity_token
+  before_action :authenticate_user!, only: %i[create update destroy vote_up vote_down vote unvote_up unvote_down boost_web boost unboost ]
   before_action :set_article, only: %i[ show edit update destroy vote vote_up vote_down unvote_up unvote_down boost_web boost unboost ]
-  before_action :check_owner, only: [:update, :destroy]
+  before_action :check_owner, only: %i[update destroy]
 
   # GET /articles or /articles.json
   def index
@@ -288,6 +289,7 @@ class ArticlesController < ApplicationController
         format.html { redirect_to articles_url, alert: 'Article not found.' }
         format.json { render json: { error: "Not Found" }, status: :not_found }
       end
+      return
     end
 
     # Only allow a list of trusted parameters through.
@@ -393,7 +395,7 @@ class ArticlesController < ApplicationController
 
   def check_owner
     article_owner = @article.user
-    unless article_owner == current_user || (current_user.nil? && article_owner == @user)
+    unless article_owner == @user
       respond_to do |format|
         format.html { redirect_to articles_url, alert: 'You are not authorized to perform this action.' }
         format.json { render json: { error: 'You are not authorized to perform this action' }, status: :forbidden }
