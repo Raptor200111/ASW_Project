@@ -622,6 +622,8 @@ paths:
       tags:
       - Comments
       summary: Creates a comment in an article
+      security:
+      - ApiKeyAuth: []
       parameters:
       - name: articleId
         in: path
@@ -701,6 +703,8 @@ paths:
       tags:
       - Comments
       summary: Updates a comment in an article
+      security:
+      - ApiKeyAuth: []
       parameters:
       - name: articleId
         in: path
@@ -828,6 +832,8 @@ paths:
       tags:
       - Comments
       summary: Deletes a comment in an article
+      security:
+      - ApiKeyAuth: []
       parameters:
       - name: articleId
         in: path
@@ -887,6 +893,8 @@ paths:
       tags:
       - Comments
       summary: Votes up a comment in an article
+      security:
+      - ApiKeyAuth: []
       parameters:
       - name: articleId
         in: path
@@ -946,6 +954,8 @@ paths:
       tags:
       - Comments
       summary: Votes down a comment in an article
+      security:
+      - ApiKeyAuth: []
       parameters:
       - name: articleId
         in: path
