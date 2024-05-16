@@ -10,6 +10,7 @@ class UsersController < ApplicationController
     #end
   end
 
+
   def update
     @user = User.find_by(id: params[:id])
     @user.full_name = params[:user][:full_name]
@@ -38,13 +39,29 @@ class UsersController < ApplicationController
   private
 
   def set_user
-    @user = User.find(params[:id])
+    if request.headers[:Accept] == "application/json"
+      api_key = request.headers[:HTTP_X_API_KEY]
+
+      if api_key.nil?
+        render :json => { "status" => "401", "error" => "No Api key provided." }, status: :unauthorized and return
+      else
+        @user = User.find_by_api_key(api_key)
+        if @user.nil?
+          render :json => { "status" => "403", "error" => "No User found with the Api key provided." }, status: :unauthorized and return
+        end
+      end
+    else
+      @user = current_user
+    end
   end
 
   def show_threads
-    @user = User.find(params[:id])
-    @threads = @user.articles
-    render partial: 'u/articles', locals: { articles: @articles }
+    set_user
+    if @user.nil?
+      @user = User.find(params[:id])
+      @threads = @user.articles
+      render partial: 'u/articles', locals: { articles: @articles }
+    end
   end
 
   def show_comments
