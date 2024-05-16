@@ -35,6 +35,16 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Comment'
+        400:
+          description: 'Error: Bad Request'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  value:
+                    error: "Invalid order parameter"
         404:
           description: 'Error: Not Found'
           content:
@@ -81,6 +91,16 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Comment'
+        400:
+          description: 'Error: Bad Request'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  value:
+                    error: "You didn't provide all the required fields"
         401:
           description: 'Error: Unauthorized'
           content:
@@ -112,15 +132,6 @@ paths:
                 errorExample:
                   value:
                     error: "Couldn't find Article with 'id'=3"
-        422:
-          description: 'Error: Unprocessable Entity'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResult'
-              examples:
-                errorExample:
-                  $ref: '#/components/examples/error400'
 
   /artice/{articleId}/comments/{commentId}:
     patch:
@@ -171,8 +182,7 @@ paths:
               examples:
                 errorExample:
                   value:
-                    status: 400
-                    error: "Bad request"
+                    error: "You didn't provide all the required fields"
         401:
           description: 'Error: Unauthorized'
           content:
@@ -457,7 +467,10 @@ components:
         error: "You didn't provide all the required fields"
     error401:
       value:
-        error: "No Api key provided."
+        error: "Missing api key"
+    userNotFound:
+      value:
+        error: "No user with this apikey"
     error403:
       value:
         error: "You are not allowed to perform this action."
