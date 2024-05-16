@@ -4,7 +4,7 @@ info:
   title: KBIN
   description: "This is the Open API documentation for the REST API of our beloved application **KBIN** deployed at <https://3.90.39.111:8080>."
 servers:
-  - url: 'http://44.220.151.243:8080'
+  - url: 'http://54.91.238.194:8080'
 paths:
   /articles:
     post:
@@ -191,36 +191,119 @@ paths:
       - ApiKeyAuth: []
   /articles/{id}/boost:
     post:
-      tags:
-        - articles
       summary: Boost an article
-      operationId: boostArticle
+      description: Boosts an article for the current user.
+      tags:
+        - Articles
       parameters:
         - name: id
           in: path
-          description: ID of the article to boost
           required: true
+          description: ID of the article to boost
           schema:
             type: integer
       responses:
-        '200':
-          description: Successful operation
+        '201':
+          description: Article boosted successfully
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ArticleComplete'
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  title:
+                    type: string
+                  body:
+                    type: string
+                  num_boosts:
+                    type: integer
+        '200':
+          description: Article already boosted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: You have already boosted this article
         '401':
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResult'
-        '403':
-          description: Forbidden
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: No user with this API key
+        '422':
+          description: Unprocessable Entity
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResult'
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Unable to boost article
+      security:
+      - ApiKeyAuth: []
+  /articles/{id}/unboost:
+    delete:
+      summary: Unboost an article
+      description: Removes a boost from an article for the current user.
+      tags:
+        - Articles
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID of the article to unboost
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Boost removed successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Boost removed successfully
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: No user with this API key
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Boost not found
+        '422':
+          description: Unprocessable Entity
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Error removing boost
       security:
       - ApiKeyAuth: []
   /articles/search:
@@ -251,83 +334,76 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResult'
-  /vote_articles:
-    get:
-      tags:
-        - vote_articles
-      summary: Retrieves all vote articles
-      operationId: getAllVoteArticles
-      responses:
-        '200':
-          description: Successful operation
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/VoteArticle'
+  /articles/{id}/vote_up:
     post:
-      tags:
-        - vote_articles
-      summary: Creates a new vote article
-      operationId: createVoteArticle
+      summary: Vote up an article
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: ID of the article to vote on
+          schema:
+            type: integer
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/NewVoteArticle'
+              type: object
+              properties:
+                value:
+                  type: string
+                  enum: [up]
+                  description: The vote value
+                  example: up
       responses:
         '201':
-          description: Vote article created
+          description: Vote successfully created
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/VoteArticle'
-        '400':
-          description: Bad request
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    description: ID of the vote
+                    example: 123
+                  message:
+                    type: string
+                    description: Confirmation message
+                    example: Vote was successfully created.
+        '401':
+          description: Unauthorized - Missing API key
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResult'
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message
+                    example: Missing API key
+        '403':
+          description: Forbidden - Not authorized to vote on the article
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message
+                    example: You are not authorized to vote on this article
       security:
       - ApiKeyAuth: []
-  /vote_articles/{id}:
-    get:
-      tags:
-        - vote_articles
-      summary: Retrieves a specific vote article by ID
-      operationId: getVoteArticleById
+  /articles/{id}/vote_down:
+    post:
+      summary: Vote down an article
       parameters:
-        - name: id
-          in: path
-          description: ID of the vote article to retrieve
+        - in: path
+          name: id
           required: true
-          schema:
-            type: integer
-      responses:
-        '200':
-          description: Successful operation
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/VoteArticle'
-        '404':
-          description: Vote article not found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResult'
-    put:
-      tags:
-        - vote_articles
-      summary: Updates a specific vote article by ID
-      operationId: updateVoteArticleById
-      parameters:
-        - name: id
-          in: path
-          description: ID of the vote article to update
-          required: true
+          description: ID of the article to vote on
           schema:
             type: integer
       requestBody:
@@ -335,43 +411,108 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/UpdateVoteArticle'
+              type: object
+              properties:
+                value:
+                  type: string
+                  enum: [down]
+                  description: The vote value
+                  example: down
       responses:
-        '200':
-          description: Vote article updated successfully
+        '201':
+          description: Vote successfully created
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/VoteArticle'
-        '404':
-          description: Vote article not found
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    description: ID of the vote
+                    example: 123
+                  message:
+                    type: string
+                    description: Confirmation message
+                    example: Vote was successfully created.
+        '401':
+          description: Unauthorized - Missing API key
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResult'
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message
+                    example: Missing API key
+        '403':
+          description: Forbidden - Not authorized to vote on the article
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message
+                    example: You are not authorized to vote on this article
       security:
       - ApiKeyAuth: []
+  /articles/{id}/unvote:
     delete:
-      tags:
-        - vote_articles
-      summary: Deletes a specific vote article by ID
-      operationId: deleteVoteArticleById
+      summary: Remove vote from an article
       parameters:
-        - name: id
-          in: path
-          description: ID of the vote article to delete
+        - in: path
+          name: id
           required: true
+          description: ID of the article to remove the vote from
           schema:
             type: integer
       responses:
-        '204':
-          description: Vote article deleted successfully
-        '404':
-          description: Vote article not found
+        '200':
+          description: Vote successfully removed
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResult'
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: Confirmation message
+                    example: Vote removed successfully
+        '401':
+          description: Unauthorized - Missing API key
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message
+                    example: Missing API key
+        '403':
+          description: Forbidden - Not authorized to remove the vote from the article
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message
+                    example: You are not authorized to remove the vote from this article
+        '404':
+          description: Not Found - Vote not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message
+                    example: Vote Not found
       security:
       - ApiKeyAuth: []
 components:
