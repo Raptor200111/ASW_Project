@@ -135,5 +135,5 @@ class MagazinesController < ApplicationController
         end
       end
     end
-  end
+end
 
