@@ -118,7 +118,7 @@ class ArticlesController < ApplicationController
   # DELETE /articles/1 or /articles/1.json
   def destroy
       @article.destroy
-      render json: {message: "Comment was successfully destroyed."}, status: :no_content
+      render json: {message: "Article was successfully destroyed."}, status: :ok
   end
 =begin
   def destroy
@@ -232,7 +232,7 @@ class ArticlesController < ApplicationController
       # If the user has already boosted the article, delete the existing boost
       respond_to do |format|
         format.html {redirect_back(fallback_location: root_path, notice: 'You have already boosted this article')}
-        format.json {render  json: { message: 'You have already boosted this article' }, status: :ok }
+        format.json {render  json: { message: 'You have already boosted this article' }, status: :unprocessable_entity  }
       end
     else
       # If the user hasn't boosted the article yet, create a new boost
@@ -242,7 +242,7 @@ class ArticlesController < ApplicationController
           update_num_boost(1)
           @article.reload
           format.html {redirect_back(fallback_location: root_path, notice: 'Article boosted successfully!')}
-          format.json {render json: @article.as_custom_json, status: :created }
+          format.json {render json: { article: @article.as_custom_json, boost: boost }, status: :created }
         else
           format.html {redirect_back(fallback_location: root_path, notice: 'Unable to boost article')}
           format.json {render json:{ error: 'Unable to boost article' }, status: :unprocessable_entity }
@@ -256,7 +256,7 @@ class ArticlesController < ApplicationController
       # If the user has already boosted the article, delete the existing boost
       respond_to do |format|
         if @user.boosts.find_by(article_id: @article.id).destroy
-        update_num_boost(-1)
+          update_num_boost(-1)
           format.html {redirect_back(fallback_location: root_path, notice: 'Boost removed successfully!')}
           format.json {render  json: { message: 'Boost removed successfully' }, status: :ok }
         else
@@ -290,7 +290,7 @@ class ArticlesController < ApplicationController
     # Use callbacks to share common setup or constraints between actions.
     def set_article
       #@article = Article.find(params[:id])
-      @article = Article.includes(:user, :magazine, :vote_articles, :boosts, :comments).find(params[:id])
+      @article = Article.includes(:user, :magazine, :vote_articles, :comments).find(params[:id])
     rescue ActiveRecord::RecordNotFound => e
       respond_to do |format|
         format.html { redirect_to articles_url, alert: 'Article not found.' }
