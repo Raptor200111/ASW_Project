@@ -77,8 +77,7 @@ class MagazinesController < ApplicationController
       else
         @user.subs << @magazine
         respond_to do |format|
-          format.html {redirect_to magazines_path, notice: 'Subscribed successfully!'}
-          format.json {head :no_content }
+          format.json { render(json: {"message": "Subscribe successfully!"}, status: 201)}
         end
       end
     end
@@ -86,15 +85,13 @@ class MagazinesController < ApplicationController
 
   # DELETE /magazines/1/unsubscribe
   def unsubscribe
-    @user = User.find(api_key: request.headers['Authorization'])
     isSubs = @user.subscriptions.find_by(magazine: @magazine)
     begin
       if isSubs
         isSubs.destroy
         @user.subs.delete(@magazine)
         respond_to do |format|
-          format.html {redirect_to magazines_path, notice: 'Unsubscibed successfully!'}
-          format.json {head :no_content }
+          format.json { render(json: {"message": "Unsubscribe successfully!"}, status: 204)}
         end
       else
         respond_to do |format|
