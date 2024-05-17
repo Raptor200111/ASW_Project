@@ -3,6 +3,7 @@ class ArticlesController < ApplicationController
   before_action :set_article, only: %i[ show edit update destroy vote vote_up vote_down unvote_up unvote_down boost_web boost unboost ]
   before_action :authenticate_user!, only: %i[create update destroy vote_up vote_down vote unvote_up unvote_down boost_web boost unboost ]
   before_action :check_owner, only: %i[update destroy]
+  before_action :not_user_id, only %i[create update ]
 
   # GET /articles or /articles.json
   def index
@@ -406,6 +407,16 @@ class ArticlesController < ApplicationController
       respond_to do |format|
         format.html { redirect_to articles_url, alert: 'You are not authorized to perform this action.' }
         format.json { render json: { error: 'You are not authorized to perform this action' }, status: :forbidden }
+      end
+      return
+    end
+  end
+
+  def not_user_id
+    if article_params[:user_id].present?
+      respond_to do |format|
+        format.html { redirect_to articles_url, alert: 'User ID should not be provided in the request.' }
+        format.json { render json: { error: 'User ID should not be provided in the request.' }, status: :unprocessable_entity }
       end
       return
     end
