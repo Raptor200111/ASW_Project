@@ -31,8 +31,10 @@ Rails.application.routes.draw do
     get 'search', on: :collection
     resources :comments do
       member do
-        post 'vote_up'
-        post 'vote_down'
+        post :vote_up
+        delete :remove_vote_up
+        post :vote_down
+        delete :remove_vote_down
       end
     end
   end
