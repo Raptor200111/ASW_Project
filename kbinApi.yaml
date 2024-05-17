@@ -1369,7 +1369,7 @@ paths:
         - Users
       summary: Update User Profile
       security:
-      - ApiKeyAuth: []
+        - ApiKeyAuth: []
       parameters:
         - name: id
           in: path
@@ -1377,22 +1377,26 @@ paths:
           schema:
             type: integer
       requestBody:
+        required: true
         content:
-          application/json:
+          multipart/form-data:
             schema:
               type: object
               properties:
-                user:
-                  type: object
-                  properties:
-                    full_name:
-                      default: "Pepito Mortadelo"
-                    description:
-                      default: "Example of description"
-                    avatar:
-                      default: "https://upload.wikimedia.org/wikipedia/commons/c/c1/Woman_in_Eyeglasses_%283%29.jpg"
-                    background:
-                      default: "https://upload.wikimedia.org/wikipedia/commons/c/c1/Woman_in_Eyeglasses_%283%29.jpg"
+                full_name:
+                  type: string
+                  example: "Pepito Mortadelo"
+                description:
+                  type: string
+                  example: "Example of description"
+                avatar:
+                  type: string
+                  format: binary
+                  description: "User's avatar image file"
+                background:
+                  type: string
+                  format: binary
+                  description: "User's background image file"
       responses:
         '200':
           description: User profile updated successfully
