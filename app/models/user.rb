@@ -43,8 +43,8 @@ class User < ApplicationRecord
   def as_custom_json
     as_json(
       include: {
-        avatar: { only: [:avatar] },
-        background: { only: [:background] },
+        avatar: { only: :avatar.url },
+        background: { only: :background.url },
       },
       except: [:uid, :avatar_url, :provider, :api_key]
     )
