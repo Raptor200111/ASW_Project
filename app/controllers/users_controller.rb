@@ -6,7 +6,7 @@ class UsersController < ApplicationController
     @user = User.find(params[:id])
     respond_to do |format|
       format.html
-      format.json { render json: @user, status: :ok }
+      format.json { render json: @user.as_custom_json, status: :ok }
     end
   end
 
@@ -28,7 +28,7 @@ class UsersController < ApplicationController
         format.json { render json: {message: "User Updated"},  status: :ok }
       end
     else
-      render :json => { "status" => "401", "error" => "Unauthorized User" }, status: :unauthorized and return
+      render :json => { "status" => "403", "error" => "Unauthorized User" }, status: :unauthorized and return
     end
   end
 
@@ -42,7 +42,7 @@ class UsersController < ApplicationController
         format.json { render json: {message: "User Avatar Deleted"},  status: :ok }
       end
     else
-      render :json => { "status" => "401", "error" => "Unauthorized User" }, status: :unauthorized and return
+      render :json => { "status" => "403", "error" => "Forbidden User" }, status: :unauthorized and return
     end
   end
 
@@ -56,7 +56,7 @@ class UsersController < ApplicationController
         format.json { render json: {message: "User Updated"},  status: :ok }
       end
     else
-      render :json => { "status" => "401", "error" => "Unauthorized User" }, status: :unauthorized and return
+      render :json => { "status" => "403", "error" => "Forbidden User" }, status: :unauthorized and return
     end
   end
 
@@ -89,7 +89,7 @@ class UsersController < ApplicationController
         format.json { render json:  @boosts, status: :ok }
       end
     else
-      render :json => { "status" => "401", "error" => "Unauthorized User" }, status: :unauthorized and return
+      render :json => { "status" => "403", "error" => "Forbidden User" }, status: :unauthorized and return
     end
   end
 

@@ -40,6 +40,16 @@ class User < ApplicationRecord
     end
   end
 
+  def as_custom_json
+    as_json(
+      include: {
+        avatar: { only: [:avatar] },
+        background: { only: [:background] },
+      },
+      except: [:uid, :avatar_url, :provider, :api_key]
+    )
+  end
+
   private
   def generate_api_key
     self.api_key = SecureRandom.base58(24)

@@ -9,9 +9,9 @@ Rails.application.routes.draw do
     get 'u/:id/articles', to: 'users#show_articles'
     get 'u/:id/comments', to: 'users#show_comments'
     get 'u/:id/boosts', to: 'users#show_boosts'
-    put '/u/:id', to: 'users#update'
-    put '/u/:id/deleteAvatar', to: 'users#deleteAvatar'
-    put '/u/:id/deleteBack', to: 'users#deleteBack'
+    patch '/u/:id', to: 'users#update'
+    patch '/u/:id/deleteAvatar', to: 'users#deleteAvatar'
+    patch '/u/:id/deleteBack', to: 'users#deleteBack'
   end
 
   #put '/u/:id', to: 'users/sessions', as: 'user'
