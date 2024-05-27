@@ -3,7 +3,7 @@ class ArticlesController < ApplicationController
   before_action :set_article, only: %i[ show edit update destroy vote vote_up vote_down unvote_up unvote_down boost_web boost unboost ]
   before_action :authenticate_user!, only: %i[create update destroy vote_up vote_down vote unvote_up unvote_down boost_web boost unboost ]
   before_action :check_owner, only: %i[update destroy]
-  before_action :not_user_id, only %i[create update ]
+  before_action :not_user_id, only: %i[create update ]
 
   # GET /articles or /articles.json
   def index

@@ -1,7 +1,7 @@
 class MagazinesController < ApplicationController
   skip_before_action :verify_authenticity_token
-  before_action :set_user, only: [:create, :subscribe, :unsubscribe ]
-  before_action :set_magazine, only: %i[ show edit update subscribe unsubscribe]
+  before_action :set_user, only: [:create, :subscribe, :unsubscribe]
+  before_action :set_magazine, only: %i[ show edit update subscribe unsubscribe articles]
 
   # GET /magazines or /magazines.json
   def index
@@ -32,6 +32,10 @@ class MagazinesController < ApplicationController
   	end
   end
 
+  # GET /magazines/1/articles
+  def articles
+  end
+
   # GET /magazines/new
   def new
     @magazine = Magazine.new
@@ -44,6 +48,7 @@ class MagazinesController < ApplicationController
   # POST /magazines or /magazines.json
   def create
     @magazine = Magazine.new(JSON.parse(request.body.read))
+    @magazine.creator_id = @user.id
     respond_to do |format|
       if @magazine.save
         format.json { render :show, status: :created, location: @magazine }
@@ -135,5 +140,5 @@ class MagazinesController < ApplicationController
         end
       end
     end
-  end
+end
 

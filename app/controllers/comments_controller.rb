@@ -1,10 +1,10 @@
 class CommentsController < ApplicationController
   skip_before_action :verify_authenticity_token
   # selecciona el comentari i l'article
-  before_action :set_comment, only: %i[ show update destroy vote_up vote_down ]
+  before_action :set_comment, only: %i[ show update destroy vote_up vote_down remove_vote_up remove_vote_down]
 
   #comprova que l'usuari estigui loggejat
-  before_action :authenticate_user!, only: %i[ create update destroy vote_up vote_down]
+  before_action :authenticate_user!, only: %i[ create update destroy vote_up vote_down remove_vote_up remove_vote_down]
 
   #comprova que l'usuari sigui el propietari del comentari
   before_action :check_owner, only: %i[ update destroy ]
@@ -98,6 +98,16 @@ class CommentsController < ApplicationController
     vote('down')
   end
 
+  # DELETE /comments/1/vote_up
+def remove_vote_up
+  remove_vote('up')
+end
+
+# DELETE /comments/1/vote_down
+def remove_vote_down
+  remove_vote('down')
+end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_comment
@@ -115,33 +125,68 @@ class CommentsController < ApplicationController
       params.require(:comment).permit(:body, :article_id, :parent_id)
     end
 
+    # def vote(value)
+    #   existing_vote = @comment.vote_comments.find_by(user_id: @user.id)
+    #   if existing_vote
+    #     if existing_vote.value != value
+    #       # canvia valor del vot si es diferent
+    #       existing_vote.update(value: value)
+    #     else
+    #       # elimina vot si es el mateix
+    #       existing_vote.destroy
+    #     end
+    #   else
+    #     @vote = @user.vote_comments.build(comment_id: @comment.id, value: value)
+    #     unless @vote.save
+    #       # crea vot si no existeix
+    #       # retorna error si no es pot crear
+    #       @user.vote_comments.destroy
+    #       render json: @vote.errors, status: :unprocessable_entity
+    #       return
+    #     end
+    #   end
+
+    #   # actualitza els vots del comentari
+    #   @comment.votes_up = @comment.vote_comments.where(value: 'up').count
+    #   @comment.votes_down = @comment.vote_comments.where(value: 'down').count
+    #   @comment.save
+
+    #   # retorna el comentari actualitzat
+    #   render json: @comment
+    # end
+
     def vote(value)
       existing_vote = @comment.vote_comments.find_by(user_id: @user.id)
+    
       if existing_vote
-        if existing_vote.value != value
-          # canvia valor del vot si es diferent
-          existing_vote.update(value: value)
-        else
-          # elimina vot si es el mateix
-          existing_vote.destroy
-        end
+        # Update the value of the vote if it's different
+        existing_vote.update(value: value) if existing_vote.value != value
       else
+        # Create a new vote if it doesn't exist
         @vote = @user.vote_comments.build(comment_id: @comment.id, value: value)
         unless @vote.save
-          # crea vot si no existeix
-          # retorna error si no es pot crear
-          @user.vote_comments.destroy
           render json: @vote.errors, status: :unprocessable_entity
           return
         end
       end
 
-      # actualitza els vots del comentari
       @comment.votes_up = @comment.vote_comments.where(value: 'up').count
       @comment.votes_down = @comment.vote_comments.where(value: 'down').count
       @comment.save
+      render json: @comment
+    end
+    
+    def remove_vote(value)
+      existing_vote = @comment.vote_comments.find_by(user_id: @user.id)
+    
+      if existing_vote
+        # Update the value of the vote if it's different
+        existing_vote.destroy if existing_vote.value == value
+      end
 
-      # retorna el comentari actualitzat
+      @comment.votes_up = @comment.vote_comments.where(value: 'up').count
+      @comment.votes_down = @comment.vote_comments.where(value: 'down').count
+      @comment.save
       render json: @comment
     end
 
