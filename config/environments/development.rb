@@ -70,4 +70,6 @@ Rails.application.configure do
 
   # Allow connections to local server on cloud IDE.
   config.hosts.clear
+
+  Rails.application.routes.default_url_options = { host: 'localhost', port: 3000 } # Ajusta esto según sea necesario
 end
