@@ -43,8 +43,10 @@ class User < ApplicationRecord
   def as_custom_json
     as_json(
       include: {
-        avatar: avatar.attached? ? Rails.application.routes.url_helpers.rails_blob_url(avatar, only_path: true) : nil,
-        background: background.attached? ? Rails.application.routes.url_helpers.rails_blob_url(background, only_path: true) : nil,
+        avatar: :avatar,
+        background: :background,
+        #avatar: avatar.attached? ? Rails.application.routes.url_helpers.rails_blob_url(avatar, only_path: true) : nil,
+        #background: background.attached? ? Rails.application.routes.url_helpers.rails_blob_url(background, only_path: true) : nil,
       },
       except: [:uid, :avatar_url, :provider, :api_key]
     )
