@@ -90,4 +90,6 @@ Rails.application.configure do
 
   # Do not dump schema after migrations.
   config.active_record.dump_schema_after_migration = false
+
+  Rails.application.routes.default_url_options = { host: 'delta-12-kbin-8d30caa623a4.herokuapp.com' }
 end
