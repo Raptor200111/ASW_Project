@@ -8,4 +8,8 @@ class Comment < ApplicationRecord
     has_many :vote_comments
     has_many :voters, through: :vote_comments, source: :user
 
+    def as_json(options = {})
+        super(options).merge({ replies: replies.map { |reply| reply.as_json } })
+    end
+
 end

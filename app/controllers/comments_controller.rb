@@ -11,14 +11,14 @@ class CommentsController < ApplicationController
 
   # GET /comments
   def index
-    #agafa tots els comentaris de l'article
+    #agafa tots els comentaris pare de l'article
     begin
       @article = Article.find(params[:article_id])
     rescue ActiveRecord::RecordNotFound => e
       render json: { error: e.message }, status: :not_found
       return
     end
-    @comments = @article.comments
+    @comments = @article.comments.where(parent_id: nil)
 
     #ordenacio per default es votes_up
     order = params[:order]
@@ -34,8 +34,8 @@ class CommentsController < ApplicationController
       return
     end
 
-    # mostra tots els comentaris i els seus fills si en tenen
-    render json: @comments.as_json(include: :replies)
+    # mostra tots els comentaris i els seus fills si en tenen (as_json modificat en comment.rb)
+    render json: @comments.as_json
   end
 
   # GET /comments/1
