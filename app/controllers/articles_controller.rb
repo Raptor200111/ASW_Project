@@ -38,7 +38,7 @@ class ArticlesController < ApplicationController
     end
     respond_to do |format|
       format.html
-      format.json { render json: @articles, status: :ok }
+      format.json { render json: @articles.as_custom_json, status: :ok }
     end
   end
 
@@ -56,7 +56,7 @@ class ArticlesController < ApplicationController
     @articles = Article.where("title LIKE ? OR body LIKE ?", "%#{@search_text}%", "%#{@search_text}%")
     respond_to do |format|
       format.html
-      format.json { render json: @articles, status: :ok }
+      format.json { render json: @articles.as_custom_json, status: :ok }
     end
   end
 
@@ -258,8 +258,9 @@ class ArticlesController < ApplicationController
       respond_to do |format|
         if @user.boosts.find_by(article_id: @article.id).destroy
           update_num_boost(-1)
+          @article.reload
           format.html {redirect_back(fallback_location: root_path, notice: 'Boost removed successfully!')}
-          format.json {render  json: { message: 'Boost removed successfully' }, status: :ok }
+          format.json {render  json: { message: 'Boost removed successfully', article: @article }, status: :ok }
         else
           format.html { redirect_back(fallback_location: root_path, notice: "ERROR DELETE Boost" )}
           format.json { render json: @article.errors, status: :unprocessable_entity }
@@ -333,8 +334,9 @@ class ArticlesController < ApplicationController
         update_numVote(value, +1)
         respond_to do |format|
           if @vote_article.save
+            @article.reload
             format.html { redirect_back fallback_location: root_path, notice: 'Vote was successfully created.' }
-            format.json { render json: @vote_article, status: :created }
+            format.json { render json: @article.as_custom_json, status: :created }
           else
             format.html { redirect_back fallback_location: root_path, status: :unprocessable_entity }
             format.json { render json: { error: @vote_article.errors.full_messages.join(', ') }, status: :unprocessable_entity }
@@ -358,8 +360,9 @@ class ArticlesController < ApplicationController
             existing_vote.destroy
             update_numVote(value, -1)
             respond_to do |format|
+              @article.reload
               format.html { redirect_back fallback_location: root_path, notice:  'Vote removed successfully' }
-              format.json { render json: { message: 'Vote removed successfully' }, status: :ok }
+              format.json { render json: { message: 'Vote removed successfully', article: @article.as_custom_json }, status: :ok }
             end
           end
       else
