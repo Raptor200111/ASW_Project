@@ -38,7 +38,7 @@ class ArticlesController < ApplicationController
     end
     respond_to do |format|
       format.html
-      format.json { render json: @articles.as_custom_json, status: :ok }
+      format.json { render json: @articles.map(&:as_custom_json), status: :ok }
     end
   end
 
@@ -56,7 +56,7 @@ class ArticlesController < ApplicationController
     @articles = Article.where("title LIKE ? OR body LIKE ?", "%#{@search_text}%", "%#{@search_text}%")
     respond_to do |format|
       format.html
-      format.json { render json: @articles.as_custom_json, status: :ok }
+      format.json { render json: @articles.map(&:as_custom_json), status: :ok }
     end
   end
 
@@ -219,6 +219,7 @@ class ArticlesController < ApplicationController
           format.html {redirect_back(fallback_location: root_path, notice: 'Article boosted successfully!')}
           format.json {render json: @article.as_custom_json, status: :created }
         end
+
       else
         respond_to do |format|
           format.html {redirect_back(fallback_location: root_path, notice: 'Unable to boost article')}
