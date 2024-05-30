@@ -38,7 +38,7 @@ class ArticlesController < ApplicationController
     end
     respond_to do |format|
       format.html
-      format.json { render json: @articles, status: :ok }
+      format.json { render json: @articles.as_custom_json, status: :ok }
     end
   end
 
@@ -46,7 +46,7 @@ class ArticlesController < ApplicationController
   def show
     respond_to do |format|
       format.html
-      format.json { render json:  @article.as_custom_json, status: :ok }
+      format.json { render json:  @articles.map(&:as_custom_json), status: :ok }
       #format.json { render json: article_with_details(@article), status: :ok }
     end
   end
@@ -56,7 +56,7 @@ class ArticlesController < ApplicationController
     @articles = Article.where("title LIKE ? OR body LIKE ?", "%#{@search_text}%", "%#{@search_text}%")
     respond_to do |format|
       format.html
-      format.json { render json: @articles, status: :ok }
+      format.json { render json: @articles.map(&:as_custom_json), status: :ok }
     end
   end
 
@@ -333,8 +333,9 @@ class ArticlesController < ApplicationController
         update_numVote(value, +1)
         respond_to do |format|
           if @vote_article.save
+            @article.reload
             format.html { redirect_back fallback_location: root_path, notice: 'Vote was successfully created.' }
-            format.json { render json: @vote_article, status: :created }
+            format.json { render json: { article: @article.as_custom_json, vote_article: @vote_article }, status: :created }
           else
             format.html { redirect_back fallback_location: root_path, status: :unprocessable_entity }
             format.json { render json: { error: @vote_article.errors.full_messages.join(', ') }, status: :unprocessable_entity }
