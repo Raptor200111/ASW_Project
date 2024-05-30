@@ -30,7 +30,6 @@ class Article < ApplicationRecord
         user: { only: [:id, :username, :email] },
         magazine: { only: [:id, :name] },
         vote_articles: { only: [:id, :value, :user_id] },
-        comments: { only: [:id, :user_id, :parent_id, :body, :created_at]}
       },
       except: [:user_id, :magazine_id]
     )
