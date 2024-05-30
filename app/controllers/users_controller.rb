@@ -6,7 +6,10 @@ class UsersController < ApplicationController
     @user = User.find(params[:id])
     respond_to do |format|
       format.html
-      format.json { render json: @user.as_custom_json, status: :ok }
+      format.json { render json: @user.as_custom_json.merge(
+        avatar_url: @user.avatar.attached? ? url_for(@user.avatar) : nil,
+        background_url: @user.background.attached? ? url_for(@user.background) : nil ),
+      status: :ok }
     end
   end
 
