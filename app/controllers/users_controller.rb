@@ -69,7 +69,7 @@ class UsersController < ApplicationController
 
     respond_to do |format|
       format.html { render partial: 'u/articles', locals: { articles: @articles } }
-      format.json { render json:  @articles, status: :ok }
+      format.json { render json: @articles.map(&:as_custom_json), status: :ok }
     end
   end
 
